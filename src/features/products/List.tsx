@@ -1,0 +1,375 @@
+import { Box, Grid, Button, Typography, useTheme, IconButton, Collapse, Fade } from '@mui/material';
+import { useState, useRef, useEffect } from 'react';
+import ProductCard, { type Product } from '../../components/ProductCard';
+import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from './api';
+import { useNavigate } from 'react-router-dom';
+import GroupsIcon from '@mui/icons-material/Groups';
+import EmojiNatureIcon from '@mui/icons-material/EmojiNature';
+import FactoryIcon from '@mui/icons-material/Factory';
+import SpaIcon from '@mui/icons-material/Spa';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
+import Grow from '@mui/material/Grow';
+import { FeatureHighlightsRow } from './FeatureHighlightsRow';
+import { useAddToCart } from '../../hooks/useAddToCart';
+
+export function ProductList() {
+  const theme = useTheme();
+  const [selectedCategory, setSelectedCategory] = useState<{ id: number | null; name: string }>({ id: null, name: 'All' });
+  const [showAllProducts, setShowAllProducts] = useState(false);
+  const navigate = useNavigate();
+  const { handleAddToCart } = useAddToCart();
+
+  const { data: allProducts, isLoading: isLoadingAll, isError: isErrorAll } = useGetProductsQuery();
+  const { data: categoriesData } = useGetCategoriesQuery();
+  
+  // Fetch products by category when a category is selected
+  const { data: categoryProducts, isLoading: isLoadingCategory, isError: isErrorCategory } = useGetProductsByCategoryQuery(
+    selectedCategory.id!, 
+    { skip: !selectedCategory.id }
+  );
+
+  // Determine which data to use based on selection
+  const products = selectedCategory.id ? categoryProducts : allProducts;
+  const isLoading = selectedCategory.id ? isLoadingCategory : isLoadingAll;
+  const isError = selectedCategory.id ? isErrorCategory : isErrorAll;
+
+  // Map backend data to ProductCard props (if needed)
+  const mappedProducts: Product[] = (products || []).map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    description: p.description,
+    image: p.image,
+    price: p.price,
+    category: p.category?.name || p.category || '',
+    rating: p.rating,
+    reviewCount: p.review_count,
+    freeDelivery: p.free_delivery,
+  }));
+
+  // Reset showAllProducts when category changes
+  useEffect(() => {
+    setShowAllProducts(false);
+  }, [selectedCategory]);
+
+  // Get products to display (first 4 or all)
+  const displayedProducts = showAllProducts ? mappedProducts : mappedProducts.slice(0, 4);
+  const hasMoreProducts = mappedProducts.length > 4;
+
+  // Map backend categories to names, add 'All'
+  const categories = [
+    { id: null, name: 'All' },
+    ...(categoriesData || [])
+  ];
+
+  const handleCategoryClick = (category: { id: number | null; name: string }) => {
+    setSelectedCategory(category);
+  };
+
+  const handleToggleProducts = () => {
+    setShowAllProducts(!showAllProducts);
+  };
+
+  const handleAddToCartClick = async (product: Product) => {
+    await handleAddToCart({
+      productId: product.id,
+      quantity: 1,
+      productTitle: product.title,
+    });
+  };
+
+  const handleProductClick = (productId: number) => {
+    navigate(`/products/${productId}`);
+  };
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) {
+      setShowLeft(el.scrollLeft > 0);
+      setShowRight(el.scrollWidth > el.clientWidth + el.scrollLeft);
+    }
+  }, [categoriesData, selectedCategory]);
+
+  const handleScroll = (dir: 'left' | 'right') => {
+    const el = scrollRef.current;
+    if (el) {
+      const scrollAmount = 200; // px
+      el.scrollBy({ left: dir === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <Box sx={{ maxWidth: 1400, mx: 'auto', px: { xs: 1, sm: 2, md: 4 }, py: 4 }}>
+      {/* Banner Image Below Toolbar */}
+      <Box
+        sx={{
+          width: '100%',
+          height: { xs: 140, sm: 200, md: 460 },
+          backgroundImage: `linear-gradient(0deg,rgba(31,41,55,0.32),rgba(31,41,55,0.10)), url('/assets/banner_img.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+          mb: 2,
+        }}
+        role="img"
+        aria-label="Assorted millets in clay pots"
+      />
+      <FeatureHighlightsRow />
+      <Typography variant="h4" fontWeight={700} color="primary" mb={3} textAlign="center" sx={{ fontFamily: `'Playfair Display', 'Merriweather', serif` }}>
+        Your Favorites | All in One Place
+      </Typography>
+      <div className="tamil-motif" style={{ margin: '0 auto 2rem auto' }} />
+      {/* Category Filter */}
+      <Box sx={{ position: 'relative', mb: 2 }}>
+        {showLeft && (
+          <IconButton
+            onClick={() => handleScroll('left')}
+            sx={{ position: 'absolute', left: 0, top: '50%', zIndex: 1, transform: 'translateY(-50%)' }}
+          >
+            <ChevronLeftIcon />
+          </IconButton>
+        )}
+        <Box
+          ref={scrollRef}
+          sx={{
+            display: 'flex',
+            overflowX: 'auto',
+            gap: 1,
+            px: 5, // space for arrows
+            scrollbarWidth: 'none', // hide scrollbar on Firefox
+            '&::-webkit-scrollbar': { display: 'none' }, // hide scrollbar on Chrome
+          }}
+          onScroll={() => {
+            const el = scrollRef.current;
+            if (el) {
+              setShowLeft(el.scrollLeft > 0);
+              setShowRight(el.scrollWidth > el.clientWidth + el.scrollLeft);
+            }
+          }}
+        >
+          {categories.map((cat) => (
+            <Button
+              key={cat.id || cat.name}
+              onClick={() => handleCategoryClick(cat)}
+              sx={{
+                fontWeight: 800, // bolder
+                fontSize: 17, // slightly larger
+                letterSpacing: 0.5,
+                borderRadius: 99,
+                px: 3,
+                py: 1,
+                minWidth: 120,
+                whiteSpace: 'nowrap',
+                boxShadow: selectedCategory.id === cat.id ? 3 : 0,
+                bgcolor: selectedCategory.id === cat.id ? 'primary.main' : 'grey.100',
+                color: selectedCategory.id === cat.id ? 'common.white' : 'primary.dark',
+                border: selectedCategory.id === cat.id ? '2px solid' : '1px solid',
+                borderColor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.300',
+                transition: 'all 0.2s cubic-bezier(.4,2,.6,1)',
+                textShadow: selectedCategory.id === cat.id
+                  ? '0 2px 8px rgba(0,0,0,0.18), 0 1px 1px rgba(0,0,0,0.10)'
+                  : 'none',
+                '&:hover': {
+                  bgcolor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.200',
+                  color: selectedCategory.id === cat.id ? 'common.white' : 'primary.main',
+                  borderColor: 'primary.main',
+                  boxShadow: 4,
+                  textShadow: selectedCategory.id === cat.id
+                    ? '0 2px 12px rgba(0,0,0,0.22)'
+                    : '0 1px 4px rgba(0,0,0,0.10)',
+                },
+                '&:active': {
+                  transform: 'scale(0.96)',
+                },
+              }}
+            >
+              {cat.name}
+            </Button>
+          ))}
+        </Box>
+        {showRight && (
+          <IconButton
+            onClick={() => handleScroll('right')}
+            sx={{ position: 'absolute', right: 0, top: '50%', zIndex: 1, transform: 'translateY(-50%)' }}
+          >
+            <ChevronRightIcon />
+          </IconButton>
+        )}
+      </Box>
+      {/* Product Grid */}
+      {isLoading ? (
+        <Typography variant="h6" color="text.secondary" textAlign="center" sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+          Loading {selectedCategory.name !== 'All' ? `${selectedCategory.name} products` : 'products'}...
+        </Typography>
+      ) : isError ? (
+        <Typography variant="h6" color="error" textAlign="center" sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+          Failed to load products.
+        </Typography>
+      ) : mappedProducts.length > 0 ? (
+        <Box>
+          {/* Initial 4 Products */}
+          <Grid container spacing={3} sx={{ mt: 2 }}>
+            {displayedProducts.map((product) => (
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product.id}>
+                <Fade in timeout={300}>
+                  <Box onClick={() => handleProductClick(product.id)} sx={{ cursor: 'pointer', height: '100%' }}>
+                    <ProductCard
+                      product={product}
+                      onAddToCart={() => handleAddToCartClick(product)}
+                    />
+                  </Box>
+                </Fade>
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* Additional Products (Collapsible) */}
+          {hasMoreProducts && (
+            <Collapse in={showAllProducts} timeout={400} easing="ease-in-out">
+        <Grid container spacing={3} sx={{ mt: 2 }}>
+                {mappedProducts.slice(4).map((product, index) => (
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product.id}>
+                    <Fade in timeout={300 + (index * 50)}>
+              <Box onClick={() => handleProductClick(product.id)} sx={{ cursor: 'pointer', height: '100%' }}>
+                <ProductCard
+                  product={product}
+                  onAddToCart={() => handleAddToCartClick(product)}
+                />
+              </Box>
+                    </Fade>
+            </Grid>
+          ))}
+        </Grid>
+            </Collapse>
+          )}
+
+          {/* See More/Less Button */}
+          {hasMoreProducts && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+              <Button
+                onClick={handleToggleProducts}
+                variant="outlined"
+                size="large"
+                endIcon={showAllProducts ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                sx={{
+                  borderRadius: 99,
+                  px: 4,
+                  py: 1.5,
+                  fontWeight: 600,
+                  fontSize: 16,
+                  letterSpacing: 0.5,
+                  borderWidth: 2,
+                  borderColor: 'primary.main',
+                  color: 'primary.main',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  '&:hover': {
+                    backgroundColor: 'primary.main',
+                    color: 'white',
+                    borderColor: 'primary.main',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+                  },
+                  '&:active': {
+                    transform: 'translateY(0)',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                  },
+                }}
+              >
+                {showAllProducts ? 'See Less' : `See More (${mappedProducts.length - 4} more)`}
+              </Button>
+            </Box>
+          )}
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: 320,
+            height: '40vh',
+            width: '100%',
+            mt: 4,
+          }}
+        >
+          <Grow in timeout={500}>
+            <Box>
+              <SentimentDissatisfiedIcon sx={{ fontSize: 72, color: 'grey.400', mb: 2 }} />
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                textAlign="center"
+                sx={{
+                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontWeight: 600,
+                  fontSize: 22,
+                  letterSpacing: 0.5,
+                }}
+              >
+                No products found in {selectedCategory.name !== 'All' ? selectedCategory.name : 'this category'}.
+              </Typography>
+            </Box>
+          </Grow>
+        </Box>
+      )}
+
+      {/* Why buy with Naatusakkarai.com Section */}
+      <Box sx={{ mt: 8, mb: 4, width: '100%' }}>
+        <Typography variant="h4" fontWeight={700} color="primary" textAlign="center" mb={3} sx={{ fontFamily: `'Playfair Display', 'Merriweather', serif` }}>
+          Why buy with PragathiFarms.com
+        </Typography>
+        <Box
+          sx={{
+            width: '100%',
+            bgcolor: '#F8F8F5',
+            py: 3,
+            px: { xs: 1, sm: 4 },
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: { xs: 'flex-start', md: 'center' },
+            alignItems: 'center',
+            gap: 0,
+            overflowX: { xs: 'auto', md: 'visible' },
+            boxShadow: '0 1px 8px rgba(44,70,57,0.04)',
+          }}
+        >
+          {/* Direct from farmers */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
+            <GroupsIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
+            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>Direct from farmers</Typography>
+          </Box>
+          {/* Handpicked ingredients */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
+            <EmojiNatureIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
+            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>Handpicked ingredients</Typography>
+          </Box>
+          {/* Made in large */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
+            <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
+            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>Made in large</Typography>
+          </Box>
+          {/* 100% organic */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
+            <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
+            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>100% organic</Typography>
+          </Box>
+          {/* Door step delivery */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
+            <LocalShippingIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
+            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>Door step delivery</Typography>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+}

@@ -1,0 +1,109 @@
+/* Font Imports */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lato:wght@400;700&family=Manrope:wght@400;600&family=Playfair+Display:wght@400;700&family=Merriweather:wght@400;700&display=swap');
+
+:root {
+  --brand-green: #406343;
+  --brand-brown: #A67C52;
+  --brand-beige: #F5F0E1;
+  --brand-gold: #CBB26A;
+  --brand-dark: #222;
+  --brand-paper: #fff;
+  --motif-svg: url('data:image/svg+xml;utf8,<svg width="100%25" height="16" viewBox="0 0 100 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8 Q10 0 20 8 T40 8 T60 8 T80 8 T100 8" stroke="%23406343" stroke-width="2" fill="none"/></svg>');
+  font-family: 'Inter', 'Lato', 'Manrope', system-ui, sans-serif;
+  color-scheme: light dark;
+  color: var(--brand-dark);
+  background-color: var(--brand-beige);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--brand-beige);
+  background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* Soft natural texture */
+  background-blend-mode: lighten;
+  color: var(--brand-dark);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', 'Merriweather', serif;
+  color: var(--brand-green);
+  margin-top: 0;
+}
+
+p, span, li, input, textarea, select, button {
+  font-family: 'Inter', 'Lato', 'Manrope', system-ui, sans-serif;
+}
+
+a {
+  color: var(--brand-green);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: var(--brand-gold);
+}
+
+/* Tamil-inspired border motif (decorative, can be used as a class) */
+.tamil-motif {
+  width: 100%;
+  height: 16px;
+  background-image: var(--motif-svg);
+  background-repeat: repeat-x;
+  background-position: center;
+}
+
+/* Card and paper backgrounds */
+.card, .MuiPaper-root {
+  background: var(--brand-paper);
+  border-radius: 20px;
+  box-shadow: 0px 4px 24px rgba(166, 124, 82, 0.08);
+}
+
+/* Button styles */
+button, .MuiButton-root {
+  border-radius: 12px;
+  font-weight: 600;
+  background-color: var(--brand-green);
+  color: #fff;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+button:hover, .MuiButton-root:hover {
+  background-color: var(--brand-brown);
+  color: #fff;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f5f0e1;
+    background-color: #222;
+  }
+  body {
+    background-color: #222;
+    background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+    color: #f5f0e1;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--brand-gold);
+  }
+  .card, .MuiPaper-root {
+    background: #2d2d2d;
+    box-shadow: 0px 4px 24px rgba(203, 178, 106, 0.10);
+  }
+  button, .MuiButton-root {
+    background-color: var(--brand-gold);
+    color: #222;
+  }
+  button:hover, .MuiButton-root:hover {
+    background-color: var(--brand-green);
+    color: #fff;
+  }
+  .tamil-motif {
+    background-image: url('data:image/svg+xml;utf8,<svg width="100%25" height="16" viewBox="0 0 100 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8 Q10 0 20 8 T40 8 T60 8 T80 8 T100 8" stroke="%23CBB26A" stroke-width="2" fill="none"/></svg>');
+  }
+}
