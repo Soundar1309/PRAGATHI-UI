@@ -43,7 +43,7 @@ export function ProductDetail() {
   return (
     <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 1, sm: 2, md: 4 }, py: 4 }}>
       <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[3], p: 2 }}>
             <Box sx={{ position: 'relative' }}>
               <CardMedia
@@ -92,7 +92,7 @@ export function ProductDetail() {
             </Box>
           </Card>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[3], p: 3, height: '100%' }}>
             <CardContent>
               <Typography variant="h4" fontWeight={700} gutterBottom color="primary" sx={{ fontFamily: `'Playfair Display', 'Merriweather', serif` }}>

@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme, useMediaQuery, Stack } from "@mui/material";
+import { Box, Typography, useTheme, Stack } from "@mui/material";
 import NatureIcon from "@mui/icons-material/Nature";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import GroupsIcon from "@mui/icons-material/Groups";
