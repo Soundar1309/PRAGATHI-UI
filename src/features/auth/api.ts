@@ -15,7 +15,7 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<{ user: any; access: string; refresh: string }, { email: string; password: string }>({
       query: ({ email, password }) => ({
-        url: '/login/',
+        url: '/users/login/',
         method: 'POST',
         body: { email, password },
       }),
@@ -30,7 +30,7 @@ export const authApi = createApi({
     }),
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: '/logout/',
+        url: '/users/logout/',
         method: 'DELETE',
       }),
       async onQueryStarted(_arg, { queryFulfilled }) {

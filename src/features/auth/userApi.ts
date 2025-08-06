@@ -16,11 +16,11 @@ export const userApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getProfile: builder.query<UserProfile, void>({
-      query: () => '/profile/',
+      query: () => '/users/profile/',
     }),
     updateProfile: builder.mutation<UserProfile, Partial<UserProfile>>({
       query: (data) => ({
-        url: '/profile/update/',
+        url: '/users/profile/update/',
         method: 'PUT',
         body: data,
       }),

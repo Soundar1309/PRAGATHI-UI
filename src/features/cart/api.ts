@@ -40,25 +40,25 @@ export const cartApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getCart: builder.query<Cart, void>({
-      query: () => '/carts/',
+      query: () => '/carts/carts/',
     }),
     addItem: builder.mutation<any, { product_id: number; quantity: number }>({
       query: (body) => ({
-        url: '/cart_items/',
+        url: '/carts/cart_items/',
         method: 'POST',
         body,
       }),
     }),
     updateItem: builder.mutation<any, { id: number; quantity: number }>({
       query: ({ id, quantity }) => ({
-        url: `/cart_items/${id}/`,
+        url: `/carts/cart_items/${id}/`,
         method: 'PUT',
         body: { quantity },
       }),
     }),
     removeItem: builder.mutation<any, number>({
       query: (id) => ({
-        url: `/cart_items/${id}/`,
+        url: `/carts/cart_items/${id}/`,
         method: 'DELETE',
       }),
     }),

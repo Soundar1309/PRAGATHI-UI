@@ -40,13 +40,13 @@ export const productsApi = {
     search?: string;
     page?: number;
   }) => {
-    const response = await api.get('/products/', { params });
+    const response = await api.get('/products/products/', { params });
     return response.data;
   },
 
   // Get single product
   getById: async (id: number) => {
-    const response = await api.get(`/products/${id}/`);
+    const response = await api.get(`/products/products/${id}/`);
     return response.data;
   },
 
@@ -63,7 +63,7 @@ export const productsApi = {
       }
     });
     
-    const response = await api.post('/products/', formData, {
+    const response = await api.post('/products/products/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -84,7 +84,7 @@ export const productsApi = {
       }
     });
     
-    const response = await api.patch(`/products/${id}/`, formData, {
+    const response = await api.patch(`/products/products/${id}/`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -94,7 +94,7 @@ export const productsApi = {
 
   // Delete product (admin only)
   delete: async (id: number) => {
-    await api.delete(`/products/${id}/`);
+    await api.delete(`/products/products/${id}/`);
   },
 };
 
@@ -102,30 +102,30 @@ export const productsApi = {
 export const categoriesApi = {
   // Get all categories
   getAll: async () => {
-    const response = await api.get('/categories/');
+    const response = await api.get('/products/categories/');
     return response.data;
   },
 
   // Get single category
   getById: async (id: number) => {
-    const response = await api.get(`/categories/${id}/`);
+    const response = await api.get(`/products/categories/${id}/`);
     return response.data;
   },
 
   // Create category
   create: async (data: { name: string; description?: string }) => {
-    const response = await api.post('/categories/', data);
+    const response = await api.post('/products/categories/', data);
     return response.data;
   },
 
   // Update category
   update: async (id: number, data: { name: string; description?: string }) => {
-    const response = await api.patch(`/categories/${id}/`, data);
+    const response = await api.patch(`/products/categories/${id}/`, data);
     return response.data;
   },
 
   // Delete category
   delete: async (id: number) => {
-    await api.delete(`/categories/${id}/`);
+    await api.delete(`/products/categories/${id}/`);
   },
 }; 

@@ -37,37 +37,37 @@ export interface UpdateCartItemData {
 export const cartApi = {
   // Get user's cart
   getCart: async () => {
-    const response = await api.get('/carts/');
+    const response = await api.get('/carts/carts/');
     return response.data;
   },
 
   // Get all cart items
   getCartItems: async () => {
-    const response = await api.get('/cart_items/');
+    const response = await api.get('/carts/cart_items/');
     return response.data;
   },
 
   // Add item to cart
   addToCart: async (data: AddToCartData) => {
-    const response = await api.post('/cart_items/', data);
+    const response = await api.post('/carts/cart_items/', data);
     return response.data;
   },
 
   // Get single cart item
   getCartItem: async (id: number) => {
-    const response = await api.get(`/cart_items/${id}/`);
+    const response = await api.get(`/carts/cart_items/${id}/`);
     return response.data;
   },
 
   // Update cart item quantity
   updateCartItem: async (id: number, data: UpdateCartItemData) => {
-    const response = await api.patch(`/cart_items/${id}/`, data);
+    const response = await api.patch(`/carts/cart_items/${id}/`, data);
     return response.data;
   },
 
   // Remove item from cart
   removeFromCart: async (id: number) => {
-    await api.delete(`/cart_items/${id}/`);
+    await api.delete(`/carts/cart_items/${id}/`);
   },
 
   // Clear entire cart

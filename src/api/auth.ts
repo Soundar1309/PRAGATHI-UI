@@ -24,7 +24,7 @@ export interface RegisterData {
 }
 
 export async function register(data: RegisterData): Promise<LoginResponse> {
-  const response = await api.post('/register/', data);
+  const response = await api.post('/users/register/', data);
   const { access } = response.data;
   
   if (access) {
@@ -35,7 +35,7 @@ export async function register(data: RegisterData): Promise<LoginResponse> {
 }
 
 export async function login(email: string, password: string): Promise<LoginResponse> {
-  const response = await api.post('/login/', { email, password });
+  const response = await api.post('/users/login/', { email, password });
   const { access } = response.data;
   
   if (access) {
@@ -47,7 +47,7 @@ export async function login(email: string, password: string): Promise<LoginRespo
 
 export async function logout(): Promise<void> {
   try {
-    await api.delete('/logout/');
+    await api.delete('/users/logout/');
   } catch (error) {
     console.error('Logout error:', error);
   } finally {
@@ -56,11 +56,11 @@ export async function logout(): Promise<void> {
 }
 
 export async function getProfile() {
-  const response = await api.get('/profile/');
+  const response = await api.get('/users/profile/');
   return response.data;
 }
 
 export async function updateProfile(data: Partial<RegisterData>) {
-  const response = await api.patch('/profile/update/', data);
+  const response = await api.patch('/users/profile/update/', data);
   return response.data;
 }
