@@ -5,7 +5,10 @@ import { ProductList } from './features/products/List';
 import { FilteredProductList } from './features/products/FilteredProductList';
 import { SearchResults } from './features/products/SearchResults';
 import { ProductDetail } from './features/products/Detail';
-import { ProductForm } from './features/products/Form';
+import { ProductFormWrapper } from './features/products/ProductFormWrapper';
+import { CategoryFormWrapper } from './features/products/CategoryFormWrapper';
+import { CategoriesList } from './features/products/CategoriesList';
+import { ProductsList } from './features/products/ProductsList';
 import { OrderList } from './features/orders/List';
 import { OrderDetail } from './features/orders/Detail';
 import { OrderCreate } from './features/orders/Create';
@@ -70,8 +73,12 @@ export default function App() {
               <Route path="/products" element={<FilteredProductList />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/products/:id" element={<ProductDetail />} />
-              <Route path="/admin/products/new" element={<RequireAdmin><ProductForm /></RequireAdmin>} />
-              <Route path="/admin/products/:productId/edit" element={<RequireAdmin><ProductForm /></RequireAdmin>} />
+              <Route path="/admin/products" element={<RequireAdmin><ProductsList /></RequireAdmin>} />
+              <Route path="/admin/products/new" element={<RequireAdmin><ProductFormWrapper /></RequireAdmin>} />
+              <Route path="/admin/products/:productId/edit" element={<RequireAdmin><ProductFormWrapper /></RequireAdmin>} />
+              <Route path="/admin/categories" element={<RequireAdmin><CategoriesList /></RequireAdmin>} />
+              <Route path="/admin/categories/new" element={<RequireAdmin><CategoryFormWrapper /></RequireAdmin>} />
+              <Route path="/admin/categories/:categoryId/edit" element={<RequireAdmin><CategoryFormWrapper /></RequireAdmin>} />
               <Route path="/orders" element={<RequireAuth><OrderList /></RequireAuth>} />
               <Route path="/orders/new" element={<OrderCreate />} />
               <Route path="/orders/:id" element={<RequireAuth><OrderDetail /></RequireAuth>} />

@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from '../../api/baseQueryWithAuth';
 
-export type Category = { id: number; name: string };
+export type Category = { id: number; name: string; description?: string };
 
 export const productsApi = createApi({
   reducerPath: 'productsApi',
@@ -48,6 +48,30 @@ export const productsApi = createApi({
       query: () => '/products/categories/',
       transformResponse: (response: { results: Category[] }) => response.results || [],
     }),
+    // Category endpoints
+    getCategory: builder.query<Category, number>({
+      query: (id) => `/products/categories/${id}/`,
+    }),
+    createCategory: builder.mutation<Category, { name: string; description?: string }>({
+      query: (body) => ({
+        url: '/products/categories/',
+        method: 'POST',
+        body,
+      }),
+    }),
+    updateCategory: builder.mutation<Category, { id: number; data: { name: string; description?: string } }>({
+      query: ({ id, data }) => ({
+        url: `/products/categories/${id}/`,
+        method: 'PUT',
+        body: data,
+      }),
+    }),
+    deleteCategory: builder.mutation<any, number>({
+      query: (id) => ({
+        url: `/products/categories/${id}/`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
@@ -60,4 +84,8 @@ export const {
   useUpdateProductMutation,
   useDeleteProductMutation,
   useGetCategoriesQuery,
+  useGetCategoryQuery,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
 } = productsApi;
