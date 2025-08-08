@@ -18,7 +18,6 @@ import { alpha, keyframes, styled } from '@mui/material/styles';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState, useContext } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LoginRegister } from '../features/auth/LoginRegister';
 import Popper from '@mui/material/Popper';
 import Grow from '@mui/material/Grow';
 import Paper from '@mui/material/Paper';
@@ -108,7 +107,7 @@ const marquee = keyframes`
   100% { transform: translateX(-100%); }
 `;
 
-// Styled search bar for desktop
+// Enhanced responsive search bar for desktop
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -118,9 +117,17 @@ const Search = styled('div')(({ theme }) => ({
   },
   marginLeft: 0,
   width: '100%',
+  transition: 'all 0.2s ease-in-out',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: 'auto',
+    minWidth: '200px',
+  },
+  [theme.breakpoints.up('md')]: {
+    minWidth: '250px',
+  },
+  [theme.breakpoints.up('lg')]: {
+    minWidth: '300px',
   },
 }));
 
@@ -136,13 +143,19 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
+  width: '100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
+    fontSize: '0.875rem',
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '0.9rem',
+    },
     [theme.breakpoints.up('md')]: {
       width: '20ch',
+      fontSize: '1rem',
     },
   },
 }));
@@ -155,7 +168,6 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [dropdownAnchor, setDropdownAnchor] = useState<null | HTMLElement>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -228,6 +240,9 @@ const Header: React.FC = () => {
         top: 0,
         zIndex: theme.zIndex.appBar + 1,
         background: theme.palette.background.default,
+        // Prevent horizontal scroll
+        width: '100%',
+        overflow: 'hidden',
       }}
     >
       {/* Running Banner */}
@@ -237,7 +252,7 @@ const Header: React.FC = () => {
           background: theme.palette.secondary.main,
           color: theme.palette.getContrastText(theme.palette.secondary.main),
           overflow: 'hidden',
-          height: 36,
+          height: { xs: 32, sm: 36, md: 40 },
           display: 'flex',
           alignItems: 'center',
           boxShadow: '0 1px 4px rgba(140,198,63,0.06)',
@@ -252,11 +267,13 @@ const Header: React.FC = () => {
             display: 'inline-block',
             animation: `${marquee} 18s linear infinite`,
             px: 2,
+            fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
           }}
         >
           🔥 Free Shipping Alert! No delivery charges across India – shop your favorite items today!
         </Typography>
       </Box>
+      
       {/* AppBar and rest of header */}
       <AppBar
         position="static"
@@ -268,40 +285,83 @@ const Header: React.FC = () => {
           borderBottom: `1.5px solid ${theme.palette.divider}`,
         }}
       >
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', minHeight: { xs: 56, sm: 64 } }}>
+        <Toolbar 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            minHeight: { xs: 56, sm: 64, md: 72 },
+            px: { xs: 1, sm: 2, md: 3 },
+          }}
+        >
           {/* Logo */}
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', flex: { xs: 1, md: 'none' } }}>
             <Button
               component={NavLink}
               to="/"
               sx={{
                 p: 0,
                 minWidth: 0,
-                mr: 2,
+                mr: { xs: 1, sm: 2 },
                 fontWeight: 700,
-                fontSize: 22,
+                fontSize: { xs: 16, sm: 18, md: 22 },
                 color: theme.palette.primary.main,
                 textTransform: 'none',
                 letterSpacing: 1,
                 fontFamily: `'Playfair Display', 'Merriweather', serif`,
+                // Ensure text doesn't wrap
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                // Responsive logo layout
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: 'center',
+                gap: { xs: 0, sm: 1 },
               }}
             >
               <img
                 src="/logo.jpg"
                 alt="Pragathi Natural Farms"
                 style={{
-                  height: 36,
-                  marginRight: 8,
+                  height: 'clamp(28px, 5vw, 36px)',
+                  marginRight: theme.breakpoints.up('sm') ? 8 : 0,
                   borderRadius: 8,
                   background: theme.palette.background.paper,
+                  maxWidth: '100%',
                 }}
               />
-              Pragathi Natural Farms
+              <Box
+                component="span"
+                sx={{
+                  display: { xs: 'none', sm: 'inline' },
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                Pragathi Natural Farms
+              </Box>
+              <Box
+                component="span"
+                sx={{
+                  display: { xs: 'inline', sm: 'none' },
+                  fontSize: '0.7rem',
+                  textAlign: 'center',
+                }}
+              >
+                Pragathi
+              </Box>
             </Button>
           </Box>
 
           {/* Desktop Navigation */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 3, position: 'relative' }}>
+          <Box 
+            sx={{ 
+              display: { xs: 'none', lg: 'flex' }, 
+              alignItems: 'center', 
+              gap: { lg: 2, xl: 3 }, 
+              position: 'relative',
+              flex: 1,
+              justifyContent: 'center',
+            }}
+          >
             {navLinks.map((link) => {
               const isActive = link.to && location.pathname === link.to;
               const hasDropdown = !!link.dropdown;
@@ -324,24 +384,32 @@ const Header: React.FC = () => {
                       color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
                       fontWeight: 600,
                       fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                      fontSize: 18,
+                      fontSize: { lg: 16, xl: 18 },
                       background: 'none',
                       position: 'relative',
                       textTransform: 'none',
                       display: 'flex',
                       alignItems: 'center',
                       gap: 1,
+                      minHeight: 44, // Touch-friendly
+                      px: { lg: 1.5, xl: 2 },
+                      py: 1,
+                      borderRadius: 1,
+                      transition: 'all 0.2s ease-in-out',
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      },
                     }}
                   >
                     {/* Icon for dropdowns */}
                     {link.label === 'Engineering Solutions' && (
-                      <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: 22, mr: 1 }} />
+                      <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: { lg: 20, xl: 22 }, mr: 0.5 }} />
                     )}
                     {link.label === 'Nursery' && (
-                      <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: 22, mr: 1 }} />
+                      <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: { lg: 20, xl: 22 }, mr: 0.5 }} />
                     )}
                     {link.label === 'Farm store' && (
-                      <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main, fontSize: 22, mr: 1 }} />
+                      <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main, fontSize: { lg: 20, xl: 22 }, mr: 0.5 }} />
                     )}
                     {link.label}
                     <AnimatePresence>
@@ -383,7 +451,8 @@ const Header: React.FC = () => {
                               sx={{
                                 mt: 1,
                                 minWidth: 280,
-                                borderRadius: 1,
+                                maxWidth: 320,
+                                borderRadius: 2,
                                 boxShadow: '0 8px 32px rgba(64,99,67,0.12)',
                                 p: 1,
                                 maxHeight: 400,
@@ -412,12 +481,13 @@ const Header: React.FC = () => {
                                         alignItems: 'center',
                                         color: theme.palette.text.primary,
                                         fontWeight: 500,
-                                        fontSize: 16,
-                                        borderRadius: 0.5,
+                                        fontSize: 15,
+                                        borderRadius: 1,
                                         px: 2,
                                         py: 1.5,
                                         textTransform: 'none',
                                         gap: 1.5,
+                                        minHeight: 44, // Touch-friendly
                                         '&:hover': {
                                           background: alpha(theme.palette.primary.main, 0.08),
                                           transform: 'translateX(4px)',
@@ -434,7 +504,16 @@ const Header: React.FC = () => {
                                           }}
                                         />
                                       )}
-                                      {item.label}
+                                      <Typography
+                                        variant="body2"
+                                        sx={{
+                                          overflow: 'hidden',
+                                          textOverflow: 'ellipsis',
+                                          whiteSpace: 'nowrap',
+                                        }}
+                                      >
+                                        {item.label}
+                                      </Typography>
                                     </Button>
                                   </motion.div>
                                 );
@@ -451,7 +530,15 @@ const Header: React.FC = () => {
           </Box>
 
           {/* Desktop Search Bar */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', ml: 2, flex: 1, maxWidth: 320 }}>
+          <Box 
+            sx={{ 
+              display: { xs: 'none', md: 'flex' }, 
+              alignItems: 'center', 
+              ml: 2, 
+              flex: { md: '0 1 320px', lg: '0 1 280px' },
+              maxWidth: 320,
+            }}
+          >
             <Box component="form" onSubmit={handleSearchSubmit} sx={{ width: '100%' }}>
               <Search>
                 <SearchIconWrapper>
@@ -469,53 +556,163 @@ const Header: React.FC = () => {
           </Box>
 
           {/* Desktop Cart & Profile & Dark Mode Toggle */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
-            <IconButton size="large" aria-label="cart" onClick={() => navigate('/cart')} sx={{ color: theme.palette.primary.main }}>
+          <Box 
+            sx={{ 
+              display: { xs: 'none', md: 'flex' }, 
+              alignItems: 'center', 
+              gap: { md: 0.5, lg: 1 },
+              ml: 'auto',
+            }}
+          >
+            <IconButton 
+              size="large" 
+              aria-label="cart" 
+              onClick={() => navigate('/cart')} 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 48,
+                minHeight: 48,
+              }}
+            >
               <Badge badgeContent={cartCount} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
-            <IconButton size="large" sx={{ color: theme.palette.primary.main }} onClick={handleAccountMenuOpen}>
+            <IconButton 
+              size="large" 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 48,
+                minHeight: 48,
+              }} 
+              onClick={handleAccountMenuOpen}
+            >
               <AccountCircle fontSize="large" />
             </IconButton>
             {/* Dark mode toggle */}
-            <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
+            <IconButton 
+              sx={{ 
+                ml: 1,
+                minWidth: 48,
+                minHeight: 48,
+              }} 
+              onClick={colorMode.toggleColorMode} 
+              color="inherit"
+            >
               {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
           </Box>
 
           {/* Mobile Icons */}
-          <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1 }}>
-            <IconButton onClick={() => setSearchOpen(true)} sx={{ color: theme.palette.primary.main }}>
-              <SearchIcon />
+          <Box 
+            sx={{ 
+              display: { xs: 'flex', md: 'none' }, 
+              alignItems: 'center', 
+              gap: { xs: 0.5, sm: 1 },
+              ml: 'auto',
+            }}
+          >
+            <IconButton 
+              onClick={() => setSearchOpen(true)} 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 44,
+                minHeight: 44,
+                p: 1,
+              }}
+            >
+              <SearchIcon fontSize="small" />
             </IconButton>
-            <IconButton size="large" aria-label="cart" onClick={() => navigate('/cart')} sx={{ color: theme.palette.primary.main }}>
+            <IconButton 
+              size="large" 
+              aria-label="cart" 
+              onClick={() => navigate('/cart')} 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 44,
+                minHeight: 44,
+                p: 1,
+              }}
+            >
               <Badge badgeContent={cartCount} color="secondary">
-                <ShoppingCartIcon />
+                <ShoppingCartIcon fontSize="small" />
               </Badge>
             </IconButton>
-            <IconButton size="large" sx={{ color: theme.palette.primary.main }} onClick={handleAccountMenuOpen}>
-              <AccountCircle fontSize="large" />
+            <IconButton 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 44,
+                minHeight: 44,
+                p: 1,
+              }} 
+              onClick={handleAccountMenuOpen}
+            >
+              <AccountCircle fontSize="small" />
             </IconButton>
             {/* Dark mode toggle */}
-            <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            <IconButton 
+              sx={{ 
+                minWidth: 44,
+                minHeight: 44,
+                p: 1,
+              }} 
+              onClick={colorMode.toggleColorMode} 
+              color="inherit"
+            >
+              {theme.palette.mode === 'dark' ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
             </IconButton>
-            <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: theme.palette.primary.main }}>
-              <MenuIcon />
+            <IconButton 
+              onClick={() => setDrawerOpen(true)} 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 44,
+                minHeight: 44,
+                p: 1,
+              }}
+            >
+              <MenuIcon fontSize="small" />
             </IconButton>
           </Box>
         </Toolbar>
 
-        {/* Mobile Drawer */}
-        <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-          <Box sx={{ width: 260, p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <IconButton onClick={() => setDrawerOpen(false)}>
+        {/* Enhanced Mobile Drawer */}
+        <Drawer 
+          anchor="left" 
+          open={drawerOpen} 
+          onClose={() => setDrawerOpen(false)}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: { xs: '100vw', sm: 320 },
+              maxWidth: '100vw',
+            },
+          }}
+        >
+          <Box 
+            sx={{ 
+              width: '100%', 
+              p: { xs: 2, sm: 3 }, 
+              height: '100%', 
+              display: 'flex', 
+              flexDirection: 'column',
+              overflow: 'auto',
+            }}
+          >
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" color="primary" fontWeight={700}>
+                Menu
+              </Typography>
+              <IconButton 
+                onClick={() => setDrawerOpen(false)}
+                sx={{
+                  minWidth: 44,
+                  minHeight: 44,
+                }}
+              >
                 <CloseIcon />
               </IconButton>
             </Box>
-            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+            
+            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
               {/* Cart Link */}
               <motion.div
                 initial={{ x: -40, opacity: 0 }}
@@ -530,118 +727,162 @@ const Header: React.FC = () => {
                     color: location.pathname === '/cart' ? theme.palette.primary.main : theme.palette.text.secondary,
                     fontWeight: 600,
                     fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                    fontSize: 18,
+                    fontSize: { xs: 16, sm: 18 },
                     justifyContent: 'flex-start',
                     width: '100%',
                     textTransform: 'none',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 1,
+                    gap: 1.5,
+                    minHeight: 48,
+                    px: 2,
+                    py: 1.5,
+                    borderRadius: 1,
+                    '&:hover': {
+                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                    },
                   }}
                 >
-                  <ShoppingCartIcon sx={{ color: theme.palette.primary.main, fontSize: 22, mr: 1 }} />
+                  <ShoppingCartIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
                   Cart ({cartCount})
                 </Button>
               </motion.div>
               
               {navLinks.map((link, idx) => {
                 const hasDropdown = !!link.dropdown;
+                const isDropdownOpen = mobileDropdownOpen[link.label];
                 return (
                   <motion.div
                     key={link.label}
                     initial={{ x: -40, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.05 * idx, type: 'spring', stiffness: 300, damping: 24 }}
+                    transition={{ delay: 0.05 * (idx + 1), type: 'spring', stiffness: 300, damping: 24 }}
                   >
-                    <Button
-                      component={link.to ? NavLink : 'button'}
-                      to={link.to}
-                      onClick={hasDropdown
-                        ? () => setMobileDropdownOpen((prev) => ({ ...prev, [link.label]: !prev[link.label] }))
-                        : () => setDrawerOpen(false)
-                      }
-                      sx={{
-                        color: location.pathname === link.to ? theme.palette.primary.main : theme.palette.text.secondary,
-                        fontWeight: 600,
-                        fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                        fontSize: 18,
-                        justifyContent: 'flex-start',
-                        width: '100%',
-                        textTransform: 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1,
-                      }}
-                      aria-haspopup={hasDropdown ? 'true' : undefined}
-                      aria-expanded={mobileDropdownOpen[link.label] ? 'true' : undefined}
-                    >
-                      {/* Icon for dropdowns */}
-                      {link.label === 'Engineering Solutions' && (
-                        <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: 22, mr: 1 }} />
-                      )}
-                      {link.label === 'Nursery' && (
-                        <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: 22, mr: 1 }} />
-                      )}
-                      {link.label === 'Farm store' && (
-                        <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main, fontSize: 22, mr: 1 }} />
-                      )}
-                      {link.label}
+                    <Box>
+                      <Button
+                        component={link.to && !hasDropdown ? NavLink : 'button'}
+                        to={link.to && !hasDropdown ? link.to : undefined}
+                        onClick={() => {
+                          if (hasDropdown) {
+                            setMobileDropdownOpen(prev => ({
+                              ...prev,
+                              [link.label]: !prev[link.label]
+                            }));
+                          } else if (link.to) {
+                            setDrawerOpen(false);
+                          }
+                        }}
+                        sx={{
+                          color: (link.to && location.pathname === link.to) ? theme.palette.primary.main : theme.palette.text.secondary,
+                          fontWeight: 600,
+                          fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                          fontSize: { xs: 16, sm: 18 },
+                          justifyContent: 'flex-start',
+                          width: '100%',
+                          textTransform: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1.5,
+                          minHeight: 48,
+                          px: 2,
+                          py: 1.5,
+                          borderRadius: 1,
+                          '&:hover': {
+                            backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                          },
+                        }}
+                      >
+                        {/* Icons for main nav items */}
+                        {link.label === 'Engineering Solutions' && (
+                          <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                        )}
+                        {link.label === 'Nursery' && (
+                          <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                        )}
+                        {link.label === 'Farm store' && (
+                          <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                        )}
+                        
+                        <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
+                          {link.label}
+                        </Typography>
+                        
+                        {hasDropdown && (
+                          <motion.div
+                            animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Typography sx={{ color: theme.palette.primary.main }}>▼</Typography>
+                          </motion.div>
+                        )}
+                      </Button>
+                      
+                      {/* Mobile Dropdown */}
                       {hasDropdown && (
-                        <span style={{ marginLeft: 8, fontSize: 18, transition: 'transform 0.2s', transform: mobileDropdownOpen[link.label] ? 'rotate(90deg)' : 'rotate(0deg)' }}>▶</span>
-                      )}
-                    </Button>
-                    {hasDropdown && (
-                      <Collapse in={!!mobileDropdownOpen[link.label]} timeout="auto" unmountOnExit>
-                        <Box sx={{ pl: 3, py: 0.5, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                          {link.dropdown.map((item, index) => {
-                            const IconComponent = (item as any).icon;
-                            return (
-                              <motion.div
-                                key={item.to}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                              >
-                                <Button
-                                  component={NavLink}
-                                  to={item.to}
-                                  onClick={() => setDrawerOpen(false)}
-                                  sx={{
-                                    color: theme.palette.text.primary,
-                                    fontWeight: 500,
-                                    fontSize: 16,
-                                    borderRadius: 0.5,
-                                    justifyContent: 'flex-start',
-                                    textTransform: 'none',
-                                    px: 2,
-                                    py: 0.5,
-                                    width: '100%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 1.5,
-                                    '&:hover': {
-                                      background: alpha(theme.palette.primary.main, 0.08),
-                                    },
-                                    transition: 'background 0.2s',
-                                  }}
+                        <Collapse in={isDropdownOpen}>
+                          <Box sx={{ pl: 3, pt: 1 }}>
+                            {link.dropdown.map((item, itemIdx) => {
+                              const IconComponent = (item as any).icon;
+                              return (
+                                <motion.div
+                                  key={item.to}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: itemIdx * 0.05 }}
                                 >
-                                  {IconComponent && (
-                                    <IconComponent
+                                  <Button
+                                    component={NavLink}
+                                    to={item.to}
+                                    onClick={() => setDrawerOpen(false)}
+                                    sx={{
+                                      color: theme.palette.text.secondary,
+                                      fontWeight: 500,
+                                      fontSize: { xs: 14, sm: 16 },
+                                      justifyContent: 'flex-start',
+                                      width: '100%',
+                                      textTransform: 'none',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: 1.5,
+                                      minHeight: 44,
+                                      px: 2,
+                                      py: 1,
+                                      borderRadius: 1,
+                                      '&:hover': {
+                                        backgroundColor: alpha(theme.palette.primary.main, 0.04),
+                                        transform: 'translateX(4px)',
+                                      },
+                                      transition: 'all 0.2s ease-in-out',
+                                    }}
+                                  >
+                                    {IconComponent && (
+                                      <IconComponent
+                                        sx={{
+                                          color: theme.palette.primary.main,
+                                          fontSize: 18,
+                                          flexShrink: 0
+                                        }}
+                                      />
+                                    )}
+                                    <Typography
+                                      variant="body2"
                                       sx={{
-                                        color: theme.palette.primary.main,
-                                        fontSize: 20,
-                                        flexShrink: 0
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                        textAlign: 'left',
                                       }}
-                                    />
-                                  )}
-                                  {item.label}
-                                </Button>
-                              </motion.div>
-                            );
-                          })}
-                        </Box>
-                      </Collapse>
-                    )}
+                                    >
+                                      {item.label}
+                                    </Typography>
+                                  </Button>
+                                </motion.div>
+                              );
+                            })}
+                          </Box>
+                        </Collapse>
+                      )}
+                    </Box>
                   </motion.div>
                 );
               })}
@@ -650,36 +891,50 @@ const Header: React.FC = () => {
         </Drawer>
 
         {/* Mobile Search Dialog */}
-        <Dialog open={searchOpen} onClose={() => setSearchOpen(false)} fullWidth maxWidth="xs">
-          <Box component="form" onSubmit={handleSearchSubmit} sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Search sx={{ flex: 1 }}>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                autoFocus
-                placeholder="Search products..."
-                inputProps={{ 'aria-label': 'search' }}
-                sx={{ width: '100%' }}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={handleSearchKeyPress}
-              />
-            </Search>
-            <IconButton onClick={() => setSearchOpen(false)}>
+        <Dialog
+          open={searchOpen}
+          onClose={() => setSearchOpen(false)}
+          fullScreen
+          sx={{
+            '& .MuiDialog-paper': {
+              background: theme.palette.background.default,
+            },
+          }}
+        >
+          <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton 
+              onClick={() => setSearchOpen(false)}
+              sx={{
+                minWidth: 44,
+                minHeight: 44,
+              }}
+            >
               <CloseIcon />
             </IconButton>
+            <Box 
+              component="form" 
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSearch(searchQuery);
+              }}
+              sx={{ flex: 1 }}
+            >
+              <InputBase
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                autoFocus
+                sx={{
+                  width: '100%',
+                  fontSize: '1.1rem',
+                  p: 1,
+                  border: `2px solid ${theme.palette.primary.main}`,
+                  borderRadius: 1,
+                  minHeight: 48,
+                }}
+              />
+            </Box>
           </Box>
-        </Dialog>
-
-        <Snackbar
-          open={!!authError}
-          autoHideDuration={3000}
-          onClose={() => setAuthError(null)}
-          message={authError}
-        />
-        <Dialog open={showAuthModal} onClose={() => setShowAuthModal(false)} maxWidth="xs" fullWidth>
-          <LoginRegister />
         </Dialog>
 
         {/* Account Menu */}
@@ -687,36 +942,47 @@ const Header: React.FC = () => {
           anchorEl={accountMenuAnchor}
           open={Boolean(accountMenuAnchor)}
           onClose={handleAccountMenuClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          PaperProps={{
-            sx: {
-              mt: 1,
-              minWidth: 200,
-              boxShadow: theme.shadows[8],
+          sx={{
+            '& .MuiPaper-root': {
+              minWidth: 180,
               borderRadius: 2,
-            }
+              mt: 1,
+            },
           }}
         >
-          <MenuItem onClick={handleProfileClick} sx={{ py: 1.5 }}>
+          <MenuItem 
+            onClick={handleProfileClick}
+            sx={{ 
+              minHeight: 48,
+              gap: 1.5,
+            }}
+          >
             <ListItemIcon>
               <PersonIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText primary="My Profile" />
+            <ListItemText>Profile</ListItemText>
           </MenuItem>
-          <MenuItem onClick={handleLogout} sx={{ py: 1.5 }}>
+          <MenuItem 
+            onClick={handleLogout}
+            sx={{ 
+              minHeight: 48,
+              gap: 1.5,
+            }}
+          >
             <ListItemIcon>
               <LogoutIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText primary="Logout" />
+            <ListItemText>Logout</ListItemText>
           </MenuItem>
         </Menu>
+
+        {/* Error Snackbar */}
+        <Snackbar
+          open={!!authError}
+          autoHideDuration={6000}
+          onClose={() => setAuthError(null)}
+          message={authError}
+        />
       </AppBar>
     </Box>
   );

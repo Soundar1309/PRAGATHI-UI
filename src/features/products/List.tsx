@@ -13,7 +13,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
-import Grow from '@mui/material/Grow';
 import { FeatureHighlightsRow } from './FeatureHighlightsRow';
 import { useAddToCart } from '../../hooks/useAddToCart';
 
@@ -56,9 +55,18 @@ export function ProductList() {
     setShowAllProducts(false);
   }, [selectedCategory]);
 
-  // Get products to display (first 4 or all)
-  const displayedProducts = showAllProducts ? mappedProducts : mappedProducts.slice(0, 4);
-  const hasMoreProducts = mappedProducts.length > 4;
+  // Responsive product display counts
+  const getInitialProductCount = () => {
+    // Show different amounts based on screen size
+    const screenWidth = window.innerWidth;
+    if (screenWidth < 480) return 2; // Mobile: show 2 initially
+    if (screenWidth < 768) return 4; // Tablet: show 4 initially
+    return 4; // Desktop: show 4 initially
+  };
+
+  const [initialProductCount] = useState(getInitialProductCount());
+  const displayedProducts = showAllProducts ? mappedProducts : mappedProducts.slice(0, initialProductCount);
+  const hasMoreProducts = mappedProducts.length > initialProductCount;
 
   // Map backend categories to names, add 'All'
   const categories = [
@@ -93,67 +101,118 @@ export function ProductList() {
   useEffect(() => {
     const el = scrollRef.current;
     if (el) {
-      setShowLeft(el.scrollLeft > 0);
-      setShowRight(el.scrollWidth > el.clientWidth + el.scrollLeft);
+      const checkScroll = () => {
+        setShowLeft(el.scrollLeft > 0);
+        setShowRight(el.scrollWidth > el.clientWidth + el.scrollLeft + 1); // +1 for rounding
+      };
+      checkScroll();
+      el.addEventListener('scroll', checkScroll);
+      return () => el.removeEventListener('scroll', checkScroll);
     }
   }, [categoriesData, selectedCategory]);
 
   const handleScroll = (dir: 'left' | 'right') => {
     const el = scrollRef.current;
     if (el) {
-      const scrollAmount = 200; // px
+      const scrollAmount = window.innerWidth < 768 ? 150 : 200; // Smaller scroll on mobile
       el.scrollBy({ left: dir === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 1400, mx: 'auto', px: { xs: 1, sm: 2, md: 4 }, py: 4 }}>
-      {/* Banner Image Below Toolbar */}
+    <Box 
+      sx={{ 
+        maxWidth: '100%',
+        width: '100%',
+        mx: 'auto', 
+        px: { xs: 0, sm: 1, md: 2 }, 
+        py: { xs: 2, sm: 3, md: 4 },
+        // Prevent horizontal scroll
+        overflowX: 'hidden',
+      }}
+    >
+      {/* Responsive Banner Image */}
       <Box
         sx={{
           width: '100%',
-          height: { xs: 140, sm: 200, md: 460 },
+          height: { xs: 120, sm: 160, md: 200, lg: 300, xl: 360 },
           backgroundImage: `linear-gradient(0deg,rgba(31,41,55,0.32),rgba(31,41,55,0.10)), url('/assets/banner_img.png')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
+          borderRadius: { xs: 2, sm: 3, md: 4 },
           boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
-          mb: 2,
+          mb: { xs: 2, sm: 3, md: 4 },
+          // Ensure banner doesn't cause horizontal scroll
+          maxWidth: '100%',
+          overflow: 'hidden',
         }}
         role="img"
         aria-label="Assorted millets in clay pots"
       />
+      
       <FeatureHighlightsRow />
-      <Typography variant="h4" fontWeight={700} color="primary" mb={3} textAlign="center" sx={{ fontFamily: `'Playfair Display', 'Merriweather', serif` }}>
+      
+      <Typography 
+        variant="h4" 
+        fontWeight={700} 
+        color="primary" 
+        mb={{ xs: 2, sm: 3 }}
+        textAlign="center" 
+        sx={{ 
+          fontFamily: `'Playfair Display', 'Merriweather', serif`,
+          fontSize: { xs: '1.5rem', sm: '2rem', md: '2.25rem' },
+          px: { xs: 2, sm: 0 },
+        }}
+      >
         Your Favorites | All in One Place
       </Typography>
-      <div className="tamil-motif" style={{ margin: '0 auto 2rem auto' }} />
-      {/* Category Filter */}
-      <Box sx={{ position: 'relative', mb: 2 }}>
+      
+      <div 
+        className="tamil-motif" 
+        style={{ 
+          margin: '0 auto 1rem auto',
+          maxWidth: '90%',
+        }} 
+      />
+      
+      {/* Responsive Category Filter */}
+      <Box sx={{ position: 'relative', mb: { xs: 2, sm: 3 }, px: { xs: 1, sm: 0 } }}>
         {showLeft && (
           <IconButton
             onClick={() => handleScroll('left')}
-            sx={{ position: 'absolute', left: 0, top: '50%', zIndex: 1, transform: 'translateY(-50%)' }}
+            sx={{ 
+              position: 'absolute', 
+              left: { xs: -8, sm: 0 }, 
+              top: '50%', 
+              zIndex: 2, 
+              transform: 'translateY(-50%)',
+              backgroundColor: 'background.paper',
+              boxShadow: 2,
+              minWidth: { xs: 36, sm: 44 },
+              minHeight: { xs: 36, sm: 44 },
+              '&:hover': {
+                backgroundColor: 'primary.main',
+                color: 'white',
+              },
+            }}
           >
-            <ChevronLeftIcon />
+            <ChevronLeftIcon fontSize={window.innerWidth < 768 ? 'small' : 'medium'} />
           </IconButton>
         )}
+        
         <Box
           ref={scrollRef}
           sx={{
             display: 'flex',
             overflowX: 'auto',
-            gap: 1,
-            px: 5, // space for arrows
-            scrollbarWidth: 'none', // hide scrollbar on Firefox
-            '&::-webkit-scrollbar': { display: 'none' }, // hide scrollbar on Chrome
-          }}
-          onScroll={() => {
-            const el = scrollRef.current;
-            if (el) {
-              setShowLeft(el.scrollLeft > 0);
-              setShowRight(el.scrollWidth > el.clientWidth + el.scrollLeft);
-            }
+            gap: { xs: 1, sm: 1.5 },
+            px: { xs: 4, sm: 5 }, // Space for arrows
+            py: 1,
+            scrollbarWidth: 'none', // Hide scrollbar on Firefox
+            '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar on Chrome
+            // Smooth scrolling
+            scrollBehavior: 'smooth',
           }}
         >
           {categories.map((cat) => (
@@ -161,14 +220,16 @@ export function ProductList() {
               key={cat.id || cat.name}
               onClick={() => handleCategoryClick(cat)}
               sx={{
-                fontWeight: 800, // bolder
-                fontSize: 17, // slightly larger
+                fontWeight: 800,
+                fontSize: { xs: 14, sm: 16, md: 17 },
                 letterSpacing: 0.5,
                 borderRadius: 99,
-                px: 3,
-                py: 1,
-                minWidth: 120,
+                px: { xs: 2, sm: 2.5, md: 3 },
+                py: { xs: 0.75, sm: 1, md: 1.25 },
+                minWidth: { xs: 80, sm: 100, md: 120 },
+                minHeight: { xs: 36, sm: 40, md: 44 },
                 whiteSpace: 'nowrap',
+                flexShrink: 0, // Prevent shrinking
                 boxShadow: selectedCategory.id === cat.id ? 3 : 0,
                 bgcolor: selectedCategory.id === cat.id ? 'primary.main' : 'grey.100',
                 color: selectedCategory.id === cat.id ? 'common.white' : 'primary.dark',
@@ -186,6 +247,7 @@ export function ProductList() {
                   textShadow: selectedCategory.id === cat.id
                     ? '0 2px 12px rgba(0,0,0,0.22)'
                     : '0 1px 4px rgba(0,0,0,0.10)',
+                  transform: { xs: 'none', sm: 'translateY(-2px)' }, // No transform on mobile
                 },
                 '&:active': {
                   transform: 'scale(0.96)',
@@ -196,32 +258,110 @@ export function ProductList() {
             </Button>
           ))}
         </Box>
+        
         {showRight && (
           <IconButton
             onClick={() => handleScroll('right')}
-            sx={{ position: 'absolute', right: 0, top: '50%', zIndex: 1, transform: 'translateY(-50%)' }}
+            sx={{ 
+              position: 'absolute', 
+              right: { xs: -8, sm: 0 }, 
+              top: '50%', 
+              zIndex: 2, 
+              transform: 'translateY(-50%)',
+              backgroundColor: 'background.paper',
+              boxShadow: 2,
+              minWidth: { xs: 36, sm: 44 },
+              minHeight: { xs: 36, sm: 44 },
+              '&:hover': {
+                backgroundColor: 'primary.main',
+                color: 'white',
+              },
+            }}
           >
-            <ChevronRightIcon />
+            <ChevronRightIcon fontSize={window.innerWidth < 768 ? 'small' : 'medium'} />
           </IconButton>
         )}
       </Box>
-      {/* Product Grid */}
+      
+      {/* Responsive Product Grid */}
       {isLoading ? (
-        <Typography variant="h6" color="text.secondary" textAlign="center" sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
-          Loading {selectedCategory.name !== 'All' ? `${selectedCategory.name} products` : 'products'}...
-        </Typography>
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            minHeight: { xs: 200, sm: 250, md: 300 },
+            px: 2,
+          }}
+        >
+          <Typography 
+            variant="h6" 
+            color="text.secondary" 
+            textAlign="center" 
+            sx={{ 
+              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+              fontSize: { xs: '1rem', sm: '1.25rem' },
+            }}
+          >
+            Loading {selectedCategory.name !== 'All' ? `${selectedCategory.name} products` : 'products'}...
+          </Typography>
+        </Box>
       ) : isError ? (
-        <Typography variant="h6" color="error" textAlign="center" sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
-          Failed to load products.
-        </Typography>
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            minHeight: { xs: 200, sm: 250, md: 300 },
+            px: 2,
+          }}
+        >
+          <Typography 
+            variant="h6" 
+            color="error" 
+            textAlign="center" 
+            sx={{ 
+              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+              fontSize: { xs: '1rem', sm: '1.25rem' },
+            }}
+          >
+            Failed to load products.
+          </Typography>
+        </Box>
       ) : mappedProducts.length > 0 ? (
         <Box>
-          {/* Initial 4 Products */}
-          <Grid container spacing={3} sx={{ mt: 2 }}>
-            {displayedProducts.map((product) => (
-              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product.id}>
-                <Fade in timeout={300}>
-                  <Box onClick={() => handleProductClick(product.id)} sx={{ cursor: 'pointer', height: '100%' }}>
+          {/* Initial Products - Responsive Grid */}
+          <Grid 
+            container 
+            spacing={{ xs: 2, sm: 2.5, md: 3 }} 
+            sx={{ 
+              mt: { xs: 1, sm: 2 },
+              px: { xs: 1, sm: 0 },
+            }}
+          >
+            {displayedProducts.map((product, index) => (
+              <Grid 
+                key={product.id}
+                size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                <Fade in timeout={300 + (index * 100)}>
+                  <Box 
+                    onClick={() => handleProductClick(product.id)} 
+                    sx={{ 
+                      cursor: 'pointer', 
+                      height: '100%',
+                      width: '100%',
+                      maxWidth: { xs: '100%', sm: 350, md: 320 },
+                      transition: 'transform 0.2s ease-in-out',
+                      '&:hover': {
+                        transform: { xs: 'none', sm: 'scale(1.02)' }, // No hover effect on mobile
+                      },
+                    }}
+                  >
                     <ProductCard
                       product={product}
                       onAddToCart={() => handleAddToCartClick(product)}
@@ -235,26 +375,52 @@ export function ProductList() {
           {/* Additional Products (Collapsible) */}
           {hasMoreProducts && (
             <Collapse in={showAllProducts} timeout={400} easing="ease-in-out">
-        <Grid container spacing={3} sx={{ mt: 2 }}>
-                {mappedProducts.slice(4).map((product, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product.id}>
+              <Grid 
+                container 
+                spacing={{ xs: 2, sm: 2.5, md: 3 }} 
+                sx={{ 
+                  mt: { xs: 1, sm: 2 },
+                  px: { xs: 1, sm: 0 },
+                }}
+              >
+                {mappedProducts.slice(initialProductCount).map((product, index) => (
+                  <Grid 
+                    size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
+                    key={product.id}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
                     <Fade in timeout={300 + (index * 50)}>
-              <Box onClick={() => handleProductClick(product.id)} sx={{ cursor: 'pointer', height: '100%' }}>
-                <ProductCard
-                  product={product}
-                  onAddToCart={() => handleAddToCartClick(product)}
-                />
-              </Box>
+                      <Box 
+                        onClick={() => handleProductClick(product.id)} 
+                        sx={{ 
+                          cursor: 'pointer', 
+                          height: '100%',
+                          width: '100%',
+                          maxWidth: { xs: '100%', sm: 350, md: 320 },
+                          transition: 'transform 0.2s ease-in-out',
+                          '&:hover': {
+                            transform: { xs: 'none', sm: 'scale(1.02)' }, // No hover effect on mobile
+                          },
+                        }}
+                      >
+                        <ProductCard
+                          product={product}
+                          onAddToCart={() => handleAddToCartClick(product)}
+                        />
+                      </Box>
                     </Fade>
-            </Grid>
-          ))}
-        </Grid>
+                  </Grid>
+                ))}
+              </Grid>
             </Collapse>
           )}
 
-          {/* See More/Less Button */}
+          {/* Responsive See More/Less Button */}
           {hasMoreProducts && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 3, sm: 4 }, px: 2 }}>
               <Button
                 onClick={handleToggleProducts}
                 variant="outlined"
@@ -262,64 +428,103 @@ export function ProductList() {
                 endIcon={showAllProducts ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 sx={{
                   borderRadius: 99,
-                  px: 4,
-                  py: 1.5,
+                  px: { xs: 3, sm: 4 },
+                  py: { xs: 1.25, sm: 1.5 },
                   fontWeight: 600,
-                  fontSize: 16,
+                  fontSize: { xs: 14, sm: 16 },
                   letterSpacing: 0.5,
                   borderWidth: 2,
                   borderColor: 'primary.main',
                   color: 'primary.main',
+                  minHeight: { xs: 44, sm: 48 }, // Touch-friendly
+                  minWidth: { xs: 160, sm: 200 },
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   '&:hover': {
                     backgroundColor: 'primary.main',
                     color: 'white',
                     borderColor: 'primary.main',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+                    transform: { xs: 'none', sm: 'translateY(-2px)' },
+                    boxShadow: { xs: 2, sm: '0 8px 25px rgba(0,0,0,0.15)' },
                   },
                   '&:active': {
-                    transform: 'translateY(0)',
+                    transform: 'scale(0.98)',
                     boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
                   },
                 }}
               >
-                {showAllProducts ? 'See Less' : `See More (${mappedProducts.length - 4} more)`}
+                {showAllProducts 
+                  ? 'See Less' 
+                  : `See More${mappedProducts.length - initialProductCount > 0 ? ` (${mappedProducts.length - initialProductCount} more)` : ''}`
+                }
               </Button>
             </Box>
           )}
         </Box>
       ) : (
+        // Enhanced Empty State
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: 320,
-            height: '40vh',
-            width: '100%',
-            mt: 4,
+            minHeight: { xs: 250, sm: 320, md: 400 },
+            height: { xs: '30vh', sm: '35vh', md: '40vh' },
+            maxHeight: 500,
+            textAlign: 'center',
+            px: { xs: 2, sm: 3, md: 4 },
+            py: { xs: 3, sm: 4 },
           }}
         >
-          <Grow in timeout={500}>
-            <Box>
-              <SentimentDissatisfiedIcon sx={{ fontSize: 72, color: 'grey.400', mb: 2 }} />
-              <Typography
-                variant="h6"
-                color="text.secondary"
-                textAlign="center"
-                sx={{
-                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                  fontWeight: 600,
-                  fontSize: 22,
-                  letterSpacing: 0.5,
-                }}
-              >
-                No products found in {selectedCategory.name !== 'All' ? selectedCategory.name : 'this category'}.
-              </Typography>
-            </Box>
-          </Grow>
+          <SentimentDissatisfiedIcon 
+            sx={{ 
+              fontSize: { xs: 60, sm: 80, md: 100 }, 
+              color: 'text.secondary',
+              mb: { xs: 2, sm: 3 },
+            }} 
+          />
+          <Typography 
+            variant="h5" 
+            color="text.primary" 
+            gutterBottom
+            sx={{
+              fontFamily: `'Playfair Display', 'Merriweather', serif`,
+              fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' },
+              fontWeight: 600,
+              mb: 1,
+            }}
+          >
+            No Products Found
+          </Typography>
+          <Typography 
+            variant="body1" 
+            color="text.secondary"
+            sx={{
+              fontSize: { xs: '0.9rem', sm: '1rem' },
+              lineHeight: 1.6,
+              maxWidth: { xs: '100%', sm: 400 },
+            }}
+          >
+            {selectedCategory.name !== 'All' 
+              ? `No products available in "${selectedCategory.name}" category.`
+              : 'No products available at the moment.'
+            }
+          </Typography>
+          <Button
+            onClick={() => handleCategoryClick({ id: null, name: 'All' })}
+            variant="outlined"
+            sx={{
+              mt: { xs: 2, sm: 3 },
+              px: { xs: 3, sm: 4 },
+              py: { xs: 1, sm: 1.5 },
+              fontSize: { xs: '0.9rem', sm: '1rem' },
+              minHeight: { xs: 44, sm: 48 },
+              borderRadius: 2,
+              fontWeight: 600,
+            }}
+          >
+            View All Products
+          </Button>
         </Box>
       )}
 

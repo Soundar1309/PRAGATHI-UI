@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Link, Stack, IconButton, Button, InputBase, useTheme } from '@mui/material';
+import { Box, Typography, Link, Stack, IconButton, Button, InputBase, useTheme, Container, Grid } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -17,156 +17,608 @@ const Footer: React.FC = () => {
             sx={{
                 bgcolor: '#f8f0de', // Soft sand beige
                 color: '#222',
-                mt: 8,
-                pt: 6,
-                pb: 3,
-                px: { xs: 2, md: 8 },
+                mt: { xs: 4, sm: 6, md: 8 },
+                pt: { xs: 4, sm: 5, md: 6 },
+                pb: { xs: 2, sm: 3 },
                 fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                // Prevent horizontal scroll
+                width: '100%',
+                overflowX: 'hidden',
             }}
         >
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', md: 'row' },
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    gap: 6,
-                    mb: 4,
+            <Container 
+                maxWidth="xl" 
+                sx={{ 
+                    px: { xs: 2, sm: 3, md: 4, lg: 6 },
                 }}
             >
-                {/* Left: Logo, Address, Email, WhatsApp */}
-                <Box sx={{ flex: 1, minWidth: 260 }}>
-                    <img src="/logo.jpg" alt="Pragathi Natural Farms" style={{ height: 58, borderRadius: 8, background: theme.palette.background.paper, marginBottom: 12 }} />
-                    <Stack direction="row" alignItems="flex-start" spacing={1} sx={{ mb: 1 }}>
-                        <LocationOnIcon sx={{ color: theme.palette.primary.main, mt: '2px' }} />
-                        <Typography variant="body2">
-                            123, Organic Street, Chennai, India
-                        </Typography>
-                    </Stack>
-                    <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                        <EmailIcon sx={{ color: theme.palette.primary.main }} />
-                        <Typography variant="body2">hello@pragathifarms.com</Typography>
-                    </Stack>
-                    <Button
-                        variant="contained"
-                        startIcon={<WhatsAppIcon />}
-                        sx={{
-                            bgcolor: '#ffc107',
-                            color: '#222',
-                            fontWeight: 600,
-                            borderRadius: 2,
-                            textTransform: 'none',
-                            boxShadow: 'none',
-                            mt: 1,
-                            mb: 1,
-                            px: 2,
-                            py: 1,
-                            '&:hover': { bgcolor: '#ffb300' },
-                        }}
-                        href="https://wa.me/919876543210"
-                        target="_blank"
-                    >
-                        Click here to chat on WhatsApp
-                    </Button>
-                </Box>
+                <Grid 
+                    container 
+                    spacing={{ xs: 3, sm: 4, md: 6 }}
+                    sx={{ mb: { xs: 3, sm: 4 } }}
+                >
+                    {/* Left Column: Logo, Address, Contact */}
+                    <Grid size={{ xs: 12, sm: 12, md: 4, lg: 4 }}>
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            alignItems: { xs: 'center', md: 'flex-start' },
+                            textAlign: { xs: 'center', md: 'left' },
+                        }}>
+                            <img 
+                                src="/logo.jpg" 
+                                alt="Pragathi Natural Farms" 
+                                style={{ 
+                                    height: 'clamp(48px, 6vw, 58px)', 
+                                    borderRadius: 8, 
+                                    background: theme.palette.background.paper, 
+                                    marginBottom: 16,
+                                    maxWidth: '100%',
+                                }} 
+                            />
+                            
+                            <Stack 
+                                direction="row" 
+                                alignItems="flex-start" 
+                                spacing={1.5} 
+                                sx={{ 
+                                    mb: 2,
+                                    justifyContent: { xs: 'center', md: 'flex-start' },
+                                    maxWidth: '100%',
+                                }}
+                            >
+                                <LocationOnIcon 
+                                    sx={{ 
+                                        color: theme.palette.primary.main, 
+                                        mt: '2px',
+                                        fontSize: { xs: '1.2rem', sm: '1.5rem' },
+                                        flexShrink: 0,
+                                    }} 
+                                />
+                                <Typography 
+                                    variant="body2"
+                                    sx={{
+                                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                        lineHeight: 1.5,
+                                        wordBreak: 'break-word',
+                                    }}
+                                >
+                                    123, Organic Street, Chennai, India
+                                </Typography>
+                            </Stack>
+                            
+                            <Stack 
+                                direction="row" 
+                                alignItems="center" 
+                                spacing={1.5} 
+                                sx={{ 
+                                    mb: { xs: 2, sm: 3 },
+                                    justifyContent: { xs: 'center', md: 'flex-start' },
+                                }}
+                            >
+                                <EmailIcon 
+                                    sx={{ 
+                                        color: theme.palette.primary.main,
+                                        fontSize: { xs: '1.2rem', sm: '1.5rem' },
+                                        flexShrink: 0,
+                                    }} 
+                                />
+                                <Typography 
+                                    variant="body2"
+                                    sx={{
+                                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                        wordBreak: 'break-word',
+                                    }}
+                                >
+                                    hello@pragathifarms.com
+                                </Typography>
+                            </Stack>
+                            
+                            <Button
+                                variant="contained"
+                                startIcon={<WhatsAppIcon sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }} />}
+                                sx={{
+                                    bgcolor: '#ffc107',
+                                    color: '#222',
+                                    fontWeight: 600,
+                                    borderRadius: { xs: 2, sm: 2.5 },
+                                    textTransform: 'none',
+                                    boxShadow: 'none',
+                                    px: { xs: 2, sm: 3 },
+                                    py: { xs: 1, sm: 1.25 },
+                                    fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                                    minHeight: { xs: 40, sm: 44 }, // Touch-friendly
+                                    maxWidth: { xs: '100%', sm: 280 },
+                                    transition: 'all 0.2s ease-in-out',
+                                    '&:hover': { 
+                                        bgcolor: '#ffb300',
+                                        transform: { xs: 'none', sm: 'translateY(-2px)' },
+                                        boxShadow: { xs: 1, sm: 3 },
+                                    },
+                                    '&:active': {
+                                        transform: 'scale(0.98)',
+                                    },
+                                }}
+                                href="https://wa.me/919876543210"
+                                target="_blank"
+                            >
+                                Click here to chat on WhatsApp
+                            </Button>
+                        </Box>
+                    </Grid>
 
+                    {/* Center Columns: Quick Links & Policy */}
+                    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
+                        <Grid container spacing={{ xs: 2, sm: 3 }}>
+                            {/* Quick Links */}
+                            <Grid size={{ xs: 12, sm: 12, md: 6 }}>
+                                <Box sx={{ 
+                                    textAlign: { xs: 'center', md: 'left' },
+                                    mb: { xs: 3, md: 0 },
+                                }}>
+                                    <Typography 
+                                        variant="subtitle1" 
+                                        fontWeight={700} 
+                                        mb={2}
+                                        sx={{
+                                            fontSize: { xs: '1rem', sm: '1.1rem' },
+                                            color: theme.palette.primary.main,
+                                        }}
+                                    >
+                                        Quick Links
+                                    </Typography>
+                                    <Stack spacing={{ xs: 1.5, sm: 2 }}>
+                                        <Link 
+                                            href="/about" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            About Us
+                                        </Link>
+                                        <Link 
+                                            href="/benefits" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Benefits Of Pragathi Farms
+                                        </Link>
+                                        <Link 
+                                            href="/testimonials" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Testimonials
+                                        </Link>
+                                        <Link 
+                                            href="/blog" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Blog
+                                        </Link>
+                                        <Link 
+                                            href="/journey" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Our Journey
+                                        </Link>
+                                        <Link 
+                                            href="/contact" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Contact Us
+                                        </Link>
+                                        <Link 
+                                            href="/terms" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Terms & Conditions
+                                        </Link>
+                                        <Link 
+                                            href="/delivery" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Delivery Information
+                                        </Link>
+                                    </Stack>
+                                </Box>
+                            </Grid>
+                            
+                            {/* Our Policy & My Account */}
+                            <Grid size={{ xs: 12, sm: 12, md: 6 }}>
+                                <Box sx={{ 
+                                    textAlign: { xs: 'center', md: 'left' },
+                                }}>
+                                    <Typography 
+                                        variant="subtitle1" 
+                                        fontWeight={700} 
+                                        mb={2}
+                                        sx={{
+                                            fontSize: { xs: '1rem', sm: '1.1rem' },
+                                            color: theme.palette.primary.main,
+                                        }}
+                                    >
+                                        Our Policy
+                                    </Typography>
+                                    <Stack spacing={{ xs: 1.5, sm: 2 }} sx={{ mb: { xs: 3, sm: 4 } }}>
+                                        <Link 
+                                            href="/privacy" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Privacy Policy
+                                        </Link>
+                                        <Link 
+                                            href="/shipping" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Shipping Policy
+                                        </Link>
+                                        <Link 
+                                            href="/returns" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Return Policy
+                                        </Link>
+                                        <Link 
+                                            href="/refund" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Refund Policy
+                                        </Link>
+                                    </Stack>
+                                    
+                                    {/* My Account */}
+                                    <Typography 
+                                        variant="subtitle1" 
+                                        fontWeight={700} 
+                                        mb={2}
+                                        sx={{
+                                            fontSize: { xs: '1rem', sm: '1.1rem' },
+                                            color: theme.palette.primary.main,
+                                        }}
+                                    >
+                                        My Account
+                                    </Typography>
+                                    <Stack spacing={{ xs: 1.5, sm: 2 }}>
+                                        <Link 
+                                            href="/profile" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            My Profile
+                                        </Link>
+                                        <Link 
+                                            href="/orders" 
+                                            color="inherit" 
+                                            underline="hover"
+                                            sx={{
+                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                                transition: 'color 0.2s ease-in-out',
+                                                '&:hover': {
+                                                    color: theme.palette.primary.main,
+                                                },
+                                            }}
+                                        >
+                                            Order History
+                                        </Link>
+                                    </Stack>
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </Grid>
 
-                {/* Center: Quick Links & Policy */}
+                    {/* Right Column: Social, Newsletter */}
+                    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
+                        <Box sx={{ 
+                            textAlign: { xs: 'center', md: 'left' },
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: { xs: 'center', md: 'flex-start' },
+                        }}>
+                            <Typography 
+                                variant="subtitle1" 
+                                fontWeight={700} 
+                                mb={2}
+                                sx={{
+                                    fontSize: { xs: '1rem', sm: '1.1rem' },
+                                    color: theme.palette.primary.main,
+                                }}
+                            >
+                                Follow us on
+                            </Typography>
+                            
+                            <Stack 
+                                direction="row" 
+                                spacing={{ xs: 1, sm: 1.5 }} 
+                                sx={{ 
+                                    mb: { xs: 3, sm: 4 },
+                                    justifyContent: { xs: 'center', md: 'flex-start' },
+                                    flexWrap: 'wrap',
+                                }}
+                            >
+                                <IconButton 
+                                    color="inherit" 
+                                    href="https://facebook.com" 
+                                    target="_blank"
+                                    sx={{
+                                        minWidth: { xs: 40, sm: 48 },
+                                        minHeight: { xs: 40, sm: 48 },
+                                        bgcolor: 'rgba(255,255,255,0.1)',
+                                        transition: 'all 0.2s ease-in-out',
+                                        '&:hover': {
+                                            bgcolor: theme.palette.primary.main,
+                                            color: 'white',
+                                            transform: { xs: 'none', sm: 'translateY(-2px)' },
+                                        },
+                                    }}
+                                >
+                                    <FacebookIcon fontSize="small" />
+                                </IconButton>
+                                <IconButton 
+                                    color="inherit" 
+                                    href="https://instagram.com" 
+                                    target="_blank"
+                                    sx={{
+                                        minWidth: { xs: 40, sm: 48 },
+                                        minHeight: { xs: 40, sm: 48 },
+                                        bgcolor: 'rgba(255,255,255,0.1)',
+                                        transition: 'all 0.2s ease-in-out',
+                                        '&:hover': {
+                                            bgcolor: theme.palette.primary.main,
+                                            color: 'white',
+                                            transform: { xs: 'none', sm: 'translateY(-2px)' },
+                                        },
+                                    }}
+                                >
+                                    <InstagramIcon fontSize="small" />
+                                </IconButton>
+                                <IconButton 
+                                    color="inherit" 
+                                    href="https://youtube.com" 
+                                    target="_blank"
+                                    sx={{
+                                        minWidth: { xs: 40, sm: 48 },
+                                        minHeight: { xs: 40, sm: 48 },
+                                        bgcolor: 'rgba(255,255,255,0.1)',
+                                        transition: 'all 0.2s ease-in-out',
+                                        '&:hover': {
+                                            bgcolor: theme.palette.primary.main,
+                                            color: 'white',
+                                            transform: { xs: 'none', sm: 'translateY(-2px)' },
+                                        },
+                                    }}
+                                >
+                                    <YouTubeIcon fontSize="small" />
+                                </IconButton>
+                                <IconButton 
+                                    color="inherit" 
+                                    href="https://linkedin.com" 
+                                    target="_blank"
+                                    sx={{
+                                        minWidth: { xs: 40, sm: 48 },
+                                        minHeight: { xs: 40, sm: 48 },
+                                        bgcolor: 'rgba(255,255,255,0.1)',
+                                        transition: 'all 0.2s ease-in-out',
+                                        '&:hover': {
+                                            bgcolor: theme.palette.primary.main,
+                                            color: 'white',
+                                            transform: { xs: 'none', sm: 'translateY(-2px)' },
+                                        },
+                                    }}
+                                >
+                                    <LinkedInIcon fontSize="small" />
+                                </IconButton>
+                            </Stack>
+                            
+                            <Typography 
+                                variant="subtitle1" 
+                                fontWeight={700} 
+                                mb={2}
+                                sx={{
+                                    fontSize: { xs: '1rem', sm: '1.1rem' },
+                                    color: theme.palette.primary.main,
+                                }}
+                            >
+                                Subscribe for Newsletter
+                            </Typography>
+                            
+                            <Box
+                                component="form"
+                                onSubmit={e => { e.preventDefault(); /* handle subscribe */ }}
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: { xs: 'column', sm: 'row' },
+                                    alignItems: { xs: 'stretch', sm: 'center' },
+                                    bgcolor: '#fff',
+                                    borderRadius: 2,
+                                    border: '1px solid #e0e0e0',
+                                    p: 0.5,
+                                    width: '100%',
+                                    maxWidth: { xs: '100%', sm: 320 },
+                                    gap: { xs: 1, sm: 0 },
+                                }}
+                            >
+                                <InputBase
+                                    placeholder="Your email"
+                                    sx={{ 
+                                        ml: { xs: 1, sm: 1 }, 
+                                        flex: 1, 
+                                        fontSize: { xs: '0.9rem', sm: '0.95rem' },
+                                        minHeight: { xs: 40, sm: 44 },
+                                    }}
+                                    inputProps={{ 'aria-label': 'subscribe newsletter' }}
+                                />
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{
+                                        ml: { xs: 0, sm: 1 },
+                                        borderRadius: { xs: 1.5, sm: 1 },
+                                        bgcolor: theme.palette.secondary.main,
+                                        color: theme.palette.getContrastText(theme.palette.secondary.main),
+                                        fontWeight: 600,
+                                        px: { xs: 3, sm: 2 },
+                                        py: { xs: 1.25, sm: 1 },
+                                        boxShadow: 'none',
+                                        textTransform: 'none',
+                                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                        minHeight: { xs: 40, sm: 44 },
+                                        transition: 'all 0.2s ease-in-out',
+                                        '&:hover': { 
+                                            bgcolor: theme.palette.secondary.dark,
+                                            transform: { xs: 'none', sm: 'translateY(-1px)' },
+                                        },
+                                        '&:active': {
+                                            transform: 'scale(0.98)',
+                                        },
+                                    }}
+                                >
+                                    Submit
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Grid>
+                </Grid>
+
+                {/* Copyright */}
                 <Box
                     sx={{
-                        flex: 2,
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        gap: 6,
-                        flexWrap: 'wrap',
-                        minWidth: 260,
+                        borderTop: '1px solid rgba(0,0,0,0.1)',
+                        pt: { xs: 2, sm: 3 },
+                        mt: { xs: 2, sm: 3 },
                     }}
                 >
-                    {/* Quick Links */}
-                    <Box sx={{ minWidth: 180, mr: { xs: 0, md: 4 } }}>
-                        <Typography variant="subtitle1" fontWeight={700} mb={1}>Quick Links</Typography>
-                        <Stack spacing={2}>
-                            <Link href="/about" color="inherit" underline="hover">About Us</Link>
-                            <Link href="/benefits" color="inherit" underline="hover">Benefits Of Pragathi Farms</Link>
-                            <Link href="/testimonials" color="inherit" underline="hover">Testimonials</Link>
-                            <Link href="/blog" color="inherit" underline="hover">Blog</Link>
-                            <Link href="/journey" color="inherit" underline="hover">Our Journey</Link>
-                            <Link href="/contact" color="inherit" underline="hover">Contact Us</Link>
-                            <Link href="/terms" color="inherit" underline="hover">Terms & Conditions</Link>
-                            <Link href="/delivery" color="inherit" underline="hover">Delivery Information</Link>
-                        </Stack>
-                    </Box>
-                    {/* Our Policy */}
-                    <Box sx={{ minWidth: 180, mr: { xs: 0, md: 4 } }}>
-                        <Typography variant="subtitle1" fontWeight={700} mb={1}>Our Policy</Typography>
-                        <Stack spacing={2}>
-                            <Link href="/privacy" color="inherit" underline="hover">Privacy Policy</Link>
-                            <Link href="/shipping" color="inherit" underline="hover">Shipping Policy</Link>
-                            <Link href="/returns" color="inherit" underline="hover">Return Policy</Link>
-                            <Link href="/refund" color="inherit" underline="hover">Refund Policy</Link>
-                        </Stack>
-                        {/* My Account */}
-                        <Typography variant="subtitle1" fontWeight={700} mt={3} mb={1}>My Account</Typography>
-                        <Stack spacing={2}>
-                            <Link href="/profile" color="inherit" underline="hover">My Profile</Link>
-                            <Link href="/orders" color="inherit" underline="hover">Order History</Link>
-                        </Stack>
-                    </Box>
-                </Box>
-
-                {/* Right: Social, Newsletter */}
-                <Box sx={{ flex: 1, minWidth: 260 }}>
-                    <Typography variant="subtitle1" fontWeight={700} mb={1}>Follow us on</Typography>
-                    <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-                        <IconButton color="inherit" href="https://facebook.com" target="_blank"><FacebookIcon /></IconButton>
-                        <IconButton color="inherit" href="https://instagram.com" target="_blank"><InstagramIcon /></IconButton>
-                        <IconButton color="inherit" href="https://youtube.com" target="_blank"><YouTubeIcon /></IconButton>
-                        <IconButton color="inherit" href="https://linkedin.com" target="_blank"><LinkedInIcon /></IconButton>
-                    </Stack>
-                    <Typography variant="subtitle1" fontWeight={700} mb={1}>Subscribe for Newsletter</Typography>
-                    <Box
-                        component="form"
-                        onSubmit={e => { e.preventDefault(); /* handle subscribe */ }}
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            bgcolor: '#fff',
-                            borderRadius: 5,
-                            border: '1px solid #e0e0e0',
-                            p: 0.5,
-                            maxWidth: 300,
+                    <Typography 
+                        variant="body2" 
+                        align="center" 
+                        sx={{ 
+                            opacity: 0.8,
+                            fontWeight: 500,
+                            fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                            lineHeight: 1.5,
+                            px: 2,
                         }}
                     >
-                        <InputBase
-                            placeholder="Your email"
-                            sx={{ ml: 1, flex: 1, fontSize: 15 }}
-                            inputProps={{ 'aria-label': 'subscribe newsletter' }}
-                        />
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            sx={{
-                                ml: 1,
-                                borderRadius: 4,
-                                bgcolor: theme.palette.secondary.main,
-                                color: theme.palette.getContrastText(theme.palette.secondary.main),
-                                fontWeight: 600,
-                                px: 2,
-                                boxShadow: 'none',
-                                textTransform: 'none',
-                                '&:hover': { bgcolor: theme.palette.secondary.dark },
+                        © {new Date().getFullYear()} Pragathi Natural Farms. Powered by{' '}
+                        <Link 
+                            href="https://thinkbyai.in/" 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            sx={{ 
+                                fontWeight: 700, 
+                                color: theme.palette.primary.main,
+                                textDecoration: 'none',
+                                transition: 'color 0.2s ease-in-out',
+                                '&:hover': {
+                                    color: theme.palette.secondary.main,
+                                    textDecoration: 'underline',
+                                },
                             }}
                         >
-                            Submit
-                        </Button>
-                    </Box>
+                            thinkbyai.in
+                        </Link>
+                    </Typography>
                 </Box>
-            </Box>
-
-            <Typography variant="body2" align="center" sx={{ opacity: 0.8, mt: 2, fontWeight: 500 }}>
-                © {new Date().getFullYear()} Pragathi Natural Farms. Powered by <Box component="span" sx={{ fontWeight: 700, display: 'inline' }}>thinkbyai.in</Box>
-            </Typography>
+            </Container>
         </Box>
     );
 };

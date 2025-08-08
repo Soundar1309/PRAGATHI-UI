@@ -17,93 +17,357 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* Responsive font sizes using clamp for fluid typography */
+  --font-size-base: clamp(0.875rem, 2.5vw, 1rem);
+  --font-size-sm: clamp(0.8125rem, 2.25vw, 0.95rem);
+  --font-size-lg: clamp(1rem, 3vw, 1.125rem);
+  --font-size-xl: clamp(1.125rem, 3.5vw, 1.25rem);
+  
+  /* Responsive spacing using clamp */
+  --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
+  --spacing-sm: clamp(0.5rem, 2vw, 1rem);
+  --spacing-md: clamp(1rem, 3vw, 1.5rem);
+  --spacing-lg: clamp(1.5rem, 4vw, 2rem);
+  --spacing-xl: clamp(2rem, 5vw, 3rem);
+}
+
+/* Enhanced responsive reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  /* Smooth scrolling for better UX */
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  min-width: 320px;
+  padding: 0;
+  min-width: 320px; /* Minimum viewport width */
   min-height: 100vh;
   background-color: var(--brand-beige);
-  background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* Soft natural texture */
+  background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
   background-blend-mode: lighten;
   color: var(--brand-dark);
+  /* Prevent horizontal overflow */
+  overflow-x: hidden;
+  /* Enhanced text rendering on mobile */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Improved touch scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
+/* Responsive container for preventing horizontal scroll */
+.container-responsive {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  padding-left: var(--spacing-sm);
+  padding-right: var(--spacing-sm);
+}
+
+/* Enhanced responsive typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Playfair Display', 'Merriweather', serif;
   color: var(--brand-green);
   margin-top: 0;
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.2;
+  /* Prevent text overflow */
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Responsive text sizing */
+h1 {
+  font-size: clamp(1.75rem, 5vw, 2.8rem);
+  margin-bottom: var(--spacing-md);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+  margin-bottom: var(--spacing-md);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 4vw, 1.7rem);
+  margin-bottom: var(--spacing-sm);
+}
+
+h4 {
+  font-size: clamp(1.125rem, 3.5vw, 1.3rem);
+  margin-bottom: var(--spacing-sm);
+}
+
+h5 {
+  font-size: clamp(1rem, 3vw, 1.1rem);
+  margin-bottom: var(--spacing-xs);
+}
+
+h6 {
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+  margin-bottom: var(--spacing-xs);
 }
 
 p, span, li, input, textarea, select, button {
   font-family: 'Inter', 'Lato', 'Manrope', system-ui, sans-serif;
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  word-wrap: break-word;
 }
 
+/* Enhanced responsive links */
 a {
   color: var(--brand-green);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color 0.2s ease-in-out;
+  /* Ensure links are touch-friendly */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
+
 a:hover {
   color: var(--brand-gold);
 }
 
-/* Tamil-inspired border motif (decorative, can be used as a class) */
+/* Enhanced focus styles for accessibility */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--brand-green);
+  outline-offset: 2px;
+}
+
+/* Responsive Tamil motif */
 .tamil-motif {
   width: 100%;
-  height: 16px;
+  height: clamp(12px, 2vw, 16px);
   background-image: var(--motif-svg);
   background-repeat: repeat-x;
   background-position: center;
+  margin: var(--spacing-sm) 0;
 }
 
-/* Card and paper backgrounds */
+/* Enhanced responsive cards */
 .card, .MuiPaper-root {
   background: var(--brand-paper);
-  border-radius: 20px;
+  border-radius: clamp(12px, 2vw, 20px);
   box-shadow: 0px 4px 24px rgba(166, 124, 82, 0.08);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  /* Prevent overflow */
+  overflow: hidden;
+  /* Smooth transitions */
+  transition: all 0.2s ease-in-out;
 }
 
-/* Button styles */
+.card:hover, .MuiPaper-root:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 8px 32px rgba(166, 124, 82, 0.12);
+}
+
+/* Enhanced responsive buttons */
 button, .MuiButton-root {
-  border-radius: 12px;
+  border-radius: clamp(8px, 1.5vw, 12px);
   font-weight: 600;
+  font-size: var(--font-size-base);
   background-color: var(--brand-green);
   color: #fff;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: all 0.2s ease-in-out;
+  /* Touch-friendly sizing */
+  min-height: 44px;
+  min-width: 44px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  cursor: pointer;
+  /* Prevent text selection */
+  user-select: none;
+  /* Remove tap highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
 }
+
 button:hover, .MuiButton-root:hover {
   background-color: var(--brand-brown);
   color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(166, 124, 82, 0.2);
 }
 
-/* Dark mode */
+button:active, .MuiButton-root:active {
+  transform: translateY(0);
+}
+
+/* Responsive images and media */
+img, video, canvas, iframe {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Responsive tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  table {
+    display: table;
+    white-space: normal;
+  }
+}
+
+/* Responsive forms */
+input, textarea, select {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid #ddd;
+  border-radius: clamp(6px, 1vw, 8px);
+  font-size: var(--font-size-base);
+  transition: border-color 0.2s ease-in-out;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 2px rgba(64, 99, 67, 0.1);
+}
+
+/* Responsive utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+/* Responsive spacing utilities */
+.m-0 { margin: 0; }
+.m-1 { margin: var(--spacing-xs); }
+.m-2 { margin: var(--spacing-sm); }
+.m-3 { margin: var(--spacing-md); }
+.m-4 { margin: var(--spacing-lg); }
+
+.p-0 { padding: 0; }
+.p-1 { padding: var(--spacing-xs); }
+.p-2 { padding: var(--spacing-sm); }
+.p-3 { padding: var(--spacing-md); }
+.p-4 { padding: var(--spacing-lg); }
+
+/* Dark mode with enhanced responsiveness */
 @media (prefers-color-scheme: dark) {
   :root {
     color: #f5f0e1;
     background-color: #222;
   }
+  
   body {
     background-color: #222;
     background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
     color: #f5f0e1;
   }
+  
   h1, h2, h3, h4, h5, h6 {
     color: var(--brand-gold);
   }
+  
   .card, .MuiPaper-root {
     background: #2d2d2d;
     box-shadow: 0px 4px 24px rgba(203, 178, 106, 0.10);
   }
+  
   button, .MuiButton-root {
     background-color: var(--brand-gold);
     color: #222;
   }
+  
   button:hover, .MuiButton-root:hover {
     background-color: var(--brand-green);
     color: #fff;
   }
+  
   .tamil-motif {
     background-image: url('data:image/svg+xml;utf8,<svg width="100%25" height="16" viewBox="0 0 100 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8 Q10 0 20 8 T40 8 T60 8 T80 8 T100 8" stroke="%23CBB26A" stroke-width="2" fill="none"/></svg>');
+  }
+}
+
+/* Enhanced mobile-specific optimizations */
+@media (max-width: 479px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .container-responsive {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Ensure buttons are always touch-friendly */
+  button, .MuiButton-root {
+    min-height: 48px;
+    min-width: 48px;
+    font-size: 0.9rem;
+  }
+  
+  /* Improve text readability on small screens */
+  p, span, li {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 480px) and (max-width: 767px) {
+  .container-responsive {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1024px) {
+  .container-responsive {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Print styles for better accessibility */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+  
+  .tamil-motif {
+    display: none;
   }
 }
