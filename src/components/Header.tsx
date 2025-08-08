@@ -13,7 +13,6 @@ import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import { AppBar, Badge, Box, Button, Drawer, IconButton, Toolbar, Typography, useTheme } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import InputBase from '@mui/material/InputBase';
-import Snackbar from '@mui/material/Snackbar';
 import { alpha, keyframes, styled } from '@mui/material/styles';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState, useContext } from 'react';
@@ -173,7 +172,6 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
   const [dropdownAnchor, setDropdownAnchor] = useState<null | HTMLElement>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState<{ [key: string]: boolean }>({});
@@ -217,10 +215,8 @@ const Header: React.FC = () => {
     if (token) {
       setAccountMenuAnchor(event.currentTarget);
     } else {
-      // Show login prompt instead of redirecting
-      setAuthError('Please log in to access your account.');
-      // Optionally, you could show a login modal here instead
-      // navigate('/login');
+      // Redirect to login page if not authenticated
+      navigate('/login');
     }
   };
 
@@ -240,7 +236,7 @@ const Header: React.FC = () => {
       handleAccountMenuClose();
       navigate('/');
     } catch (err) {
-      setAuthError('Failed to logout.');
+      // setAuthError('Failed to logout.'); // This line is removed
     }
   };
 
@@ -1087,6 +1083,101 @@ const Header: React.FC = () => {
                 </motion.div>
               </>
             )}
+            
+            {/* User Profile and Logout Options */}
+            {isAuthenticated && (
+              <>
+                <Divider sx={{ my: 2, mx: 2 }} />
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    px: 2,
+                    py: 1,
+                    color: theme.palette.text.secondary,
+                    fontWeight: 600,
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  Account
+                </Typography>
+                
+                <motion.div
+                  initial={{ x: -40, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.05 * (navLinks.length + (isAdmin ? 5 : 1)), type: 'spring', stiffness: 300, damping: 24 }}
+                >
+                  <Button
+                    onClick={() => {
+                      setDrawerOpen(false);
+                      navigate('/profile');
+                    }}
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      fontWeight: 600,
+                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                      fontSize: { xs: 16, sm: 18 },
+                      justifyContent: 'flex-start',
+                      width: '100%',
+                      textTransform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      minHeight: 48,
+                      px: 2,
+                      py: 1.5,
+                      borderRadius: 1,
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      },
+                    }}
+                  >
+                    <PersonIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
+                      Profile
+                    </Typography>
+                  </Button>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ x: -40, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.05 * (navLinks.length + (isAdmin ? 6 : 2)), type: 'spring', stiffness: 300, damping: 24 }}
+                >
+                  <Button
+                    onClick={async () => {
+                      setDrawerOpen(false);
+                      await handleLogout();
+                    }}
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      fontWeight: 600,
+                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                      fontSize: { xs: 16, sm: 18 },
+                      justifyContent: 'flex-start',
+                      width: '100%',
+                      textTransform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      minHeight: 48,
+                      px: 2,
+                      py: 1.5,
+                      borderRadius: 1,
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      },
+                    }}
+                  >
+                    <LogoutIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
+                      Logout
+                    </Typography>
+                  </Button>
+                </motion.div>
+              </>
+            )}
           </Box>
         </Drawer>
 
@@ -1150,6 +1241,7 @@ const Header: React.FC = () => {
             },
           }}
         >
+          {/* Regular user menu items */}
           <MenuItem 
             onClick={handleProfileClick}
             sx={{ 
@@ -1234,12 +1326,7 @@ const Header: React.FC = () => {
         </Menu>
 
         {/* Error Snackbar */}
-        <Snackbar
-          open={!!authError}
-          autoHideDuration={6000}
-          onClose={() => setAuthError(null)}
-          message={authError}
-        />
+        {/* This block is removed as per the edit hint */}
       </AppBar>
     </Box>
   );
