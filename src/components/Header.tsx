@@ -30,9 +30,14 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AddIcon from '@mui/icons-material/Add';
+import CategoryIcon from '@mui/icons-material/Category';
+import Divider from '@mui/material/Divider';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import { ColorModeContext } from '../main';
 import { useGetCartQuery } from '../features/cart/api';
 import { useLogoutMutation } from '../features/auth/api';
+import { useUserRole } from '../hooks/useUserRole';
 
 //-----------------------------------------------------------------------------------------------------------------------------
 
@@ -178,6 +183,7 @@ const Header: React.FC = () => {
   const { data: cartData } = useGetCartQuery(undefined, { skip: !localStorage.getItem('jwt') });
   const cartCount = cartData?.item_count || 0;
   const [logout] = useLogoutMutation();
+  const { role } = useUserRole();
 
   const handleFarmStoreClick = () => {
     // If clicking the main "Farm Store" button, navigate to all products
@@ -231,6 +237,26 @@ const Header: React.FC = () => {
     } catch (err) {
       setAuthError('Failed to logout.');
     }
+  };
+
+  const handleCreateProduct = () => {
+    handleAccountMenuClose();
+    navigate('/admin/products/new');
+  };
+
+  const handleCreateCategory = () => {
+    handleAccountMenuClose();
+    navigate('/admin/categories/new');
+  };
+
+  const handleManageCategories = () => {
+    handleAccountMenuClose();
+    navigate('/admin/categories');
+  };
+
+  const handleManageProducts = () => {
+    handleAccountMenuClose();
+    navigate('/admin/products');
   };
 
   return (
@@ -887,6 +913,175 @@ const Header: React.FC = () => {
                 );
               })}
             </Box>
+            
+            {/* Admin-specific mobile menu items */}
+            {role === 'admin' && (
+              <>
+                <Divider sx={{ my: 2, mx: 2 }} />
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    px: 2,
+                    py: 1,
+                    color: theme.palette.text.secondary,
+                    fontWeight: 600,
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: 0.5,
+                  }}
+                >
+                  Admin Actions
+                </Typography>
+                
+                <motion.div
+                  initial={{ x: -40, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.05 * (navLinks.length + 1), type: 'spring', stiffness: 300, damping: 24 }}
+                >
+                  <Button
+                    onClick={() => {
+                      setDrawerOpen(false);
+                      navigate('/admin/products/new');
+                    }}
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      fontWeight: 600,
+                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                      fontSize: { xs: 16, sm: 18 },
+                      justifyContent: 'flex-start',
+                      width: '100%',
+                      textTransform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      minHeight: 48,
+                      px: 2,
+                      py: 1.5,
+                      borderRadius: 1,
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      },
+                    }}
+                  >
+                    <AddIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
+                      Create Product
+                    </Typography>
+                  </Button>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ x: -40, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.05 * (navLinks.length + 2), type: 'spring', stiffness: 300, damping: 24 }}
+                >
+                  <Button
+                    onClick={() => {
+                      setDrawerOpen(false);
+                      navigate('/admin/categories/new');
+                    }}
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      fontWeight: 600,
+                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                      fontSize: { xs: 16, sm: 18 },
+                      justifyContent: 'flex-start',
+                      width: '100%',
+                      textTransform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      minHeight: 48,
+                      px: 2,
+                      py: 1.5,
+                      borderRadius: 1,
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      },
+                    }}
+                  >
+                    <CategoryIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
+                      Create Category
+                    </Typography>
+                  </Button>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ x: -40, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.05 * (navLinks.length + 3), type: 'spring', stiffness: 300, damping: 24 }}
+                >
+                  <Button
+                    onClick={() => {
+                      setDrawerOpen(false);
+                      navigate('/admin/products');
+                    }}
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      fontWeight: 600,
+                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                      fontSize: { xs: 16, sm: 18 },
+                      justifyContent: 'flex-start',
+                      width: '100%',
+                      textTransform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      minHeight: 48,
+                      px: 2,
+                      py: 1.5,
+                      borderRadius: 1,
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      },
+                    }}
+                  >
+                    <ListAltIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
+                      Manage Products
+                    </Typography>
+                  </Button>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ x: -40, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.05 * (navLinks.length + 4), type: 'spring', stiffness: 300, damping: 24 }}
+                >
+                  <Button
+                    onClick={() => {
+                      setDrawerOpen(false);
+                      navigate('/admin/categories');
+                    }}
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      fontWeight: 600,
+                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                      fontSize: { xs: 16, sm: 18 },
+                      justifyContent: 'flex-start',
+                      width: '100%',
+                      textTransform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      minHeight: 48,
+                      px: 2,
+                      py: 1.5,
+                      borderRadius: 1,
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      },
+                    }}
+                  >
+                    <ListAltIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
+                      Manage Categories
+                    </Typography>
+                  </Button>
+                </motion.div>
+              </>
+            )}
           </Box>
         </Drawer>
 
@@ -944,7 +1139,7 @@ const Header: React.FC = () => {
           onClose={handleAccountMenuClose}
           sx={{
             '& .MuiPaper-root': {
-              minWidth: 180,
+              minWidth: 200,
               borderRadius: 2,
               mt: 1,
             },
@@ -962,6 +1157,63 @@ const Header: React.FC = () => {
             </ListItemIcon>
             <ListItemText>Profile</ListItemText>
           </MenuItem>
+          
+          {/* Admin-specific menu items */}
+          {role === 'admin' && (
+            <>
+              <Divider sx={{ my: 1 }} />
+              <MenuItem 
+                onClick={handleCreateProduct}
+                sx={{ 
+                  minHeight: 48,
+                  gap: 1.5,
+                }}
+              >
+                <ListItemIcon>
+                  <AddIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Create Product</ListItemText>
+              </MenuItem>
+              <MenuItem 
+                onClick={handleCreateCategory}
+                sx={{ 
+                  minHeight: 48,
+                  gap: 1.5,
+                }}
+              >
+                <ListItemIcon>
+                  <CategoryIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Create Category</ListItemText>
+              </MenuItem>
+              <MenuItem 
+                onClick={handleManageProducts}
+                sx={{ 
+                  minHeight: 48,
+                  gap: 1.5,
+                }}
+              >
+                <ListItemIcon>
+                  <ListAltIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Manage Products</ListItemText>
+              </MenuItem>
+              <MenuItem 
+                onClick={handleManageCategories}
+                sx={{ 
+                  minHeight: 48,
+                  gap: 1.5,
+                }}
+              >
+                <ListItemIcon>
+                  <ListAltIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Manage Categories</ListItemText>
+              </MenuItem>
+              <Divider sx={{ my: 1 }} />
+            </>
+          )}
+          
           <MenuItem 
             onClick={handleLogout}
             sx={{ 
