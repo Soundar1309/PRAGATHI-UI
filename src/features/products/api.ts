@@ -1,5 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from '../../api/baseQueryWithAuth';
+import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+// Base query for public endpoints (no authentication required)
+const baseQueryPublic = fetchBaseQuery({
+  baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+});
 
 export type Category = { id: number; name: string; description?: string };
 
@@ -7,6 +13,7 @@ export const productsApi = createApi({
   reducerPath: 'productsApi',
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
+    // Public endpoints (no authentication required)
     getProducts: builder.query<any[], void>({
       query: () => '/products/products/',
       transformResponse: (response: { results: any[] }) => response.results || [],
@@ -22,7 +29,15 @@ export const productsApi = createApi({
     getProduct: builder.query<any, number>({
       query: (id) => `/products/products/${id}/`,
     }),
-    // Admin only:
+    getCategories: builder.query<Category[], void>({
+      query: () => '/products/categories/',
+      transformResponse: (response: { results: Category[] }) => response.results || [],
+    }),
+    getCategory: builder.query<Category, number>({
+      query: (id) => `/products/categories/${id}/`,
+    }),
+    
+    // Admin endpoints (authentication required)
     createProduct: builder.mutation<any, Partial<any>>({
       query: (body) => ({
         url: '/products/products/',
@@ -42,15 +57,6 @@ export const productsApi = createApi({
         url: `/products/products/${id}/`,
         method: 'DELETE',
       }),
-    }),
-    // --- Updated to return full category objects ---
-    getCategories: builder.query<Category[], void>({
-      query: () => '/products/categories/',
-      transformResponse: (response: { results: Category[] }) => response.results || [],
-    }),
-    // Category endpoints
-    getCategory: builder.query<Category, number>({
-      query: (id) => `/products/categories/${id}/`,
     }),
     createCategory: builder.mutation<Category, { name: string; description?: string }>({
       query: (body) => ({

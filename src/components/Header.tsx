@@ -180,10 +180,12 @@ const Header: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [accountMenuAnchor, setAccountMenuAnchor] = useState<null | HTMLElement>(null);
   const colorMode = useContext(ColorModeContext);
-  const { data: cartData } = useGetCartQuery(undefined, { skip: !localStorage.getItem('jwt') });
+  const { role } = useUserRole();
+  const isAuthenticated = !!localStorage.getItem('jwt');
+  const isAdmin = isAuthenticated && role === 'admin';
+  const { data: cartData } = useGetCartQuery(undefined, { skip: !isAuthenticated });
   const cartCount = cartData?.item_count || 0;
   const [logout] = useLogoutMutation();
-  const { role } = useUserRole();
 
   const handleFarmStoreClick = () => {
     // If clicking the main "Farm Store" button, navigate to all products
@@ -215,7 +217,10 @@ const Header: React.FC = () => {
     if (token) {
       setAccountMenuAnchor(event.currentTarget);
     } else {
-      navigate('/login');
+      // Show login prompt instead of redirecting
+      setAuthError('Please log in to access your account.');
+      // Optionally, you could show a login modal here instead
+      // navigate('/login');
     }
   };
 
@@ -233,7 +238,7 @@ const Header: React.FC = () => {
       await logout().unwrap();
       localStorage.removeItem('jwt');
       handleAccountMenuClose();
-      navigate('/login');
+      navigate('/');
     } catch (err) {
       setAuthError('Failed to logout.');
     }
@@ -915,7 +920,7 @@ const Header: React.FC = () => {
             </Box>
             
             {/* Admin-specific mobile menu items */}
-            {role === 'admin' && (
+            {isAdmin && (
               <>
                 <Divider sx={{ my: 2, mx: 2 }} />
                 <Typography
@@ -1159,7 +1164,7 @@ const Header: React.FC = () => {
           </MenuItem>
           
           {/* Admin-specific menu items */}
-          {role === 'admin' && (
+          {isAdmin && (
             <>
               <Divider sx={{ my: 1 }} />
               <MenuItem 

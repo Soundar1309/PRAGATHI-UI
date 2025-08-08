@@ -113,10 +113,10 @@ export function ProductForm({ productId }: ProductFormProps) {
         formData.append('image', selectedImage);
       }
 
-      if (productId) {
+    if (productId) {
         await updateProduct({ id: productId, data: formData }).unwrap();
         enqueueSnackbar('Product updated successfully!', { variant: 'success' });
-      } else {
+    } else {
         await createProduct(formData).unwrap();
         enqueueSnackbar('Product created successfully!', { variant: 'success' });
       }
@@ -396,7 +396,7 @@ export function ProductForm({ productId }: ProductFormProps) {
           </Box>
         </Paper>
       </Container>
-    </Box>
+      </Box>
   );
 }
 
@@ -416,4 +416,4 @@ const Container: React.FC<{ children: React.ReactNode; maxWidth?: 'xs' | 'sm' | 
   >
     {children}
   </Box>
-);
+  );

@@ -15,8 +15,8 @@ export const baseQueryWithReauth: typeof baseQueryWithAuth = async (args, api, e
   const result = await baseQueryWithAuth(args, api, extraOptions);
   if (result.error && result.error.status === 401) {
     localStorage.removeItem('jwt');
-    // Optionally, redirect to login:
-    window.location.href = '/login';
+    // Don't automatically redirect to login - let components handle authentication as needed
+    // window.location.href = '/login';
   }
   return result;
 };
