@@ -17,9 +17,9 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      // Token expired, redirect to login
+      // Token expired, remove from storage but don't redirect automatically
       localStorage.removeItem('jwt');
-      window.location.href = '/login';
+      // window.location.href = '/login';
     }
     return Promise.reject(error);
   }
