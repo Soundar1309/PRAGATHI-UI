@@ -392,12 +392,22 @@ const Header: React.FC = () => {
             {navLinks.map((link) => {
               const isActive = link.to && location.pathname === link.to;
               const hasDropdown = !!link.dropdown;
+              console.log(`Link: ${link.label}, hasDropdown: ${hasDropdown}, openDropdown: ${openDropdown}`);
               return (
                 <Box
                   key={link.label}
                   sx={{ position: 'relative', px: 1 }}
-                  onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => { setDropdownAnchor(e.currentTarget); setOpenDropdown(link.label); } : undefined}
-                  onMouseLeave={hasDropdown ? (_e: React.MouseEvent<HTMLElement>) => setOpenDropdown(null) : undefined}
+                  onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => { 
+                    setDropdownAnchor(e.currentTarget); 
+                    setOpenDropdown(link.label); 
+                  } : undefined}
+                  onMouseLeave={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
+                    // Only close if we're not moving to the dropdown menu
+                    const relatedTarget = e.relatedTarget as HTMLElement;
+                    if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
+                      setOpenDropdown(null);
+                    }
+                  } : undefined}
                 >
                   <Button
                     component={link.to ? NavLink : 'button'}
@@ -467,8 +477,8 @@ const Header: React.FC = () => {
                       anchorEl={dropdownAnchor}
                       placement="bottom-start"
                       transition
-                      disablePortal
-                      style={{ zIndex: theme.zIndex.appBar + 10 }}
+                      disablePortal={false}
+                      style={{ zIndex: theme.zIndex.appBar + 100 }}
                     >
                       {(props) => (
                         <React.Fragment>
@@ -480,7 +490,7 @@ const Header: React.FC = () => {
                                 minWidth: 280,
                                 maxWidth: 320,
                                 borderRadius: 2,
-                                boxShadow: '0 8px 32px rgba(64,99,67,0.12)',
+                                boxShadow: '0 8px 32px rgba(64, 99, 67, 0.68)',
                                 p: 1,
                                 maxHeight: 400,
                                 overflow: 'auto',
