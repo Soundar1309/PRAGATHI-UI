@@ -1,11 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { baseQueryWithReauth } from '../../api/baseQueryWithAuth';
-import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+// import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // Base query for public endpoints (no authentication required)
-const baseQueryPublic = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
-});
+// const baseQueryPublic = fetchBaseQuery({
+//   baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+// });
 
 export type Category = { id: number; name: string; description?: string };
 
