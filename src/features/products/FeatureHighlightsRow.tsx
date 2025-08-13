@@ -6,6 +6,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PeopleIcon from "@mui/icons-material/People";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import { motion } from "framer-motion";
+import { alpha } from "@mui/material/styles";
 
 const features = [
   {
@@ -38,7 +39,7 @@ const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.12,
+      staggerChildren: 0.15,
     },
   },
 };
@@ -60,7 +61,7 @@ export function FeatureHighlightsRow() {
     <Box
       sx={{
         width: "100%",
-        bgcolor: theme.palette.background.paper,
+        background: `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`,
         py: 2,
         px: { xs: 1, sm: 4 },
         display: "flex",
@@ -73,6 +74,8 @@ export function FeatureHighlightsRow() {
         mb: 4,
         scrollbarWidth: "none",
         "&::-webkit-scrollbar": { display: "none" },
+        borderTop: `1px solid ${theme.palette.primary.main ? alpha(theme.palette.primary.main, 0.15) : 'rgba(0,0,0,0.1)'}`,
+        borderBottom: `1px solid ${theme.palette.primary.main ? alpha(theme.palette.primary.main, 0.15) : 'rgba(0,0,0,0.1)'}`,
       }}
       component={motion.div}
       variants={containerVariants}
@@ -81,16 +84,17 @@ export function FeatureHighlightsRow() {
     >
       <Stack
         direction="row"
-        spacing={2}
         sx={{
           width: "100%",
           flexWrap: "nowrap",
           overflowX: "auto",
           scrollbarWidth: "none",
           "&::-webkit-scrollbar": { display: "none" },
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        {features.map((feature, _) => {
+        {features.map((feature, _index) => {
           const Icon = feature.icon;
           return (
             <motion.div
@@ -99,7 +103,11 @@ export function FeatureHighlightsRow() {
               whileHover="hover"
               initial="rest"
               animate="rest"
-              style={{ display: "flex" }}
+              style={{ 
+                display: "flex",
+                flex: 1,
+                justifyContent: "center",
+              }}
             >
               <Box
                 sx={{
@@ -111,8 +119,9 @@ export function FeatureHighlightsRow() {
                   borderRadius: 99,
                   bgcolor: theme.palette.background.paper,
                   boxShadow: "0 2px 8px rgba(44,70,57,0.10)",
-                  mx: 1,
-                  minWidth: 150,
+                  mx: 0.5,
+                  minWidth: { xs: 120, sm: 150, md: 180 },
+                  maxWidth: { xs: 140, sm: 180, md: 220 },
                   cursor: "pointer",
                   transition: "box-shadow 0.25s, transform 0.25s",
                   "&:hover": {
