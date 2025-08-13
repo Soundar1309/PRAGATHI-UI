@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+import { alpha } from '@mui/material/styles';
 
 // Logo-inspired colors
 export const brandColors = {
@@ -7,8 +8,26 @@ export const brandColors = {
   mint: '#4ecca3', // minty accent
   white: '#fff',
   surface: '#f7faf7', // very light greenish gray
-  darkBg: '#1a2e22', // deep green/charcoal for dark mode
-  darkPaper: '#223427', // dark card surface
+  // Updated dark theme colors - more suitable for nature app
+  darkBg: '#1a1a1a', // dark background for dark mode
+  darkPaper: '#2d2d2d', // dark paper for dark mode
+  // New header and footer colors
+  headerGradient: {
+    start: '#d4f7d4', // soft green start
+    end: '#f0fff0',   // soft green end
+  },
+  footerBg: '#d4f7d4', // match header start color
+  // Enhanced color palette
+  primaryLight: '#a8e6a8', // light primary for subtle effects
+  secondaryLight: '#c8f5c8', // light secondary
+  accentGreen: '#8bc34a', // additional green accent
+  warmBeige: '#f5f5dc', // warm beige for backgrounds
+  darkGreen: '#2e7d32', // dark green for dark mode
+  lightBeige: '#faf8f0', // light beige variant
+  // Dark theme alternatives - darker, nature-inspired
+  darkThemeBg: '#1a1a1a', // dark background
+  darkThemePaper: '#2d2d2d', // dark paper
+  darkThemeSurface: '#242424', // dark surface
 };
 
 // MUI expects exactly 25 shadow values (tuple type, first is 'none')
@@ -60,20 +79,44 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
     },
     palette: {
       mode,
-      primary: { main: brandColors.green },
-      secondary: { main: brandColors.lightGreen },
+      primary: { 
+        main: brandColors.green,
+        light: brandColors.primaryLight,
+        dark: brandColors.darkGreen,
+      },
+      secondary: { 
+        main: brandColors.lightGreen,
+        light: brandColors.secondaryLight,
+        dark: brandColors.accentGreen,
+      },
       background: {
-        default: mode === 'light' ? brandColors.white : brandColors.darkBg,
-        paper: mode === 'light' ? brandColors.surface : brandColors.darkPaper,
+        default: mode === 'light' ? brandColors.lightBeige : brandColors.darkThemeBg,
+        paper: mode === 'light' ? brandColors.warmBeige : brandColors.darkThemePaper,
       },
       text: {
-        primary: mode === 'light' ? '#222' : brandColors.surface,
-        secondary: mode === 'light' ? brandColors.green : brandColors.lightGreen,
+        primary: mode === 'light' ? '#222' : '#ffffff', // White text for dark mode
+        secondary: mode === 'light' ? brandColors.green : brandColors.lightGreen, // Lighter green for dark mode
       },
-      success: { main: brandColors.lightGreen },
-      warning: { main: '#fbc02d' },
-      error: { main: '#e57373' },
-      info: { main: brandColors.mint },
+      success: { 
+        main: brandColors.lightGreen,
+        light: brandColors.primaryLight,
+        dark: brandColors.darkGreen,
+      },
+      warning: { 
+        main: '#fbc02d',
+        light: '#fff59d',
+        dark: '#f57f17',
+      },
+      error: { 
+        main: '#e57373',
+        light: '#ffcdd2',
+        dark: '#c62828',
+      },
+      info: { 
+        main: brandColors.mint,
+        light: '#b2dfdb',
+        dark: '#00695c',
+      },
     },
     // Enhanced responsive typography
     typography: {
@@ -204,7 +247,7 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
         standard: 300, 
         complex: 375, 
         enteringScreen: 225, 
-        leavingScreen: 195 
+        leavingScreen: 195,
       },
       easing: {
         easeInOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
@@ -224,7 +267,7 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
             minHeight: 44, // Touch-friendly height
             padding: '8px 16px',
             boxShadow: '0px 2px 8px rgba(67, 176, 71, 0.08)',
-            transition: 'all 0.2s ease-in-out',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '@media (min-width:480px)': {
               padding: '10px 20px',
               minHeight: 48,
@@ -233,8 +276,8 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
               padding: '12px 24px',
             },
             '&:hover': {
-              backgroundColor: mode === 'light' ? brandColors.lightGreen : brandColors.green,
-              color: '#fff',
+              backgroundColor: mode === 'light' ? brandColors.lightGreen : brandColors.primaryLight,
+              color: '#fff', // Keep white text for good contrast
               boxShadow: '0px 4px 16px rgba(67, 176, 71, 0.12)',
               transform: 'translateY(-2px)',
             },
@@ -253,8 +296,8 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
         styleOverrides: {
           root: {
             borderRadius: 16,
-            background: mode === 'light' ? brandColors.surface : brandColors.darkPaper,
-            transition: 'all 0.2s ease-in-out',
+            background: mode === 'light' ? brandColors.warmBeige : brandColors.darkPaper,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '@media (max-width:480px)': {
               borderRadius: 12,
             },
@@ -267,7 +310,7 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
           root: {
             borderRadius: 20,
             boxShadow: '0px 4px 24px rgba(67, 176, 71, 0.08)',
-            transition: 'all 0.2s ease-in-out',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '@media (max-width:480px)': {
               borderRadius: 16,
             },
@@ -278,14 +321,16 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
           },
         },
       },
-      // Responsive AppBar
+      // Responsive AppBar with new header colors
       MuiAppBar: {
         styleOverrides: {
           root: {
-            background: 'transparent',
+            background: mode === 'light' 
+              ? `linear-gradient(135deg, ${brandColors.headerGradient.start} 0%, ${brandColors.headerGradient.end} 100%)`
+              : `linear-gradient(135deg, ${brandColors.darkThemeBg} 0%, ${brandColors.darkThemePaper} 100%)`,
             boxShadow: 'none',
-            borderBottom: `1.5px solid ${mode === 'light' ? brandColors.green : brandColors.lightGreen}`,
-            transition: 'all 0.2s ease-in-out',
+            borderBottom: `1.5px solid ${mode === 'light' ? alpha(brandColors.green, 0.15) : alpha(brandColors.green, 0.3)}`,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             padding: '0 8px',
             '@media (min-width:480px)': {
               padding: '0 16px',
@@ -401,6 +446,38 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
             '@media (min-width:480px) and (max-width:768px)': {
               width: '320px',
             },
+          },
+        },
+      },
+      // Enhanced Typography for better contrast
+      MuiTypography: {
+        styleOverrides: {
+          root: {
+            transition: 'color 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          },
+          h1: {
+            color: mode === 'light' ? '#222' : '#ffffff',
+          },
+          h2: {
+            color: mode === 'light' ? '#222' : '#ffffff',
+          },
+          h3: {
+            color: mode === 'light' ? '#222' : '#ffffff',
+          },
+          h4: {
+            color: mode === 'light' ? '#222' : '#ffffff',
+          },
+          h5: {
+            color: mode === 'light' ? '#222' : '#ffffff',
+          },
+          h6: {
+            color: mode === 'light' ? '#222' : '#ffffff',
+          },
+          body1: {
+            color: mode === 'light' ? '#333' : '#e0e0e0',
+          },
+          body2: {
+            color: mode === 'light' ? '#666' : '#b0b0b0',
           },
         },
       },

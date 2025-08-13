@@ -3,11 +3,6 @@ import { useState, useRef, useEffect } from 'react';
 import ProductCard, { type Product } from '../../components/ProductCard';
 import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from './api';
 import { useNavigate } from 'react-router-dom';
-import GroupsIcon from '@mui/icons-material/Groups';
-import EmojiNatureIcon from '@mui/icons-material/EmojiNature';
-import FactoryIcon from '@mui/icons-material/Factory';
-import SpaIcon from '@mui/icons-material/Spa';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -798,54 +793,6 @@ export function ProductList() {
           </Button>
         </Box>
       )}
-
-      {/* Why buy with Naatusakkarai.com Section */}
-      <Box sx={{ mt: 8, mb: 4, width: '100%' }}>
-        <Typography variant="h4" fontWeight={700} color="primary" textAlign="center" mb={3} sx={{ fontFamily: `'Playfair Display', 'Merriweather', serif` }}>
-          Why buy with PragathiFarms.com
-        </Typography>
-        <Box
-          sx={{
-            width: '100%',
-            bgcolor: '#F8F8F5',
-            py: 3,
-            px: { xs: 1, sm: 4 },
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: { xs: 'flex-start', md: 'center' },
-            alignItems: 'center',
-            gap: 0,
-            overflowX: { xs: 'auto', md: 'visible' },
-            boxShadow: '0 1px 8px rgba(44,70,57,0.04)',
-          }}
-        >
-          {/* Direct from farmers */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
-            <GroupsIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
-            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>Direct from farmers</Typography>
-          </Box>
-          {/* Handpicked ingredients */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
-            <EmojiNatureIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
-            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>Handpicked ingredients</Typography>
-          </Box>
-          {/* Made in large */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
-            <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
-            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>Made in large</Typography>
-          </Box>
-          {/* 100% organic */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
-            <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
-            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>100% organic</Typography>
-          </Box>
-          {/* Door step delivery */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, px: 2, py: 1, borderRadius: 99, bgcolor: '#fff', boxShadow: '0 1px 4px rgba(44,70,57,0.06)', mx: 1, minWidth: 180 }}>
-            <LocalShippingIcon sx={{ color: theme.palette.primary.main, fontSize: 28 }} />
-            <Typography variant="subtitle2" fontWeight={700} sx={{ fontSize: 15 }}>Door step delivery</Typography>
-          </Box>
-        </Box>
-      </Box>
     </Box>
   );
 }

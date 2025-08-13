@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Link, Stack, IconButton, Button, InputBase, useTheme, Container, Grid } from '@mui/material';
+import { Box, Typography, Link, Stack, IconButton, Button, useTheme, Container, Grid } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -15,8 +15,10 @@ const Footer: React.FC = () => {
         <Box
             component="footer"
             sx={{
-                bgcolor: '#f8f0de', // Soft sand beige
-                color: '#222',
+                background: theme.palette.mode === 'light'
+                    ? `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`
+                    : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
+                color: theme.palette.text.primary,
                 mt: { xs: 4, sm: 6, md: 8 },
                 pt: { xs: 4, sm: 5, md: 6 },
                 pb: { xs: 2, sm: 3 },
@@ -26,56 +28,56 @@ const Footer: React.FC = () => {
                 overflowX: 'hidden',
             }}
         >
-            <Container 
-                maxWidth="xl" 
-                sx={{ 
+            <Container
+                maxWidth="xl"
+                sx={{
                     px: { xs: 2, sm: 3, md: 4, lg: 6 },
                 }}
             >
-                <Grid 
-                    container 
+                <Grid
+                    container
                     spacing={{ xs: 3, sm: 4, md: 6 }}
                     sx={{ mb: { xs: 3, sm: 4 } }}
                 >
                     {/* Left Column: Logo, Address, Contact */}
                     <Grid size={{ xs: 12, sm: 12, md: 4, lg: 4 }}>
-                        <Box sx={{ 
-                            display: 'flex', 
+                        <Box sx={{
+                            display: 'flex',
                             flexDirection: 'column',
                             alignItems: { xs: 'center', md: 'flex-start' },
                             textAlign: { xs: 'center', md: 'left' },
                         }}>
-                            <img 
-                                src="/logo.jpg" 
-                                alt="Pragathi Natural Farms" 
-                                style={{ 
-                                    height: 'clamp(48px, 6vw, 58px)', 
-                                    borderRadius: 8, 
-                                    background: theme.palette.background.paper, 
+                            <img
+                                src="/logo.jpg"
+                                alt="Pragathi Natural Farms"
+                                style={{
+                                    height: 'clamp(48px, 6vw, 58px)',
+                                    borderRadius: 8,
+                                    background: theme.palette.background.paper,
                                     marginBottom: 16,
                                     maxWidth: '100%',
-                                }} 
+                                }}
                             />
-                            
-                            <Stack 
-                                direction="row" 
-                                alignItems="flex-start" 
-                                spacing={1.5} 
-                                sx={{ 
+
+                            <Stack
+                                direction="row"
+                                alignItems="flex-start"
+                                spacing={1.5}
+                                sx={{
                                     mb: 2,
                                     justifyContent: { xs: 'center', md: 'flex-start' },
                                     maxWidth: '100%',
                                 }}
                             >
-                                <LocationOnIcon 
-                                    sx={{ 
-                                        color: theme.palette.primary.main, 
+                                <LocationOnIcon
+                                    sx={{
+                                        color: theme.palette.primary.main,
                                         mt: '2px',
                                         fontSize: { xs: '1.2rem', sm: '1.5rem' },
                                         flexShrink: 0,
-                                    }} 
+                                    }}
                                 />
-                                <Typography 
+                                <Typography
                                     variant="body2"
                                     sx={{
                                         fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -86,24 +88,24 @@ const Footer: React.FC = () => {
                                     123, Organic Street, Chennai, India
                                 </Typography>
                             </Stack>
-                            
-                            <Stack 
-                                direction="row" 
-                                alignItems="center" 
-                                spacing={1.5} 
-                                sx={{ 
+
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                spacing={1.5}
+                                sx={{
                                     mb: { xs: 2, sm: 3 },
                                     justifyContent: { xs: 'center', md: 'flex-start' },
                                 }}
                             >
-                                <EmailIcon 
-                                    sx={{ 
+                                <EmailIcon
+                                    sx={{
                                         color: theme.palette.primary.main,
                                         fontSize: { xs: '1.2rem', sm: '1.5rem' },
                                         flexShrink: 0,
-                                    }} 
+                                    }}
                                 />
-                                <Typography 
+                                <Typography
                                     variant="body2"
                                     sx={{
                                         fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -113,7 +115,7 @@ const Footer: React.FC = () => {
                                     hello@pragathifarms.com
                                 </Typography>
                             </Stack>
-                            
+
                             <Button
                                 variant="contained"
                                 startIcon={<WhatsAppIcon sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }} />}
@@ -130,7 +132,7 @@ const Footer: React.FC = () => {
                                     minHeight: { xs: 40, sm: 44 }, // Touch-friendly
                                     maxWidth: { xs: '100%', sm: 280 },
                                     transition: 'all 0.2s ease-in-out',
-                                    '&:hover': { 
+                                    '&:hover': {
                                         bgcolor: '#ffb300',
                                         transform: { xs: 'none', sm: 'translateY(-2px)' },
                                         boxShadow: { xs: 1, sm: 3 },
@@ -152,13 +154,13 @@ const Footer: React.FC = () => {
                         <Grid container spacing={{ xs: 2, sm: 3 }}>
                             {/* Quick Links */}
                             <Grid size={{ xs: 12, sm: 12, md: 6 }}>
-                                <Box sx={{ 
+                                <Box sx={{
                                     textAlign: { xs: 'center', md: 'left' },
                                     mb: { xs: 3, md: 0 },
                                 }}>
-                                    <Typography 
-                                        variant="subtitle1" 
-                                        fontWeight={700} 
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight={700}
                                         mb={2}
                                         sx={{
                                             fontSize: { xs: '1rem', sm: '1.1rem' },
@@ -168,9 +170,9 @@ const Footer: React.FC = () => {
                                         Quick Links
                                     </Typography>
                                     <Stack spacing={{ xs: 1.5, sm: 2 }}>
-                                        <Link 
-                                            href="/about" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/about"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -182,9 +184,9 @@ const Footer: React.FC = () => {
                                         >
                                             About Us
                                         </Link>
-                                        <Link 
-                                            href="/benefits" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/benefits"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -196,9 +198,9 @@ const Footer: React.FC = () => {
                                         >
                                             Benefits Of Pragathi Farms
                                         </Link>
-                                        <Link 
-                                            href="/testimonials" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/testimonials"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -210,9 +212,9 @@ const Footer: React.FC = () => {
                                         >
                                             Testimonials
                                         </Link>
-                                        <Link 
-                                            href="/blog" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/blog"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -224,9 +226,9 @@ const Footer: React.FC = () => {
                                         >
                                             Blog
                                         </Link>
-                                        <Link 
-                                            href="/journey" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/journey"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -238,9 +240,9 @@ const Footer: React.FC = () => {
                                         >
                                             Our Journey
                                         </Link>
-                                        <Link 
-                                            href="/contact" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/contact"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -252,9 +254,9 @@ const Footer: React.FC = () => {
                                         >
                                             Contact Us
                                         </Link>
-                                        <Link 
-                                            href="/terms" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/terms"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -266,9 +268,9 @@ const Footer: React.FC = () => {
                                         >
                                             Terms & Conditions
                                         </Link>
-                                        <Link 
-                                            href="/delivery" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/delivery"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -283,15 +285,15 @@ const Footer: React.FC = () => {
                                     </Stack>
                                 </Box>
                             </Grid>
-                            
+
                             {/* Our Policy & My Account */}
                             <Grid size={{ xs: 12, sm: 12, md: 6 }}>
-                                <Box sx={{ 
+                                <Box sx={{
                                     textAlign: { xs: 'center', md: 'left' },
                                 }}>
-                                    <Typography 
-                                        variant="subtitle1" 
-                                        fontWeight={700} 
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight={700}
                                         mb={2}
                                         sx={{
                                             fontSize: { xs: '1rem', sm: '1.1rem' },
@@ -301,9 +303,9 @@ const Footer: React.FC = () => {
                                         Our Policy
                                     </Typography>
                                     <Stack spacing={{ xs: 1.5, sm: 2 }} sx={{ mb: { xs: 3, sm: 4 } }}>
-                                        <Link 
-                                            href="/privacy" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/privacy"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -315,9 +317,9 @@ const Footer: React.FC = () => {
                                         >
                                             Privacy Policy
                                         </Link>
-                                        <Link 
-                                            href="/shipping" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/shipping"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -329,9 +331,9 @@ const Footer: React.FC = () => {
                                         >
                                             Shipping Policy
                                         </Link>
-                                        <Link 
-                                            href="/returns" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/returns"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -343,9 +345,9 @@ const Footer: React.FC = () => {
                                         >
                                             Return Policy
                                         </Link>
-                                        <Link 
-                                            href="/refund" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/refund"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -358,11 +360,11 @@ const Footer: React.FC = () => {
                                             Refund Policy
                                         </Link>
                                     </Stack>
-                                    
+
                                     {/* My Account */}
-                                    <Typography 
-                                        variant="subtitle1" 
-                                        fontWeight={700} 
+                                    <Typography
+                                        variant="subtitle1"
+                                        fontWeight={700}
                                         mb={2}
                                         sx={{
                                             fontSize: { xs: '1rem', sm: '1.1rem' },
@@ -372,9 +374,9 @@ const Footer: React.FC = () => {
                                         My Account
                                     </Typography>
                                     <Stack spacing={{ xs: 1.5, sm: 2 }}>
-                                        <Link 
-                                            href="/profile" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/profile"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -386,9 +388,9 @@ const Footer: React.FC = () => {
                                         >
                                             My Profile
                                         </Link>
-                                        <Link 
-                                            href="/orders" 
-                                            color="inherit" 
+                                        <Link
+                                            href="/orders"
+                                            color="inherit"
                                             underline="hover"
                                             sx={{
                                                 fontSize: { xs: '0.85rem', sm: '0.9rem' },
@@ -408,15 +410,15 @@ const Footer: React.FC = () => {
 
                     {/* Right Column: Social, Newsletter */}
                     <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
-                        <Box sx={{ 
+                        <Box sx={{
                             textAlign: { xs: 'center', md: 'left' },
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: { xs: 'center', md: 'flex-start' },
                         }}>
-                            <Typography 
-                                variant="subtitle1" 
-                                fontWeight={700} 
+                            <Typography
+                                variant="subtitle1"
+                                fontWeight={700}
                                 mb={2}
                                 sx={{
                                     fontSize: { xs: '1rem', sm: '1.1rem' },
@@ -425,19 +427,19 @@ const Footer: React.FC = () => {
                             >
                                 Follow us on
                             </Typography>
-                            
-                            <Stack 
-                                direction="row" 
-                                spacing={{ xs: 1, sm: 1.5 }} 
-                                sx={{ 
+
+                            <Stack
+                                direction="row"
+                                spacing={{ xs: 1, sm: 1.5 }}
+                                sx={{
                                     mb: { xs: 3, sm: 4 },
                                     justifyContent: { xs: 'center', md: 'flex-start' },
                                     flexWrap: 'wrap',
                                 }}
                             >
-                                <IconButton 
-                                    color="inherit" 
-                                    href="https://facebook.com" 
+                                <IconButton
+                                    color="inherit"
+                                    href="https://facebook.com"
                                     target="_blank"
                                     sx={{
                                         minWidth: { xs: 40, sm: 48 },
@@ -453,9 +455,9 @@ const Footer: React.FC = () => {
                                 >
                                     <FacebookIcon fontSize="small" />
                                 </IconButton>
-                                <IconButton 
-                                    color="inherit" 
-                                    href="https://instagram.com" 
+                                <IconButton
+                                    color="inherit"
+                                    href="https://instagram.com"
                                     target="_blank"
                                     sx={{
                                         minWidth: { xs: 40, sm: 48 },
@@ -471,9 +473,9 @@ const Footer: React.FC = () => {
                                 >
                                     <InstagramIcon fontSize="small" />
                                 </IconButton>
-                                <IconButton 
-                                    color="inherit" 
-                                    href="https://youtube.com" 
+                                <IconButton
+                                    color="inherit"
+                                    href="https://youtube.com"
                                     target="_blank"
                                     sx={{
                                         minWidth: { xs: 40, sm: 48 },
@@ -489,9 +491,9 @@ const Footer: React.FC = () => {
                                 >
                                     <YouTubeIcon fontSize="small" />
                                 </IconButton>
-                                <IconButton 
-                                    color="inherit" 
-                                    href="https://linkedin.com" 
+                                <IconButton
+                                    color="inherit"
+                                    href="https://linkedin.com"
                                     target="_blank"
                                     sx={{
                                         minWidth: { xs: 40, sm: 48 },
@@ -508,73 +510,7 @@ const Footer: React.FC = () => {
                                     <LinkedInIcon fontSize="small" />
                                 </IconButton>
                             </Stack>
-                            
-                            <Typography 
-                                variant="subtitle1" 
-                                fontWeight={700} 
-                                mb={2}
-                                sx={{
-                                    fontSize: { xs: '1rem', sm: '1.1rem' },
-                                    color: theme.palette.primary.main,
-                                }}
-                            >
-                                Subscribe for Newsletter
-                            </Typography>
-                            
-                            <Box
-                                component="form"
-                                onSubmit={e => { e.preventDefault(); /* handle subscribe */ }}
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: { xs: 'column', sm: 'row' },
-                                    alignItems: { xs: 'stretch', sm: 'center' },
-                                    bgcolor: '#fff',
-                                    borderRadius: 2,
-                                    border: '1px solid #e0e0e0',
-                                    p: 0.5,
-                                    width: '100%',
-                                    maxWidth: { xs: '100%', sm: 320 },
-                                    gap: { xs: 1, sm: 0 },
-                                }}
-                            >
-                                <InputBase
-                                    placeholder="Your email"
-                                    sx={{ 
-                                        ml: { xs: 1, sm: 1 }, 
-                                        flex: 1, 
-                                        fontSize: { xs: '0.9rem', sm: '0.95rem' },
-                                        minHeight: { xs: 40, sm: 44 },
-                                    }}
-                                    inputProps={{ 'aria-label': 'subscribe newsletter' }}
-                                />
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    sx={{
-                                        ml: { xs: 0, sm: 1 },
-                                        borderRadius: { xs: 1.5, sm: 1 },
-                                        bgcolor: theme.palette.secondary.main,
-                                        color: theme.palette.getContrastText(theme.palette.secondary.main),
-                                        fontWeight: 600,
-                                        px: { xs: 3, sm: 2 },
-                                        py: { xs: 1.25, sm: 1 },
-                                        boxShadow: 'none',
-                                        textTransform: 'none',
-                                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                                        minHeight: { xs: 40, sm: 44 },
-                                        transition: 'all 0.2s ease-in-out',
-                                        '&:hover': { 
-                                            bgcolor: theme.palette.secondary.dark,
-                                            transform: { xs: 'none', sm: 'translateY(-1px)' },
-                                        },
-                                        '&:active': {
-                                            transform: 'scale(0.98)',
-                                        },
-                                    }}
-                                >
-                                    Submit
-                                </Button>
-                            </Box>
+
                         </Box>
                     </Grid>
                 </Grid>
@@ -587,24 +523,25 @@ const Footer: React.FC = () => {
                         mt: { xs: 2, sm: 3 },
                     }}
                 >
-                    <Typography 
-                        variant="body2" 
-                        align="center" 
-                        sx={{ 
+                    <Typography
+                        variant="body2"
+                        align="center"
+                        sx={{
                             opacity: 0.8,
                             fontWeight: 500,
                             fontSize: { xs: '0.8rem', sm: '0.9rem' },
                             lineHeight: 1.5,
                             px: 2,
+                            color: theme.palette.text.secondary,
                         }}
                     >
                         © {new Date().getFullYear()} Pragathi Natural Farms. Powered by{' '}
-                        <Link 
-                            href="https://thinkbyai.in/" 
+                        <Link
+                            href="https://thinkbyai.in/"
                             target="_blank"
                             rel="noopener noreferrer"
-                            sx={{ 
-                                fontWeight: 700, 
+                            sx={{
+                                fontWeight: 700,
                                 color: theme.palette.primary.main,
                                 textDecoration: 'none',
                                 transition: 'color 0.2s ease-in-out',

@@ -307,7 +307,9 @@ const Header: React.FC = () => {
         color="transparent"
         elevation={0}
         sx={{
-          background: `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`,
+          background: theme.palette.mode === 'light' 
+            ? `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`
+            : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
           boxShadow: 'none',
           borderBottom: `1.5px solid ${theme.palette.divider}`,
         }}
@@ -686,7 +688,9 @@ const Header: React.FC = () => {
             justifyContent: 'space-between', 
             minHeight: { xs: 56, sm: 64 },
             px: { xs: 1, sm: 2 },
-            background: `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`,
+            background: theme.palette.mode === 'light' 
+              ? `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`
+              : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
             borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
           }}
         >
@@ -865,7 +869,9 @@ const Header: React.FC = () => {
             '& .MuiDrawer-paper': {
               width: { xs: '100vw', sm: 320 },
               maxWidth: '100vw',
-              background: `linear-gradient(135deg, #f0fff0 0%, #e8f5e8 100%)`,
+              background: theme.palette.mode === 'light' 
+                ? `linear-gradient(135deg, #f0fff0 0%, #e8f5e8 100%)`
+                : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
               borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
             },
           }}
