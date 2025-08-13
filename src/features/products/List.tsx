@@ -15,6 +15,47 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import { FeatureHighlightsRow } from './FeatureHighlightsRow';
 import { useAddToCart } from '../../hooks/useAddToCart';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Carousel data with nature-themed content
+const carouselSlides = [
+  {
+    id: 1,
+    image: '/assets/banner_img.png', // Keep existing image for now
+    title: 'Fresh from Our Farms',
+    subtitle: 'Organic produce grown with care',
+    ctaText: 'Shop Now',
+    ctaLink: '/products',
+    overlayColor: 'rgba(34, 139, 34, 0.7)',
+  },
+  {
+    id: 2,
+    image: '/assets/banner_img.png', // You can replace with actual images
+    title: 'Explore Our Nursery',
+    subtitle: 'Beautiful plants for your garden',
+    ctaText: 'Visit Nursery',
+    ctaLink: '/nursery',
+    overlayColor: 'rgba(85, 107, 47, 0.7)',
+  },
+  {
+    id: 3,
+    image: '/assets/banner_img.png', // You can replace with actual images
+    title: 'Engineering Solutions',
+    subtitle: 'Sustainable farming technology',
+    ctaText: 'Learn More',
+    ctaLink: '/engineering',
+    overlayColor: 'rgba(46, 139, 87, 0.7)',
+  },
+  {
+    id: 4,
+    image: '/assets/banner_img.png', // You can replace with actual images
+    title: 'Natural & Pure',
+    subtitle: '100% organic, no chemicals',
+    ctaText: 'Discover Benefits',
+    ctaLink: '/benefits',
+    overlayColor: 'rgba(60, 179, 113, 0.7)',
+  },
+];
 
 export function ProductList() {
   const theme = useTheme();
@@ -22,6 +63,10 @@ export function ProductList() {
   const [showAllProducts, setShowAllProducts] = useState(false);
   const navigate = useNavigate();
   const { handleAddToCart } = useAddToCart();
+  
+  // Carousel state
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   const { data: allProducts, isLoading: isLoadingAll, isError: isErrorAll } = useGetProductsQuery();
   const { data: categoriesData } = useGetCategoriesQuery();
@@ -54,6 +99,42 @@ export function ProductList() {
   useEffect(() => {
     setShowAllProducts(false);
   }, [selectedCategory]);
+
+  // Carousel auto-play effect
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+    
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
+    }, 4000); // 4 seconds per slide
+
+    return () => clearInterval(interval);
+  }, [isAutoPlaying]);
+
+  // Pause auto-play on hover
+  const handleCarouselHover = () => setIsAutoPlaying(false);
+  const handleCarouselLeave = () => setIsAutoPlaying(true);
+
+  // Navigate to specific slide
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+    setIsAutoPlaying(false);
+    // Resume auto-play after 3 seconds
+    setTimeout(() => setIsAutoPlaying(true), 3000);
+  };
+
+  // Navigate to next/previous slide
+  const goToNext = () => {
+    setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 3000);
+  };
+
+  const goToPrev = () => {
+    setCurrentSlide((prev) => (prev - 1 + carouselSlides.length) % carouselSlides.length);
+    setIsAutoPlaying(false);
+    setTimeout(() => setIsAutoPlaying(true), 3000);
+  };
 
   // Responsive product display counts
   const getInitialProductCount = () => {
@@ -131,25 +212,215 @@ export function ProductList() {
         overflowX: 'hidden',
       }}
     >
-      {/* Responsive Banner Image */}
+      {/* Modern Carousel Banner */}
       <Box
         sx={{
           width: '100%',
-          height: { xs: 120, sm: 160, md: 200, lg: 300, xl: 360 },
-          backgroundImage: `linear-gradient(0deg,rgba(31,41,55,0.32),rgba(31,41,55,0.10)), url('/assets/banner_img.png')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
+          height: { xs: 200, sm: 300, md: 400, lg: 500, xl: 600 },
+          position: 'relative',
           borderRadius: { xs: 2, sm: 3, md: 4 },
-          boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
-          mb: { xs: 2, sm: 3, md: 4 },
-          // Ensure banner doesn't cause horizontal scroll
-          maxWidth: '100%',
           overflow: 'hidden',
+          mb: { xs: 3, sm: 4, md: 5 },
+          boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
         }}
-        role="img"
-        aria-label="Assorted millets in clay pots"
-      />
+        onMouseEnter={handleCarouselHover}
+        onMouseLeave={handleCarouselLeave}
+      >
+        {/* Carousel Slides */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.8, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+            }}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                height: '100%',
+                backgroundImage: `url(${carouselSlides[currentSlide].image})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                position: 'relative',
+              }}
+            >
+              {/* Overlay */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: carouselSlides[currentSlide].overlayColor,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  px: { xs: 2, sm: 4, md: 6 },
+                }}
+              >
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.6 }}
+                >
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      color: 'white',
+                      fontWeight: 700,
+                      fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem', lg: '3.5rem' },
+                      mb: { xs: 1, sm: 2 },
+                      textShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                      fontFamily: `'Playfair Display', 'Merriweather', serif`,
+                    }}
+                  >
+                    {carouselSlides[currentSlide].title}
+                  </Typography>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.6 }}
+                >
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      color: 'white',
+                      fontWeight: 400,
+                      fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+                      mb: { xs: 2, sm: 3, md: 4 },
+                      textShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                      opacity: 0.9,
+                    }}
+                  >
+                    {carouselSlides[currentSlide].subtitle}
+                  </Typography>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7, duration: 0.6 }}
+                >
+                  <Button
+                    variant="contained"
+                    size="large"
+                    onClick={() => navigate(carouselSlides[currentSlide].ctaLink)}
+                    sx={{
+                      background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                      color: 'white',
+                      fontWeight: 600,
+                      fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
+                      px: { xs: 3, sm: 4, md: 5 },
+                      py: { xs: 1.5, sm: 2, md: 2.5 },
+                      borderRadius: '50px',
+                      textTransform: 'none',
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 12px 32px rgba(0,0,0,0.3)',
+                      },
+                      transition: 'all 0.3s ease-in-out',
+                    }}
+                  >
+                    {carouselSlides[currentSlide].ctaText}
+                  </Button>
+                </motion.div>
+              </Box>
+            </Box>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navigation Arrows */}
+        <IconButton
+          onClick={goToPrev}
+          sx={{
+            position: 'absolute',
+            left: { xs: 8, sm: 16, md: 24 },
+            top: '50%',
+            transform: 'translateY(-50%)',
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            color: theme.palette.primary.main,
+            minWidth: { xs: 40, sm: 48, md: 56 },
+            minHeight: { xs: 40, sm: 48, md: 56 },
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255,1)',
+              transform: 'translateY(-50%) scale(1.1)',
+            },
+            transition: 'all 0.2s ease-in-out',
+            zIndex: 2,
+          }}
+        >
+          <ChevronLeftIcon fontSize="large" />
+        </IconButton>
+
+        <IconButton
+          onClick={goToNext}
+          sx={{
+            position: 'absolute',
+            right: { xs: 8, sm: 16, md: 24 },
+            top: '50%',
+            transform: 'translateY(-50%)',
+            backgroundColor: 'rgba(255,255,255,0.9)',
+            color: theme.palette.primary.main,
+            minWidth: { xs: 40, sm: 48, md: 56 },
+            minHeight: { xs: 40, sm: 48, md: 56 },
+            '&:hover': {
+              backgroundColor: 'rgba(255,255,255,1)',
+              transform: 'translateY(-50%) scale(1.1)',
+            },
+            transition: 'all 0.2s ease-in-out',
+            zIndex: 2,
+          }}
+        >
+          <ChevronRightIcon fontSize="large" />
+        </IconButton>
+
+        {/* Dots Indicator */}
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: { xs: 16, sm: 24, md: 32 },
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            gap: 1,
+            zIndex: 2,
+          }}
+        >
+          {carouselSlides.map((_, index) => (
+            <Box
+              key={index}
+              onClick={() => goToSlide(index)}
+              sx={{
+                width: { xs: 8, sm: 10, md: 12 },
+                height: { xs: 8, sm: 10, md: 12 },
+                borderRadius: '50%',
+                backgroundColor: index === currentSlide ? 'white' : 'rgba(255,255,255,0.5)',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease-in-out',
+                '&:hover': {
+                  backgroundColor: index === currentSlide ? 'white' : 'rgba(255,255,255,0.8)',
+                  transform: 'scale(1.2)',
+                },
+              }}
+            />
+          ))}
+        </Box>
+      </Box>
       
       <FeatureHighlightsRow />
       

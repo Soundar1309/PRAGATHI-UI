@@ -14,7 +14,7 @@ import { AppBar, Badge, Box, Button, Drawer, IconButton, Toolbar, Typography, us
 import Dialog from '@mui/material/Dialog';
 import InputBase from '@mui/material/InputBase';
 import { alpha, keyframes, styled } from '@mui/material/styles';
-import { AnimatePresence, motion } from 'framer-motion';
+import {  motion } from 'framer-motion';
 import React, { useState, useContext } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Popper from '@mui/material/Popper';
@@ -307,21 +307,391 @@ const Header: React.FC = () => {
         color="transparent"
         elevation={0}
         sx={{
-          background: theme.palette.background.default,
+          background: `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`,
           boxShadow: 'none',
           borderBottom: `1.5px solid ${theme.palette.divider}`,
         }}
       >
-        <Toolbar 
-          sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            minHeight: { xs: 56, sm: 64, md: 72 },
-            px: { xs: 1, sm: 2, md: 3 },
+        {/* First Row - Logo & Icons (Desktop Only) */}
+        <Box
+          sx={{
+            display: { xs: 'none', md: 'flex' },
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            px: { md: 3, lg: 4 },
+            py: 2,
+            borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+            position: 'relative',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a8e6a8' fill-opacity='0.03'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              opacity: 0.6,
+              pointerEvents: 'none',
+            },
           }}
         >
-          {/* Logo */}
-          <Box sx={{ display: 'flex', alignItems: 'center', flex: { xs: 1, md: 'none' } }}>
+          {/* Logo Container */}
+          <Box>
+            <Button
+              component={NavLink}
+              to="/"
+              sx={{
+                p: 0,
+                minWidth: 0,
+                fontWeight: 700,
+                fontSize: { md: 20, lg: 22, xl: 24 },
+                color: theme.palette.primary.main,
+                textTransform: 'none',
+                letterSpacing: 1,
+                fontFamily: `'Playfair Display', 'Merriweather', serif`,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 2.5,
+                '&:hover': {
+                  background: 'transparent',
+                  transform: 'translateY(-2px)',
+                },
+                transition: 'all 0.3s ease-in-out',
+              }}
+            >
+              <img
+                src="/logo.jpg"
+                alt="Pragathi Natural Farms"
+                style={{
+                  height: 'clamp(40px, 5vw, 50px)',
+                  width: 'clamp(50px, 5vw, 50px)',
+                  borderRadius: 8,
+                  background: theme.palette.background.paper,
+                  maxWidth: '100%',
+                }}
+              />
+              <Box
+                component="span"
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  ml: 5,
+                }}
+              >
+                Pragathi Natural Farms
+              </Box>
+            </Button>
+          </Box>
+
+          {/* Right Side Icons & Search */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: { md: 1.5, lg: 2 },
+            }}
+          >
+            {/* Desktop Search Bar */}
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                flex: { md: '0 1 280px', lg: '0 1 320px' },
+                maxWidth: 320,
+              }}
+            >
+              <Box component="form" onSubmit={handleSearchSubmit} sx={{ width: '100%' }}>
+                <Search>
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                  <StyledInputBase 
+                    placeholder="Search products..." 
+                    inputProps={{ 'aria-label': 'search' }}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={handleSearchKeyPress}
+                  />
+                </Search>
+              </Box>
+            </Box>
+
+            {/* Cart & Profile & Dark Mode Toggle */}
+            <IconButton 
+              size="large" 
+              aria-label="cart" 
+              onClick={() => navigate('/cart')} 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 48,
+                minHeight: 48,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
+              }}
+            >
+              <Badge badgeContent={cartCount} color="secondary">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+            <IconButton 
+              size="large" 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 48,
+                minHeight: 48,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
+              }} 
+              onClick={handleAccountMenuOpen}
+            >
+              <AccountCircle fontSize="large" />
+            </IconButton>
+            {/* Dark mode toggle */}
+            <IconButton 
+              sx={{ 
+                minWidth: 48,
+                minHeight: 48,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
+              }} 
+              onClick={colorMode.toggleColorMode} 
+              color="inherit"
+            >
+              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+            </IconButton>
+          </Box>
+        </Box>
+
+        {/* Second Row - Navigation Links (Desktop Only) */}
+        <Box
+          sx={{
+            display: { xs: 'none', md: 'flex' },
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            px: { md: 3, lg: 4 },
+            py: 2,
+            width: '100%',
+          }}
+        >
+          {navLinks.map((link) => {
+            const isActive = link.to && location.pathname === link.to;
+            const hasDropdown = !!link.dropdown;
+            return (
+              <Box
+                key={link.label}
+                sx={{ 
+                  position: 'relative',
+                  flex: 1,
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+                onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => { 
+                  setDropdownAnchor(e.currentTarget); 
+                  setOpenDropdown(link.label); 
+                } : undefined}
+                onMouseLeave={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
+                  // Only close if we're not moving to the dropdown menu
+                  const relatedTarget = e.relatedTarget as HTMLElement;
+                  if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
+                    setOpenDropdown(null);
+                  }
+                } : undefined}
+              >
+                <Button
+                  component={link.to ? NavLink : 'button'}
+                  to={link.to}
+                  onClick={link.label === 'Farm store' ? handleFarmStoreClick : undefined}
+                  aria-haspopup={hasDropdown ? 'true' : undefined}
+                  aria-expanded={openDropdown === link.label ? 'true' : undefined}
+                  onFocus={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { setDropdownAnchor(e.currentTarget); setOpenDropdown(link.label); } : undefined}
+                  onBlur={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenDropdown(null); } : undefined}
+                  sx={{
+                    color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
+                    fontWeight: 600,
+                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                    fontSize: { md: 15, lg: 16, xl: 17 },
+                    background: 'transparent',
+                    position: 'relative',
+                    textTransform: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    minHeight: 44,
+                    px: { md: 2, lg: 2.5, xl: 3 },
+                    py: 1.5,
+                    borderRadius: 1,
+                    border: 'none',
+                    transition: 'all 0.3s ease-in-out',
+                    '&:hover': {
+                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      color: theme.palette.primary.main,
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        bottom: 0,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '80%',
+                        height: 2,
+                        background: theme.palette.primary.main,
+                        borderRadius: 1,
+                      },
+                    },
+                    '&::after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: 0,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: isActive ? '80%' : '0%',
+                      height: 2,
+                      background: theme.palette.primary.main,
+                      borderRadius: 1,
+                      transition: 'width 0.3s ease-in-out',
+                    },
+                  }}
+                >
+                  {/* Icon for dropdowns */}
+                  {link.label === 'Engineering Solutions' && (
+                    <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: { md: 18, lg: 20, xl: 21 }, mr: 0.5 }} />
+                  )}
+                  {link.label === 'Nursery' && (
+                    <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: { md: 18, lg: 20, xl: 21 }, mr: 0.5 }} />
+                  )}
+                  {link.label === 'Farm store' && (
+                    <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main, fontSize: { md: 18, lg: 20, xl: 21 }, mr: 0.5 }} />
+                  )}
+                  {link.label}
+                </Button>
+                {/* Desktop Dropdown */}
+                {hasDropdown && (
+                  <Popper
+                    open={openDropdown === link.label}
+                    anchorEl={dropdownAnchor}
+                    placement="bottom-start"
+                    transition
+                    disablePortal={false}
+                    style={{ zIndex: theme.zIndex.appBar + 100 }}
+                  >
+                    {(props) => (
+                      <React.Fragment>
+                        <Grow {...props.TransitionProps} style={{ transformOrigin: 'left top' }}>
+                          <Paper
+                            elevation={8}
+                            sx={{
+                              mt: 1,
+                              minWidth: 280,
+                              maxWidth: 320,
+                              borderRadius: 1,
+                              boxShadow: `0 12px 40px ${alpha(theme.palette.primary.main, 0.25)}, 0 8px 24px ${alpha(theme.palette.secondary.main, 0.2)}`,
+                              p: 1.5,
+                              maxHeight: 400,
+                              overflow: 'auto',
+                              border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+                              background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
+                            }}
+                            onMouseEnter={() => setOpenDropdown(link.label)}
+                            onMouseLeave={() => setOpenDropdown(null)}
+                          >
+                            {link.dropdown.map((item, index) => {
+                              const IconComponent = (item as any).icon;
+                              return (
+                                <motion.div
+                                  key={item.to}
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: index * 0.05 }}
+                                >
+                                  <Button
+                                    component={NavLink}
+                                    to={item.to}
+                                    onClick={() => setOpenDropdown(null)}
+                                    sx={{
+                                      display: 'flex',
+                                      width: '100%',
+                                      justifyContent: 'flex-start',
+                                      alignItems: 'center',
+                                      color: theme.palette.text.primary,
+                                      fontWeight: 500,
+                                      fontSize: 15,
+                                      borderRadius: 1,
+                                      px: 2,
+                                      py: 1.5,
+                                      textTransform: 'none',
+                                      gap: 1.5,
+                                      minHeight: 44,
+                                      '&:hover': {
+                                        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.secondary.main, 0.12)} 100%)`,
+                                        transform: 'translateX(4px)',
+                                        boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`,
+                                      },
+                                      transition: 'all 0.2s ease-in-out',
+                                    }}
+                                  >
+                                    {IconComponent && (
+                                      <IconComponent
+                                        sx={{
+                                          color: theme.palette.primary.main,
+                                          fontSize: 20,
+                                          flexShrink: 0
+                                        }}
+                                      />
+                                    )}
+                                    <Typography
+                                      variant="body2"
+                                      sx={{
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                      }}
+                                    >
+                                      {item.label}
+                                    </Typography>
+                                  </Button>
+                                </motion.div>
+                              );
+                            })}
+                          </Paper>
+                        </Grow>
+                      </React.Fragment>
+                    )}
+                  </Popper>
+                )}
+              </Box>
+            );
+          })}
+        </Box>
+
+        {/* Mobile Toolbar - Keep existing mobile layout */}
+        <Toolbar 
+          sx={{ 
+            display: { xs: 'flex', md: 'none' }, 
+            justifyContent: 'space-between', 
+            minHeight: { xs: 56, sm: 64 },
+            px: { xs: 1, sm: 2 },
+            background: `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`,
+            borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+          }}
+        >
+          {/* Logo for Mobile */}
+          <Box sx={{ display: 'flex', alignItems: 'center', flex: { xs: 1, sm: 'none' } }}>
             <Button
               component={NavLink}
               to="/"
@@ -330,18 +700,19 @@ const Header: React.FC = () => {
                 minWidth: 0,
                 mr: { xs: 1, sm: 2 },
                 fontWeight: 700,
-                fontSize: { xs: 16, sm: 18, md: 22 },
+                fontSize: { xs: 16, sm: 18 },
                 color: theme.palette.primary.main,
                 textTransform: 'none',
                 letterSpacing: 1,
                 fontFamily: `'Playfair Display', 'Merriweather', serif`,
-                // Ensure text doesn't wrap
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
-                // Responsive logo layout
                 flexDirection: { xs: 'column', sm: 'row' },
                 alignItems: 'center',
                 gap: { xs: 0, sm: 1 },
+                '&:hover': {
+                  background: 'transparent',
+                },
               }}
             >
               <img
@@ -378,272 +749,10 @@ const Header: React.FC = () => {
             </Button>
           </Box>
 
-          {/* Desktop Navigation */}
-          <Box 
-            sx={{ 
-              display: { xs: 'none', lg: 'flex' }, 
-              alignItems: 'center', 
-              gap: { lg: 2, xl: 3 }, 
-              position: 'relative',
-              flex: 1,
-              justifyContent: 'center',
-            }}
-          >
-            {navLinks.map((link) => {
-              const isActive = link.to && location.pathname === link.to;
-              const hasDropdown = !!link.dropdown;
-              console.log(`Link: ${link.label}, hasDropdown: ${hasDropdown}, openDropdown: ${openDropdown}`);
-              return (
-                <Box
-                  key={link.label}
-                  sx={{ position: 'relative', px: 1 }}
-                  onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => { 
-                    setDropdownAnchor(e.currentTarget); 
-                    setOpenDropdown(link.label); 
-                  } : undefined}
-                  onMouseLeave={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
-                    // Only close if we're not moving to the dropdown menu
-                    const relatedTarget = e.relatedTarget as HTMLElement;
-                    if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
-                      setOpenDropdown(null);
-                    }
-                  } : undefined}
-                >
-                  <Button
-                    component={link.to ? NavLink : 'button'}
-                    to={link.to}
-                    onClick={link.label === 'Farm store' ? handleFarmStoreClick : undefined}
-                    aria-haspopup={hasDropdown ? 'true' : undefined}
-                    aria-expanded={openDropdown === link.label ? 'true' : undefined}
-                    onFocus={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { setDropdownAnchor(e.currentTarget); setOpenDropdown(link.label); } : undefined}
-                    onBlur={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenDropdown(null); } : undefined}
-                    sx={{
-                      color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
-                      fontWeight: 600,
-                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                      fontSize: { lg: 16, xl: 18 },
-                      background: 'none',
-                      position: 'relative',
-                      textTransform: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      minHeight: 44, // Touch-friendly
-                      px: { lg: 1.5, xl: 2 },
-                      py: 1,
-                      borderRadius: 1,
-                      transition: 'all 0.2s ease-in-out',
-                      '&:hover': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                      },
-                    }}
-                  >
-                    {/* Icon for dropdowns */}
-                    {link.label === 'Engineering Solutions' && (
-                      <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: { lg: 20, xl: 22 }, mr: 0.5 }} />
-                    )}
-                    {link.label === 'Nursery' && (
-                      <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: { lg: 20, xl: 22 }, mr: 0.5 }} />
-                    )}
-                    {link.label === 'Farm store' && (
-                      <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main, fontSize: { lg: 20, xl: 22 }, mr: 0.5 }} />
-                    )}
-                    {link.label}
-                    <AnimatePresence>
-                      {isActive && (
-                        <motion.div
-                          layoutId="nav-underline"
-                          style={{
-                            position: 'absolute',
-                            left: 0,
-                            right: 0,
-                            bottom: -2,
-                            height: 4,
-                            borderRadius: 2,
-                            background: theme.palette.secondary.main,
-                          }}
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 8 }}
-                          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        />
-                      )}
-                    </AnimatePresence>
-                  </Button>
-                  {/* Desktop Dropdown */}
-                  {hasDropdown && (
-                    <Popper
-                      open={openDropdown === link.label}
-                      anchorEl={dropdownAnchor}
-                      placement="bottom-start"
-                      transition
-                      disablePortal={false}
-                      style={{ zIndex: theme.zIndex.appBar + 100 }}
-                    >
-                      {(props) => (
-                        <React.Fragment>
-                          <Grow {...props.TransitionProps} style={{ transformOrigin: 'left top' }}>
-                            <Paper
-                              elevation={4}
-                              sx={{
-                                mt: 1,
-                                minWidth: 280,
-                                maxWidth: 320,
-                                borderRadius: 2,
-                                boxShadow: '0 8px 32px rgba(64, 99, 67, 0.68)',
-                                p: 1,
-                                maxHeight: 400,
-                                overflow: 'auto',
-                              }}
-                              onMouseEnter={() => setOpenDropdown(link.label)}
-                              onMouseLeave={() => setOpenDropdown(null)}
-                            >
-                              {link.dropdown.map((item, index) => {
-                                const IconComponent = (item as any).icon;
-                                return (
-                                  <motion.div
-                                    key={item.to}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                  >
-                                    <Button
-                                      component={NavLink}
-                                      to={item.to}
-                                      onClick={() => setOpenDropdown(null)}
-                                      sx={{
-                                        display: 'flex',
-                                        width: '100%',
-                                        justifyContent: 'flex-start',
-                                        alignItems: 'center',
-                                        color: theme.palette.text.primary,
-                                        fontWeight: 500,
-                                        fontSize: 15,
-                                        borderRadius: 1,
-                                        px: 2,
-                                        py: 1.5,
-                                        textTransform: 'none',
-                                        gap: 1.5,
-                                        minHeight: 44, // Touch-friendly
-                                        '&:hover': {
-                                          background: alpha(theme.palette.primary.main, 0.08),
-                                          transform: 'translateX(4px)',
-                                        },
-                                        transition: 'all 0.2s ease-in-out',
-                                      }}
-                                    >
-                                      {IconComponent && (
-                                        <IconComponent
-                                          sx={{
-                                            color: theme.palette.primary.main,
-                                            fontSize: 20,
-                                            flexShrink: 0
-                                          }}
-                                        />
-                                      )}
-                                      <Typography
-                                        variant="body2"
-                                        sx={{
-                                          overflow: 'hidden',
-                                          textOverflow: 'ellipsis',
-                                          whiteSpace: 'nowrap',
-                                        }}
-                                      >
-                                        {item.label}
-                                      </Typography>
-                                    </Button>
-                                  </motion.div>
-                                );
-                              })}
-                            </Paper>
-                          </Grow>
-                        </React.Fragment>
-                      )}
-                    </Popper>
-                  )}
-                </Box>
-              );
-            })}
-          </Box>
-
-          {/* Desktop Search Bar */}
-          <Box 
-            sx={{ 
-              display: { xs: 'none', md: 'flex' }, 
-              alignItems: 'center', 
-              ml: 2, 
-              flex: { md: '0 1 320px', lg: '0 1 280px' },
-              maxWidth: 320,
-            }}
-          >
-            <Box component="form" onSubmit={handleSearchSubmit} sx={{ width: '100%' }}>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase 
-                  placeholder="Search products..." 
-                  inputProps={{ 'aria-label': 'search' }}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={handleSearchKeyPress}
-                />
-              </Search>
-            </Box>
-          </Box>
-
-          {/* Desktop Cart & Profile & Dark Mode Toggle */}
-          <Box 
-            sx={{ 
-              display: { xs: 'none', md: 'flex' }, 
-              alignItems: 'center', 
-              gap: { md: 0.5, lg: 1 },
-              ml: 'auto',
-            }}
-          >
-            <IconButton 
-              size="large" 
-              aria-label="cart" 
-              onClick={() => navigate('/cart')} 
-              sx={{ 
-                color: theme.palette.primary.main,
-                minWidth: 48,
-                minHeight: 48,
-              }}
-            >
-              <Badge badgeContent={cartCount} color="secondary">
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
-            <IconButton 
-              size="large" 
-              sx={{ 
-                color: theme.palette.primary.main,
-                minWidth: 48,
-                minHeight: 48,
-              }} 
-              onClick={handleAccountMenuOpen}
-            >
-              <AccountCircle fontSize="large" />
-            </IconButton>
-            {/* Dark mode toggle */}
-            <IconButton 
-              sx={{ 
-                ml: 1,
-                minWidth: 48,
-                minHeight: 48,
-              }} 
-              onClick={colorMode.toggleColorMode} 
-              color="inherit"
-            >
-              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
-          </Box>
-
           {/* Mobile Icons */}
           <Box 
             sx={{ 
-              display: { xs: 'flex', md: 'none' }, 
+              display: 'flex', 
               alignItems: 'center', 
               gap: { xs: 0.5, sm: 1 },
               ml: 'auto',
@@ -656,6 +765,13 @@ const Header: React.FC = () => {
                 minWidth: 44,
                 minHeight: 44,
                 p: 1,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
               }}
             >
               <SearchIcon fontSize="small" />
@@ -669,6 +785,13 @@ const Header: React.FC = () => {
                 minWidth: 44,
                 minHeight: 44,
                 p: 1,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
               }}
             >
               <Badge badgeContent={cartCount} color="secondary">
@@ -681,6 +804,13 @@ const Header: React.FC = () => {
                 minWidth: 44,
                 minHeight: 44,
                 p: 1,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
               }} 
               onClick={handleAccountMenuOpen}
             >
@@ -692,6 +822,13 @@ const Header: React.FC = () => {
                 minWidth: 44,
                 minHeight: 44,
                 p: 1,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
               }} 
               onClick={colorMode.toggleColorMode} 
               color="inherit"
@@ -705,6 +842,13 @@ const Header: React.FC = () => {
                 minWidth: 44,
                 minHeight: 44,
                 p: 1,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
               }}
             >
               <MenuIcon fontSize="small" />
@@ -721,6 +865,8 @@ const Header: React.FC = () => {
             '& .MuiDrawer-paper': {
               width: { xs: '100vw', sm: 320 },
               maxWidth: '100vw',
+              background: `linear-gradient(135deg, #f0fff0 0%, #e8f5e8 100%)`,
+              borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
             },
           }}
         >
@@ -743,6 +889,13 @@ const Header: React.FC = () => {
                 sx={{
                   minWidth: 44,
                   minHeight: 44,
+                  borderRadius: '50%',
+                  background: alpha(theme.palette.primary.main, 0.08),
+                  '&:hover': {
+                    background: alpha(theme.palette.primary.main, 0.15),
+                    transform: 'scale(1.05)',
+                  },
+                  transition: 'all 0.2s ease-in-out',
                 }}
               >
                 <CloseIcon />
