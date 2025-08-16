@@ -391,6 +391,145 @@ const Header: React.FC = () => {
             </Button>
           </Box>
 
+          {/* Navigation Links - Moved to top row */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: { md: 1, lg: 1.5 },
+              mx: { md: 2, lg: 3 },
+            }}
+          >
+            {navLinks.map((link) => {
+              const isActive = link.to && location.pathname === link.to;
+              const hasDropdown = !!link.dropdown;
+              return (
+                <Box
+                  key={link.label}
+                  sx={{ 
+                    position: 'relative',
+                  }}
+                  onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => { 
+                    setDropdownAnchor(e.currentTarget); 
+                    setOpenDropdown(link.label); 
+                  } : undefined}
+                  onMouseLeave={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
+                    // Only close if we're not moving to the dropdown menu
+                    const relatedTarget = e.relatedTarget as HTMLElement;
+                    if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
+                      setOpenDropdown(null);
+                    }
+                  } : undefined}
+                >
+                  <Button
+                    component={link.to ? NavLink : 'button'}
+                    to={link.to}
+                    onClick={link.label === 'Farm store' ? handleFarmStoreClick : undefined}
+                    aria-haspopup={hasDropdown ? 'true' : undefined}
+                    aria-expanded={openDropdown === link.label ? 'true' : undefined}
+                    onFocus={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { setDropdownAnchor(e.currentTarget); setOpenDropdown(link.label); } : undefined}
+                    onBlur={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenDropdown(null); } : undefined}
+                    sx={{
+                      color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
+                      fontWeight: 600,
+                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                      fontSize: { md: 14, lg: 15, xl: 16 },
+                      background: isActive 
+                        ? alpha(theme.palette.primary.main, 0.1)
+                        : 'transparent',
+                      position: 'relative',
+                      textTransform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      minHeight: 40,
+                      px: { md: 1.5, lg: 2, xl: 2.5 },
+                      py: 1,
+                      borderRadius: 1,
+                      border: isActive 
+                        ? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
+                        : '1px solid transparent',
+                      transition: 'all 0.3s ease-in-out',
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.12),
+                        color: theme.palette.primary.main,
+                        borderColor: alpha(theme.palette.primary.main, 0.4),
+                        transform: 'translateY(-1px)',
+                        boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`,
+                      },
+                    }}
+                  >
+                    {link.label}
+                  </Button>
+                  
+                  {/* Dropdown Menu */}
+                  {hasDropdown && openDropdown === link.label && (
+                    <Popper
+                      open={openDropdown === link.label}
+                      anchorEl={dropdownAnchor}
+                      placement="bottom-start"
+                      transition
+                      disablePortal
+                      style={{ zIndex: 1300 }}
+                      onMouseEnter={() => setOpenDropdown(link.label)}
+                      onMouseLeave={() => setOpenDropdown(null)}
+                    >
+                      {({ TransitionProps, placement }) => (
+                        <Grow
+                          {...TransitionProps}
+                          style={{ transformOrigin: placement === 'bottom-start' ? 'left top' : 'left bottom' }}
+                        >
+                          <Paper
+                            elevation={8}
+                            sx={{
+                              mt: 1,
+                              minWidth: 220,
+                              background: theme.palette.background.paper,
+                              border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+                              borderRadius: 2,
+                              overflow: 'hidden',
+                            }}
+                          >
+                            {link.dropdown?.map((item, index) => {
+                              const Icon = (item as any).icon;
+                              return (
+                                <MenuItem
+                                  key={index}
+                                  component={NavLink}
+                                  to={item.to}
+                                  onClick={() => setOpenDropdown(null)}
+                                  sx={{
+                                    py: 1.5,
+                                    px: 2,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1.5,
+                                    '&:hover': {
+                                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                                    },
+                                  }}
+                                >
+                                  {Icon && <Icon sx={{ fontSize: 20, color: theme.palette.primary.main }} />}
+                                  <ListItemText 
+                                    primary={item.label}
+                                    primaryTypographyProps={{
+                                      fontSize: 14,
+                                      fontWeight: 500,
+                                    }}
+                                  />
+                                </MenuItem>
+                              );
+                            })}
+                          </Paper>
+                        </Grow>
+                      )}
+                    </Popper>
+                  )}
+                </Box>
+              );
+            })}
+          </Box>
+
           {/* Right Side Icons & Search */}
           <Box
             sx={{
@@ -506,219 +645,6 @@ const Header: React.FC = () => {
               {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
           </Box>
-        </Box>
-
-        {/* Second Row - Navigation Links (Desktop Only) */}
-        <Box
-          sx={{
-            display: { xs: 'none', md: 'flex' },
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            px: { md: 3, lg: 4 },
-            py: 2,
-            width: '100%',
-            background: theme.palette.mode === 'light' 
-              ? `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.05)} 0%, ${alpha(theme.palette.secondary.main, 0.08)} 100%)`
-              : `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.background.paper, 0.95)} 100%)`,
-            borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-            borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-            boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.08)}`,
-          }}
-        >
-          {navLinks.map((link) => {
-            const isActive = link.to && location.pathname === link.to;
-            const hasDropdown = !!link.dropdown;
-            return (
-              <Box
-                key={link.label}
-                sx={{ 
-                  position: 'relative',
-                  flex: 1,
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
-                onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => { 
-                  setDropdownAnchor(e.currentTarget); 
-                  setOpenDropdown(link.label); 
-                } : undefined}
-                onMouseLeave={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
-                  // Only close if we're not moving to the dropdown menu
-                  const relatedTarget = e.relatedTarget as HTMLElement;
-                  if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
-                    setOpenDropdown(null);
-                  }
-                } : undefined}
-              >
-                <Button
-                  component={link.to ? NavLink : 'button'}
-                  to={link.to}
-                  onClick={link.label === 'Farm store' ? handleFarmStoreClick : undefined}
-                  aria-haspopup={hasDropdown ? 'true' : undefined}
-                  aria-expanded={openDropdown === link.label ? 'true' : undefined}
-                  onFocus={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { setDropdownAnchor(e.currentTarget); setOpenDropdown(link.label); } : undefined}
-                  onBlur={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenDropdown(null); } : undefined}
-                  sx={{
-                    color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
-                    fontWeight: 600,
-                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                    fontSize: { md: 15, lg: 16, xl: 17 },
-                    background: isActive 
-                      ? alpha(theme.palette.primary.main, 0.1)
-                      : 'transparent',
-                    position: 'relative',
-                    textTransform: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    minHeight: 44,
-                    px: { md: 2, lg: 2.5, xl: 3 },
-                    py: 1.5,
-                    borderRadius: 1,
-                    border: isActive 
-                      ? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
-                      : '1px solid transparent',
-                    transition: 'all 0.3s ease-in-out',
-                    '&:hover': {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.12),
-                      color: theme.palette.primary.main,
-                      borderColor: alpha(theme.palette.primary.main, 0.4),
-                      transform: 'translateY(-1px)',
-                      boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`,
-                      '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        bottom: 0,
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        width: '80%',
-                        height: 2,
-                        background: theme.palette.primary.main,
-                        borderRadius: 1,
-                      },
-                    },
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      width: isActive ? '80%' : '0%',
-                      height: 2,
-                      background: theme.palette.primary.main,
-                      borderRadius: 1,
-                      transition: 'width 0.3s ease-in-out',
-                    },
-                  }}
-                >
-                  {/* Icon for dropdowns */}
-                  {link.label === 'Engineering Solutions' && (
-                    <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: { md: 18, lg: 20, xl: 21 }, mr: 0.5 }} />
-                  )}
-                  {link.label === 'Nursery' && (
-                    <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: { md: 18, lg: 20, xl: 21 }, mr: 0.5 }} />
-                  )}
-                  {link.label === 'Farm store' && (
-                    <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main, fontSize: { md: 18, lg: 20, xl: 21 }, mr: 0.5 }} />
-                  )}
-                  {link.label}
-                </Button>
-                {/* Desktop Dropdown */}
-                {hasDropdown && (
-                  <Popper
-                    open={openDropdown === link.label}
-                    anchorEl={dropdownAnchor}
-                    placement="bottom-start"
-                    transition
-                    disablePortal={false}
-                    style={{ zIndex: theme.zIndex.appBar + 100 }}
-                  >
-                    {(props) => (
-                      <React.Fragment>
-                        <Grow {...props.TransitionProps} style={{ transformOrigin: 'left top' }}>
-                          <Paper
-                            elevation={8}
-                            sx={{
-                              mt: 1,
-                              minWidth: 280,
-                              maxWidth: 320,
-                              borderRadius: 1,
-                              boxShadow: `0 12px 40px ${alpha(theme.palette.primary.main, 0.25)}, 0 8px 24px ${alpha(theme.palette.secondary.main, 0.2)}`,
-                              p: 1.5,
-                              maxHeight: 400,
-                              overflow: 'auto',
-                              border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                              background: `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
-                            }}
-                            onMouseEnter={() => setOpenDropdown(link.label)}
-                            onMouseLeave={() => setOpenDropdown(null)}
-                          >
-                            {link.dropdown.map((item, index) => {
-                              const IconComponent = (item as any).icon;
-                              return (
-                                <motion.div
-                                  key={item.to}
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: index * 0.05 }}
-                                >
-                                  <Button
-                                    component={NavLink}
-                                    to={item.to}
-                                    onClick={() => setOpenDropdown(null)}
-                                    sx={{
-                                      display: 'flex',
-                                      width: '100%',
-                                      justifyContent: 'flex-start',
-                                      alignItems: 'center',
-                                      color: theme.palette.text.primary,
-                                      fontWeight: 500,
-                                      fontSize: 15,
-                                      borderRadius: 1,
-                                      px: 2,
-                                      py: 1.5,
-                                      textTransform: 'none',
-                                      gap: 1.5,
-                                      minHeight: 44,
-                                      '&:hover': {
-                                        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.secondary.main, 0.12)} 100%)`,
-                                        transform: 'translateX(4px)',
-                                        boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`,
-                                      },
-                                      transition: 'all 0.2s ease-in-out',
-                                    }}
-                                  >
-                                    {IconComponent && (
-                                      <IconComponent
-                                        sx={{
-                                          color: theme.palette.primary.main,
-                                          fontSize: 20,
-                                          flexShrink: 0
-                                        }}
-                                      />
-                                    )}
-                                    <Typography
-                                      variant="body2"
-                                      sx={{
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap',
-                                      }}
-                                    >
-                                      {item.label}
-                                    </Typography>
-                                  </Button>
-                                </motion.div>
-                              );
-                            })}
-                          </Paper>
-                        </Grow>
-                      </React.Fragment>
-                    )}
-                  </Popper>
-                )}
-              </Box>
-            );
-          })}
         </Box>
 
         {/* Mobile Toolbar - Keep existing mobile layout */}
