@@ -10,14 +10,10 @@ import {
   CardActions,
   Button,
   Chip,
-  Rating,
-  Stack,
-  Tooltip,
   CircularProgress,
   IconButton,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useWishlist } from '../contexts/WishlistContext';
 import { useAddToCart } from '../hooks/useAddToCart';

@@ -61,7 +61,9 @@ export function FeatureHighlightsRow() {
     <Box
       sx={{
         width: "100%",
-        background: `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`,
+        background: theme.palette.mode === 'light' 
+          ? `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`
+          : `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.background.paper, 0.95)} 100%)`,
         py: 2,
         px: { xs: 1, sm: 4 },
         display: "flex",
@@ -70,12 +72,14 @@ export function FeatureHighlightsRow() {
         alignItems: "center",
         gap: 0,
         overflowX: { xs: "auto", md: "visible" },
-        boxShadow: "0 1px 8px rgba(44,70,57,0.04)",
+        boxShadow: theme.palette.mode === 'light' 
+          ? "0 1px 8px rgba(44,70,57,0.04)"
+          : `0 1px 8px ${alpha(theme.palette.primary.main, 0.15)}`,
         mb: 4,
         scrollbarWidth: "none",
         "&::-webkit-scrollbar": { display: "none" },
-        borderTop: `1px solid ${theme.palette.primary.main ? alpha(theme.palette.primary.main, 0.15) : 'rgba(0,0,0,0.1)'}`,
-        borderBottom: `1px solid ${theme.palette.primary.main ? alpha(theme.palette.primary.main, 0.15) : 'rgba(0,0,0,0.1)'}`,
+        borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+        borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
       }}
       component={motion.div}
       variants={containerVariants}
@@ -117,17 +121,23 @@ export function FeatureHighlightsRow() {
                   px: 2.5,
                   py: 1.2,
                   borderRadius: 99,
-                  bgcolor: theme.palette.background.paper,
-                  boxShadow: "0 2px 8px rgba(44,70,57,0.10)",
+                  bgcolor: theme.palette.mode === 'light' 
+                    ? theme.palette.background.paper
+                    : alpha(theme.palette.background.paper, 0.9),
+                  boxShadow: theme.palette.mode === 'light'
+                    ? "0 2px 8px rgba(44,70,57,0.10)"
+                    : `0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}`,
                   mx: 0.5,
                   minWidth: { xs: 120, sm: 150, md: 180 },
                   maxWidth: { xs: 140, sm: 180, md: 220 },
                   cursor: "pointer",
                   transition: "box-shadow 0.25s, transform 0.25s",
                   "&:hover": {
-                    boxShadow: `0 4px 18px ${theme.palette.primary.main}22`,
+                    boxShadow: `0 4px 18px ${alpha(theme.palette.primary.main, 0.3)}`,
                     transform: "scale(1.06)",
-                    bgcolor: theme.palette.grey[100],
+                    bgcolor: theme.palette.mode === 'light' 
+                      ? theme.palette.grey[100]
+                      : alpha(theme.palette.background.paper, 0.95),
                   },
                 }}
                 tabIndex={0}
@@ -140,8 +150,12 @@ export function FeatureHighlightsRow() {
                     width: 44,
                     height: 44,
                     borderRadius: "50%",
-                    background: `linear-gradient(135deg, ${theme.palette.primary.main} 60%, ${theme.palette.primary.dark} 100%)`,
-                    boxShadow: `0 2px 8px ${theme.palette.primary.main}33`,
+                    background: theme.palette.mode === 'light'
+                      ? `linear-gradient(135deg, ${theme.palette.primary.main} 60%, ${theme.palette.primary.dark} 100%)`
+                      : `linear-gradient(135deg, ${theme.palette.primary.main} 40%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
+                    boxShadow: theme.palette.mode === 'light'
+                      ? `0 2px 8px ${alpha(theme.palette.primary.main, 0.3)}`
+                      : `0 2px 8px ${alpha(theme.palette.primary.main, 0.4)}`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",

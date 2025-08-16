@@ -1,4 +1,4 @@
-import { Box, Grid, Button, Typography, useTheme, IconButton, Collapse, Fade } from '@mui/material';
+import { Box, Grid, Button, Typography, useTheme, IconButton, Collapse, Fade, alpha } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
 import ProductCard, { type Product } from '../../components/ProductCard';
 import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from './api';
@@ -423,7 +423,7 @@ export function ProductList() {
         variant="h4" 
         fontWeight={700} 
         color="primary" 
-        mb={{ xs: 2, sm: 3 }}
+        mb={{ xs: 4, sm: 5, md: 6 }}
         textAlign="center" 
         sx={{ 
           fontFamily: `'Playfair Display', 'Merriweather', serif`,
@@ -437,13 +437,13 @@ export function ProductList() {
       <div 
         className="tamil-motif" 
         style={{ 
-          margin: '0 auto 1rem auto',
+          margin: '0 auto 2rem auto',
           maxWidth: '90%',
         }} 
       />
       
       {/* Responsive Category Filter */}
-      <Box sx={{ position: 'relative', mb: { xs: 2, sm: 3 }, px: { xs: 1, sm: 0 } }}>
+      <Box sx={{ position: 'relative', mb: { xs: 4, sm: 5, md: 6 }, px: { xs: 1, sm: 0 } }}>
         {showLeft && (
           <IconButton
             onClick={() => handleScroll('left')}
@@ -472,9 +472,9 @@ export function ProductList() {
           sx={{
             display: 'flex',
             overflowX: 'auto',
-            gap: { xs: 1, sm: 1.5 },
+            gap: { xs: 2, sm: 2.5, md: 3 },
             px: { xs: 4, sm: 5 }, // Space for arrows
-            py: 1,
+            py: { xs: 2, sm: 3, md: 4 },
             scrollbarWidth: 'none', // Hide scrollbar on Firefox
             '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar on Chrome
             // Smooth scrolling
@@ -490,30 +490,34 @@ export function ProductList() {
                 fontSize: { xs: 14, sm: 16, md: 17 },
                 letterSpacing: 0.5,
                 borderRadius: 99,
-                px: { xs: 2, sm: 2.5, md: 3 },
-                py: { xs: 0.75, sm: 1, md: 1.25 },
-                minWidth: { xs: 80, sm: 100, md: 120 },
-                minHeight: { xs: 36, sm: 40, md: 44 },
+                px: { xs: 3, sm: 3.5, md: 4 },
+                py: { xs: 1.5, sm: 2, md: 2.5 },
+                minWidth: { xs: 90, sm: 110, md: 130 },
+                minHeight: { xs: 44, sm: 48, md: 52 },
                 whiteSpace: 'nowrap',
                 flexShrink: 0, // Prevent shrinking
-                boxShadow: selectedCategory.id === cat.id ? 3 : 0,
-                bgcolor: selectedCategory.id === cat.id ? 'primary.main' : 'grey.100',
+                boxShadow: selectedCategory.id === cat.id ? 4 : 2,
+                bgcolor: selectedCategory.id === cat.id 
+                  ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
+                  : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
                 color: selectedCategory.id === cat.id ? 'common.white' : 'primary.dark',
                 border: selectedCategory.id === cat.id ? '2px solid' : '1px solid',
                 borderColor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.300',
-                transition: 'all 0.2s cubic-bezier(.4,2,.6,1)',
+                transition: 'all 0.3s cubic-bezier(.4,2,.6,1)',
                 textShadow: selectedCategory.id === cat.id
                   ? '0 2px 8px rgba(0,0,0,0.18), 0 1px 1px rgba(0,0,0,0.10)'
                   : 'none',
                 '&:hover': {
-                  bgcolor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.200',
+                  bgcolor: selectedCategory.id === cat.id 
+                    ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`
+                    : `linear-gradient(135deg, ${theme.palette.grey[100]} 0%, ${theme.palette.grey[200]} 100%)`,
                   color: selectedCategory.id === cat.id ? 'common.white' : 'primary.main',
                   borderColor: 'primary.main',
-                  boxShadow: 4,
+                  boxShadow: 6,
                   textShadow: selectedCategory.id === cat.id
                     ? '0 2px 12px rgba(0,0,0,0.22)'
                     : '0 1px 4px rgba(0,0,0,0.10)',
-                  transform: { xs: 'none', sm: 'translateY(-2px)' }, // No transform on mobile
+                  transform: { xs: 'none', sm: 'translateY(-3px)' }, // Enhanced transform on desktop
                 },
                 '&:active': {
                   transform: 'scale(0.96)',
@@ -549,6 +553,9 @@ export function ProductList() {
         )}
       </Box>
       
+      {/* Spacer between category filter and products */}
+      <Box sx={{ height: { xs: 3, sm: 4, md: 5 } }} />
+      
       {/* Responsive Product Grid */}
       {isLoading ? (
         <Box 
@@ -556,8 +563,10 @@ export function ProductList() {
             display: 'flex', 
             justifyContent: 'center', 
             alignItems: 'center',
-            minHeight: { xs: 200, sm: 250, md: 300 },
+            minHeight: { xs: 300, sm: 350, md: 400 },
             px: 2,
+            mt: { xs: 4, sm: 5, md: 6 },
+            py: { xs: 4, sm: 5, md: 6 },
           }}
         >
           <Typography 
@@ -578,8 +587,10 @@ export function ProductList() {
             display: 'flex', 
             justifyContent: 'center', 
             alignItems: 'center',
-            minHeight: { xs: 200, sm: 250, md: 300 },
+            minHeight: { xs: 300, sm: 350, md: 400 },
             px: 2,
+            mt: { xs: 4, sm: 5, md: 6 },
+            py: { xs: 4, sm: 5, md: 6 },
           }}
         >
           <Typography 
@@ -599,9 +610,9 @@ export function ProductList() {
           {/* Initial Products - Responsive Grid */}
           <Grid 
             container 
-            spacing={{ xs: 2, sm: 2.5, md: 3 }} 
+            spacing={{ xs: 3, sm: 4, md: 5 }} 
             sx={{ 
-              mt: { xs: 1, sm: 2 },
+              mt: { xs: 3, sm: 4, md: 5 },
               px: { xs: 1, sm: 0 },
             }}
           >
@@ -641,14 +652,14 @@ export function ProductList() {
           {/* Additional Products (Collapsible) */}
           {hasMoreProducts && (
             <Collapse in={showAllProducts} timeout={400} easing="ease-in-out">
-              <Grid 
-                container 
-                spacing={{ xs: 2, sm: 2.5, md: 3 }} 
-                sx={{ 
-                  mt: { xs: 1, sm: 2 },
-                  px: { xs: 1, sm: 0 },
-                }}
-              >
+                          <Grid 
+              container 
+              spacing={{ xs: 3, sm: 4, md: 5 }} 
+              sx={{ 
+                mt: { xs: 3, sm: 4, md: 5 },
+                px: { xs: 1, sm: 0 },
+              }}
+            >
                 {mappedProducts.slice(initialProductCount).map((product, index) => (
                   <Grid 
                     size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
@@ -686,7 +697,7 @@ export function ProductList() {
 
           {/* Responsive See More/Less Button */}
           {hasMoreProducts && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 3, sm: 4 }, px: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: { xs: 5, sm: 6, md: 7 }, px: 2 }}>
               <Button
                 onClick={handleToggleProducts}
                 variant="outlined"
@@ -734,12 +745,17 @@ export function ProductList() {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: { xs: 250, sm: 320, md: 400 },
-            height: { xs: '30vh', sm: '35vh', md: '40vh' },
-            maxHeight: 500,
+            minHeight: { xs: 300, sm: 380, md: 450 },
+            height: { xs: '35vh', sm: '40vh', md: '45vh' },
+            maxHeight: 600,
             textAlign: 'center',
-            px: { xs: 2, sm: 3, md: 4 },
-            py: { xs: 3, sm: 4 },
+            px: { xs: 3, sm: 4, md: 5 },
+            py: { xs: 5, sm: 6, md: 7 },
+            mt: { xs: 3, sm: 4, md: 5 },
+            borderRadius: 3,
+            background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
+            border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+            boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.08)}`,
           }}
         >
           <SentimentDissatisfiedIcon 

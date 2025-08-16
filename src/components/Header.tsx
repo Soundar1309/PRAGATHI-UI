@@ -517,6 +517,12 @@ const Header: React.FC = () => {
             px: { md: 3, lg: 4 },
             py: 2,
             width: '100%',
+            background: theme.palette.mode === 'light' 
+              ? `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.05)} 0%, ${alpha(theme.palette.secondary.main, 0.08)} 100%)`
+              : `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.1)} 0%, ${alpha(theme.palette.background.paper, 0.95)} 100%)`,
+            borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+            borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+            boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.08)}`,
           }}
         >
           {navLinks.map((link) => {
@@ -552,11 +558,13 @@ const Header: React.FC = () => {
                   onFocus={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { setDropdownAnchor(e.currentTarget); setOpenDropdown(link.label); } : undefined}
                   onBlur={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenDropdown(null); } : undefined}
                   sx={{
-                    color: isActive ? theme.palette.primary.main : theme.palette.text.secondary,
+                    color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
                     fontWeight: 600,
                     fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
                     fontSize: { md: 15, lg: 16, xl: 17 },
-                    background: 'transparent',
+                    background: isActive 
+                      ? alpha(theme.palette.primary.main, 0.1)
+                      : 'transparent',
                     position: 'relative',
                     textTransform: 'none',
                     display: 'flex',
@@ -566,11 +574,16 @@ const Header: React.FC = () => {
                     px: { md: 2, lg: 2.5, xl: 3 },
                     py: 1.5,
                     borderRadius: 1,
-                    border: 'none',
+                    border: isActive 
+                      ? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
+                      : '1px solid transparent',
                     transition: 'all 0.3s ease-in-out',
                     '&:hover': {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      backgroundColor: alpha(theme.palette.primary.main, 0.12),
                       color: theme.palette.primary.main,
+                      borderColor: alpha(theme.palette.primary.main, 0.4),
+                      transform: 'translateY(-1px)',
+                      boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`,
                       '&::after': {
                         content: '""',
                         position: 'absolute',
