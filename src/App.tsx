@@ -31,83 +31,88 @@ import BlogPage from './pages/blog';
 import JourneyPage from './pages/journey';
 import TermsPage from './pages/terms';
 import DeliveryPage from './pages/delivery';
+import Wishlist from './pages/Wishlist';
+import { WishlistProvider } from './contexts/WishlistContext';
 
 export default function App() {
   return (
-    <Router>
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          // Prevent horizontal scroll
-          overflowX: 'hidden',
-          width: '100%',
-        }}
-      >
-        <Header />
-        
-        {/* Main content area with responsive container */}
+    <WishlistProvider>
+      <Router>
         <Box
-          component="main"
           sx={{
-            flex: 1,
-            width: '100%',
-            // Remove any potential horizontal scroll
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            // Prevent horizontal scroll
             overflowX: 'hidden',
+            width: '100%',
           }}
         >
-          <Container
-            maxWidth={false}
+          <Header />
+          
+          {/* Main content area with responsive container */}
+          <Box
+            component="main"
             sx={{
-              px: { xs: 1, sm: 2, md: 3, lg: 4 },
-              py: { xs: 1, sm: 2 },
-              maxWidth: '1400px',
+              flex: 1,
               width: '100%',
-              mx: 'auto',
+              // Remove any potential horizontal scroll
+              overflowX: 'hidden',
             }}
           >
-            <Routes>
-              <Route path="/" element={<ProductList />} />
-              <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
-              <Route path="/products" element={<FilteredProductList />} />
-              <Route path="/search" element={<SearchResults />} />
-              <Route path="/products/:id" element={<ProductDetail />} />
-              <Route path="/admin/products" element={<RequireAdmin><ProductsList /></RequireAdmin>} />
-              <Route path="/admin/products/new" element={<RequireAdmin><ProductFormWrapper /></RequireAdmin>} />
-              <Route path="/admin/products/:productId/edit" element={<RequireAdmin><ProductFormWrapper /></RequireAdmin>} />
-              <Route path="/admin/categories" element={<RequireAdmin><CategoriesList /></RequireAdmin>} />
-              <Route path="/admin/categories/new" element={<RequireAdmin><CategoryFormWrapper /></RequireAdmin>} />
-              <Route path="/admin/categories/:categoryId/edit" element={<RequireAdmin><CategoryFormWrapper /></RequireAdmin>} />
-              <Route path="/orders" element={<RequireAuth><OrderList /></RequireAuth>} />
-              <Route path="/orders/new" element={<OrderCreate />} />
-              <Route path="/orders/:id" element={<RequireAuth><OrderDetail /></RequireAuth>} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/login" element={<LoginRegister />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/gallery" element={<GalleryPage />} />
-              <Route path="/contact" element={<ContactPage />} />
+            <Container
+              maxWidth={false}
+              sx={{
+                px: { xs: 1, sm: 2, md: 3, lg: 4 },
+                py: { xs: 1, sm: 2 },
+                maxWidth: '1400px',
+                width: '100%',
+                mx: 'auto',
+              }}
+            >
+              <Routes>
+                <Route path="/" element={<ProductList />} />
+                <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
+                <Route path="/products" element={<FilteredProductList />} />
+                <Route path="/search" element={<SearchResults />} />
+                <Route path="/products/:id" element={<ProductDetail />} />
+                <Route path="/admin/products" element={<RequireAdmin><ProductsList /></RequireAdmin>} />
+                <Route path="/admin/products/new" element={<RequireAdmin><ProductFormWrapper /></RequireAdmin>} />
+                <Route path="/admin/products/:productId/edit" element={<RequireAdmin><ProductFormWrapper /></RequireAdmin>} />
+                <Route path="/admin/categories" element={<RequireAdmin><CategoriesList /></RequireAdmin>} />
+                <Route path="/admin/categories/new" element={<RequireAdmin><CategoryFormWrapper /></RequireAdmin>} />
+                <Route path="/admin/categories/:categoryId/edit" element={<RequireAdmin><CategoryFormWrapper /></RequireAdmin>} />
+                <Route path="/orders" element={<RequireAuth><OrderList /></RequireAuth>} />
+                <Route path="/orders/new" element={<OrderCreate />} />
+                <Route path="/orders/:id" element={<RequireAuth><OrderDetail /></RequireAuth>} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/wishlist" element={<RequireAuth><Wishlist /></RequireAuth>} />
+                <Route path="/login" element={<LoginRegister />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/gallery" element={<GalleryPage />} />
+                <Route path="/contact" element={<ContactPage />} />
 
-              {/* New Quick Link Pages */}
-              <Route path="/benefits" element={<BenefitsPage />} />
-              <Route path="/testimonials" element={<TestimonialsPage />} />
-              <Route path="/blog" element={<BlogPage />} />
-              <Route path="/journey" element={<JourneyPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              <Route path="/delivery" element={<DeliveryPage />} />
+                {/* New Quick Link Pages */}
+                <Route path="/benefits" element={<BenefitsPage />} />
+                <Route path="/testimonials" element={<TestimonialsPage />} />
+                <Route path="/blog" element={<BlogPage />} />
+                <Route path="/journey" element={<JourneyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/delivery" element={<DeliveryPage />} />
 
-              {/* Policy Pages */}
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/shipping" element={<ShippingPolicy />} />
-              <Route path="/returns" element={<ReturnPolicy />} />
-              <Route path="/refund" element={<RefundPolicy />} />
-              {/* Add more routes as needed */}
-            </Routes>
-          </Container>
+                {/* Policy Pages */}
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/shipping" element={<ShippingPolicy />} />
+                <Route path="/returns" element={<ReturnPolicy />} />
+                <Route path="/refund" element={<RefundPolicy />} />
+                {/* Add more routes as needed */}
+              </Routes>
+            </Container>
+          </Box>
+          
+          <Footer />
         </Box>
-        
-        <Footer />
-      </Box>
-    </Router>
+      </Router>
+    </WishlistProvider>
   );
 }

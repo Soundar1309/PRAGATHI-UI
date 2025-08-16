@@ -17,6 +17,7 @@ import {
 import type { SxProps } from '@mui/material';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { useAddToCart } from '../hooks/useAddToCart';
+import WishlistButton from './WishlistButton';
 
 export interface Product {
   id: number;
@@ -269,57 +270,72 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           ₹{Number(product.price).toFixed(2)}
         </Typography>
         
-        <Button
-          variant="contained"
-          color="secondary"
-          sx={{
-            fontWeight: 700,
-            borderRadius: { xs: 1.5, sm: 1 },
-            boxShadow: 'none',
-            // Touch-friendly sizing
-            minWidth: { xs: '100%', sm: 120 },
-            minHeight: { xs: 48, sm: 40 },
-            fontSize: { xs: '0.9rem', sm: '0.875rem' },
-            px: { xs: 2, sm: 1.5 },
-            py: { xs: 1.5, sm: 1 },
-            position: 'relative',
-            order: { xs: 1, sm: 2 }, // Button comes first on mobile
-            // Enhanced touch feedback
-            '&:active': {
-              transform: 'scale(0.98)',
-            },
-          }}
-          onClick={handleAddToCartClick}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <CircularProgress 
-                size={16} 
-                sx={{ mr: 1, color: 'white' }} 
-              />
-              <span style={{ fontSize: 'inherit' }}>
-                {/* Shorter text on mobile */}
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1,
+          order: { xs: 1, sm: 2 } // Button group comes first on mobile
+        }}>
+          <WishlistButton 
+            productId={product.id} 
+            size="small"
+            onAuthRequired={() => {
+              // Handle authentication requirement - could redirect to login
+              console.log('Authentication required for wishlist');
+            }}
+          />
+          
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={{
+              fontWeight: 700,
+              borderRadius: { xs: 1.5, sm: 1 },
+              boxShadow: 'none',
+              // Touch-friendly sizing
+              minWidth: { xs: '100%', sm: 120 },
+              minHeight: { xs: 48, sm: 40 },
+              fontSize: { xs: '0.9rem', sm: '0.875rem' },
+              px: { xs: 2, sm: 1.5 },
+              py: { xs: 1.5, sm: 1 },
+              position: 'relative',
+              // Enhanced touch feedback
+              '&:active': {
+                transform: 'scale(0.98)',
+              },
+            }}
+            onClick={handleAddToCartClick}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <CircularProgress 
+                  size={16} 
+                  sx={{ mr: 1, color: 'white' }} 
+                />
+                <span style={{ fontSize: 'inherit' }}>
+                  {/* Shorter text on mobile */}
+                  <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                    Adding...
+                  </Box>
+                  <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                    Adding...
+                  </Box>
+                </span>
+              </>
+            ) : (
+              <>
+                {/* Responsive button text */}
                 <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
-                  Adding...
+                  Add to Cart
                 </Box>
                 <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
-                  Adding...
+                  Add to Cart
                 </Box>
-              </span>
-            </>
-          ) : (
-            <>
-              {/* Responsive button text */}
-              <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
-                Add to Cart
-              </Box>
-              <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
-                Add to Cart
-              </Box>
-            </>
-          )}
-        </Button>
+              </>
+            )}
+          </Button>
+        </Box>
       </CardActions>
     </Card>
   );

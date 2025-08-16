@@ -3,6 +3,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import FactoryIcon from '@mui/icons-material/Factory';
 import SpaIcon from '@mui/icons-material/Spa';
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
@@ -37,6 +38,7 @@ import { ColorModeContext } from '../main';
 import { useGetCartQuery } from '../features/cart/api';
 import { useLogoutMutation } from '../features/auth/api';
 import { useUserRole } from '../hooks/useUserRole';
+import { useWishlist } from '../contexts/WishlistContext';
 
 //-----------------------------------------------------------------------------------------------------------------------------
 
@@ -183,6 +185,8 @@ const Header: React.FC = () => {
   const isAdmin = isAuthenticated && role === 'admin';
   const { data: cartData } = useGetCartQuery(undefined, { skip: !isAuthenticated });
   const cartCount = cartData?.item_count || 0;
+  const { wishlist } = useWishlist();
+  const wishlistCount = wishlist.length;
   const [logout] = useLogoutMutation();
 
   const handleFarmStoreClick = () => {
@@ -419,6 +423,29 @@ const Header: React.FC = () => {
                 </Search>
               </Box>
             </Box>
+
+            {/* Wishlist Button */}
+            <IconButton 
+              size="large" 
+              aria-label="wishlist" 
+              onClick={() => navigate('/wishlist')} 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 48,
+                minHeight: 48,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
+              }}
+            >
+              <Badge badgeContent={wishlistCount} color="error">
+                <FavoriteIcon />
+              </Badge>
+            </IconButton>
 
             {/* Cart & Profile & Dark Mode Toggle */}
             <IconButton 
@@ -780,6 +807,28 @@ const Header: React.FC = () => {
             >
               <SearchIcon fontSize="small" />
             </IconButton>
+            
+            {/* Mobile Wishlist Button */}
+            <IconButton 
+              onClick={() => navigate('/wishlist')} 
+              sx={{ 
+                color: theme.palette.primary.main,
+                minWidth: 44,
+                minHeight: 44,
+                p: 1,
+                borderRadius: '50%',
+                background: alpha(theme.palette.primary.main, 0.08),
+                '&:hover': {
+                  background: alpha(theme.palette.primary.main, 0.15),
+                  transform: 'scale(1.05)',
+                },
+                transition: 'all 0.2s ease-in-out',
+              }}
+            >
+              <Badge badgeContent={wishlistCount} color="error">
+                <FavoriteIcon fontSize="small" />
+              </Badge>
+            </IconButton>
             <IconButton 
               size="large" 
               aria-label="cart" 
@@ -909,11 +958,46 @@ const Header: React.FC = () => {
             </Box>
             
             <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {/* Cart Link */}
+              {/* Wishlist Link */}
               <motion.div
                 initial={{ x: -40, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.05 * 0, type: 'spring', stiffness: 300, damping: 24 }}
+              >
+                <Button
+                  component={NavLink}
+                  to="/wishlist"
+                  onClick={() => setDrawerOpen(false)}
+                  sx={{
+                    color: location.pathname === '/wishlist' ? theme.palette.primary.main : theme.palette.text.secondary,
+                    fontWeight: 600,
+                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                    fontSize: { xs: 16, sm: 18 },
+                    justifyContent: 'flex-start',
+                    width: '100%',
+                    textTransform: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.5,
+                    minHeight: 48,
+                    px: 2,
+                    py: 1.5,
+                    borderRadius: 1,
+                    '&:hover': {
+                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                    },
+                  }}
+                >
+                  <FavoriteIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
+                  Wishlist ({wishlistCount})
+                </Button>
+              </motion.div>
+              
+              {/* Cart Link */}
+              <motion.div
+                initial={{ x: -40, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.05 * 1, type: 'spring', stiffness: 300, damping: 24 }}
               >
                 <Button
                   component={NavLink}
