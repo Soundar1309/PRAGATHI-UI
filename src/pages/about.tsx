@@ -26,7 +26,12 @@ const imageStyle = {
 export default function AboutPage() {
   const theme = useTheme();
   return (
-    <Box sx={{ bgcolor: "#F7F9FB", pb: 8 }}>
+    <Box sx={{ 
+        bgcolor: "#F7F9FB", 
+        pb: 8,
+        // Add top margin to ensure content is below fixed header
+        // mt: { xs: '100px', sm: '100px', md: '180px', lg: '150px' }
+    }}>
       {/* Hero Section */}
       <Box
         sx={{
@@ -341,7 +346,7 @@ export default function AboutPage() {
                 fontWeight: 700,
                 borderRadius: 2,
                 px: 4,
-                py: 1.5,
+                py: 2,
                 boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
                 textTransform: "none",
                 fontFamily: "Inter, system-ui, sans-serif",

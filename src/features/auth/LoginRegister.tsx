@@ -74,7 +74,7 @@ export function LoginRegister() {
   return (
     <>
       <div className="tamil-motif" style={{ margin: '2rem auto' }} />
-      <Box sx={{ maxWidth: 400, mx: 'auto', mt: 4, bgcolor: 'background.paper', p: 3, borderRadius: 3, boxShadow: 2 }}>
+      <Box sx={{ maxWidth: 400, mx: 'auto', mt: '150px', bgcolor: 'background.paper', p: 3, borderRadius: 3, boxShadow: 2 }}>
         <Tabs value={tab} onChange={(_, v) => setTab(v)}>
           <Tab label="Login" />
           <Tab label="Register" />

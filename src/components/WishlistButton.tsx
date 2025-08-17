@@ -15,7 +15,7 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
   size = 'medium',
   onAuthRequired 
 }) => {
-  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { isInWishlist, addToWishlist, removeFromWishlist, error, clearError } = useWishlist();
   const [isLoading, setIsLoading] = useState(false);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -34,6 +34,7 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
     // Check if user is authenticated
     const token = localStorage.getItem('jwt');
     if (!token) {
+      console.log('No JWT token found, authentication required');
       if (onAuthRequired) {
         onAuthRequired();
       }
@@ -42,7 +43,10 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
 
     try {
       setIsLoading(true);
+      clearError(); // Clear any previous errors
+      
       if (isInWishlist(productId)) {
+        console.log('Removing product from wishlist:', productId);
         await removeFromWishlist(productId);
         setSnackbar({
           open: true,
@@ -50,6 +54,7 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
           severity: 'success'
         });
       } else {
+        console.log('Adding product to wishlist:', productId);
         await addToWishlist(productId);
         setSnackbar({
           open: true,
@@ -57,10 +62,21 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
           severity: 'success'
         });
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Wishlist operation failed:', error);
+      
+      let errorMessage = 'Failed to update wishlist';
+      if (error.message === 'Authentication required') {
+        errorMessage = 'Please log in to use wishlist';
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       setSnackbar({
         open: true,
-        message: 'Failed to update wishlist',
+        message: errorMessage,
         severity: 'error'
       });
     } finally {
@@ -73,6 +89,18 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
   };
 
   const isWishlisted = isInWishlist(productId);
+
+  // Show error from context if exists
+  React.useEffect(() => {
+    if (error) {
+      setSnackbar({
+        open: true,
+        message: error,
+        severity: 'error'
+      });
+      clearError();
+    }
+  }, [error, clearError]);
 
   return (
     <>
@@ -96,7 +124,7 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
 
       <Snackbar
         open={snackbar.open}
-        autoHideDuration={3000}
+        autoHideDuration={4000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >

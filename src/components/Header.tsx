@@ -15,7 +15,7 @@ import { AppBar, Badge, Box, Button, Drawer, IconButton, Toolbar, Typography, us
 import Dialog from '@mui/material/Dialog';
 import InputBase from '@mui/material/InputBase';
 import { alpha, keyframes, styled } from '@mui/material/styles';
-import {  motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { useState, useContext } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Popper from '@mui/material/Popper';
@@ -266,15 +266,40 @@ const Header: React.FC = () => {
 
   return (
     <Box
+      component="header"
       sx={{
-        position: 'sticky',
+        position: 'fixed',
         top: 0,
-        zIndex: theme.zIndex.appBar + 1,
+        left: 0,
+        right: 0,
+        zIndex: 9999,
         background: theme.palette.background.default,
         // Prevent horizontal scroll
         width: '100%',
         overflow: 'hidden',
+        // Enhanced fixed positioning
+        willChange: 'transform',
+        // Add backdrop blur for modern browsers
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        // Ensure proper stacking context
+        isolation: 'isolate',
+        // Force fixed behavior
+        '&.sticky-header': {
+          position: 'fixed !important',
+          top: '0 !important',
+          left: '0 !important',
+          right: '0 !important',
+        },
+        // Ensure fixed works in all scenarios
+        '@media (max-width: 768px)': {
+          position: 'fixed',
+          top: 0,
+        },
+
       }}
+      className="sticky-header"
+
     >
       {/* Running Banner */}
       <Box
@@ -304,18 +329,21 @@ const Header: React.FC = () => {
           🔥 Free Shipping Alert! No delivery charges across India – shop your favorite items today!
         </Typography>
       </Box>
-      
+
       {/* AppBar and rest of header */}
       <AppBar
         position="static"
         color="transparent"
         elevation={0}
         sx={{
-          background: theme.palette.mode === 'light' 
+          background: theme.palette.mode === 'light'
             ? `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`
             : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
           boxShadow: 'none',
           borderBottom: `1.5px solid ${theme.palette.divider}`,
+          // Ensure AppBar works with sticky header
+          position: 'relative',
+          zIndex: 1,
         }}
       >
         {/* First Row - Logo & Icons (Desktop Only) */}
@@ -359,7 +387,7 @@ const Header: React.FC = () => {
                 overflow: 'hidden',
                 flexDirection: 'row',
                 alignItems: 'center',
-                gap: 2.5,
+                gap: 2,
                 '&:hover': {
                   background: 'transparent',
                   transform: 'translateY(-2px)',
@@ -396,7 +424,7 @@ const Header: React.FC = () => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: { md: 1, lg: 1.5 },
+              gap: { md: 1, lg: 2 },
               mx: { md: 2, lg: 3 },
             }}
           >
@@ -406,12 +434,12 @@ const Header: React.FC = () => {
               return (
                 <Box
                   key={link.label}
-                  sx={{ 
+                  sx={{
                     position: 'relative',
                   }}
-                  onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => { 
-                    setDropdownAnchor(e.currentTarget); 
-                    setOpenDropdown(link.label); 
+                  onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
+                    setDropdownAnchor(e.currentTarget);
+                    setOpenDropdown(link.label);
                   } : undefined}
                   onMouseLeave={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
                     // Only close if we're not moving to the dropdown menu
@@ -434,7 +462,7 @@ const Header: React.FC = () => {
                       fontWeight: 600,
                       fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
                       fontSize: { md: 14, lg: 15, xl: 16 },
-                      background: isActive 
+                      background: isActive
                         ? alpha(theme.palette.primary.main, 0.1)
                         : 'transparent',
                       position: 'relative',
@@ -443,10 +471,10 @@ const Header: React.FC = () => {
                       alignItems: 'center',
                       gap: 1,
                       minHeight: 40,
-                      px: { md: 1.5, lg: 2, xl: 2.5 },
+                      px: { md: 2, lg: 2, xl: 3 },
                       py: 1,
                       borderRadius: 1,
-                      border: isActive 
+                      border: isActive
                         ? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
                         : '1px solid transparent',
                       transition: 'all 0.3s ease-in-out',
@@ -461,7 +489,7 @@ const Header: React.FC = () => {
                   >
                     {link.label}
                   </Button>
-                  
+
                   {/* Dropdown Menu */}
                   {hasDropdown && openDropdown === link.label && (
                     <Popper
@@ -469,8 +497,28 @@ const Header: React.FC = () => {
                       anchorEl={dropdownAnchor}
                       placement="bottom-start"
                       transition
-                      disablePortal
-                      style={{ zIndex: 1300 }}
+                      disablePortal={false}
+                      style={{ zIndex: 9999 }}
+                      modifiers={[
+                        {
+                          name: 'preventOverflow',
+                          enabled: true,
+                          options: {
+                            altAxis: true,
+                            tether: false,
+                          },
+                        },
+                        {
+                          name: 'flip',
+                          enabled: true,
+                        },
+                        {
+                          name: 'offset',
+                          options: {
+                            offset: [0, 8],
+                          },
+                        },
+                      ]}
                       onMouseEnter={() => setOpenDropdown(link.label)}
                       onMouseLeave={() => setOpenDropdown(null)}
                     >
@@ -484,42 +532,121 @@ const Header: React.FC = () => {
                             sx={{
                               mt: 1,
                               minWidth: 220,
+                              maxHeight: 400, // Limit height for scrolling
                               background: theme.palette.background.paper,
                               border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
                               borderRadius: 2,
-                              overflow: 'hidden',
+                              overflow: 'hidden', // Hide overflow for header
+                              position: 'relative',
+                              zIndex: 9999,
+                              boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+                              '&::before': {
+                                content: '""',
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: theme.palette.background.paper,
+                                zIndex: -1,
+                              },
                             }}
                           >
-                            {link.dropdown?.map((item, index) => {
-                              const Icon = (item as any).icon;
-                              return (
-                                <MenuItem
-                                  key={index}
-                                  component={NavLink}
-                                  to={item.to}
-                                  onClick={() => setOpenDropdown(null)}
-                                  sx={{
-                                    py: 1.5,
-                                    px: 2,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 1.5,
-                                    '&:hover': {
-                                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                                    },
-                                  }}
-                                >
-                                  {Icon && <Icon sx={{ fontSize: 20, color: theme.palette.primary.main }} />}
-                                  <ListItemText 
-                                    primary={item.label}
-                                    primaryTypographyProps={{
-                                      fontSize: 14,
-                                      fontWeight: 500,
+                            {/* Dropdown Header */}
+                            <Box
+                              sx={{
+                                py: 2,
+                                px: 3,
+                                background: alpha(theme.palette.primary.main, 0.05),
+                                borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+                                borderTopLeftRadius: 2,
+                                borderTopRightRadius: 2,
+                              }}
+                            >
+                              <Typography
+                                variant="subtitle2"
+                                sx={{
+                                  fontWeight: 700,
+                                  color: theme.palette.primary.main,
+                                  fontSize: 13,
+                                  textTransform: 'uppercase',
+                                  letterSpacing: 1,
+                                }}
+                              >
+                                {link.label}
+                              </Typography>
+                            </Box>
+
+                            {/* Scrollable Content */}
+                            <Box
+                              sx={{
+                                maxHeight: 320, // Account for header
+                                overflow: 'auto',
+                                // Custom scrollbar styling
+                                '&::-webkit-scrollbar': {
+                                  width: 8,
+                                },
+                                '&::-webkit-scrollbar-track': {
+                                  background: alpha(theme.palette.grey[200], 0.5),
+                                  borderRadius: 4,
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                  background: alpha(theme.palette.primary.main, 0.6),
+                                  borderRadius: 4,
+                                  '&:hover': {
+                                    background: alpha(theme.palette.primary.main, 0.8),
+                                  },
+                                },
+                              }}
+                            >
+                              {link.dropdown?.map((item, index) => {
+                                const Icon = (item as any).icon;
+                                return (
+                                  <MenuItem
+                                    key={index}
+                                    component={NavLink}
+                                    to={item.to}
+                                    onClick={() => setOpenDropdown(null)}
+                                    sx={{
+                                      py: 2,
+                                      px: 3,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: 2,
+                                      minHeight: 56,
+                                      borderBottom: `1px solid ${alpha(theme.palette.grey[200], 0.3)}`,
+                                      '&:last-child': {
+                                        borderBottom: 'none',
+                                      },
+                                      '&:hover': {
+                                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                                        transform: 'translateX(4px)',
+                                      },
+                                      transition: 'all 0.2s ease-in-out',
                                     }}
-                                  />
-                                </MenuItem>
-                              );
-                            })}
+                                  >
+                                    {Icon && (
+                                      <Icon
+                                        sx={{
+                                          fontSize: 22,
+                                          color: theme.palette.primary.main,
+                                          flexShrink: 0,
+                                        }}
+                                      />
+                                    )}
+                                    <ListItemText
+                                      primary={item.label}
+                                      primaryTypographyProps={{
+                                        fontSize: 15,
+                                        fontWeight: 600,
+                                        color: theme.palette.text.primary,
+                                        letterSpacing: 0.3,
+                                      }}
+                                    />
+                                  </MenuItem>
+                                );
+                              })}
+                            </Box>
                           </Paper>
                         </Grow>
                       )}
@@ -535,14 +662,14 @@ const Header: React.FC = () => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: { md: 1.5, lg: 2 },
+              gap: { md: 2, lg: 2 },
             }}
           >
             {/* Desktop Search Bar */}
-            <Box 
-              sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
                 flex: { md: '0 1 280px', lg: '0 1 320px' },
                 maxWidth: 320,
               }}
@@ -552,8 +679,8 @@ const Header: React.FC = () => {
                   <SearchIconWrapper>
                     <SearchIcon />
                   </SearchIconWrapper>
-                  <StyledInputBase 
-                    placeholder="Search products..." 
+                  <StyledInputBase
+                    placeholder="Search products..."
                     inputProps={{ 'aria-label': 'search' }}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -564,11 +691,11 @@ const Header: React.FC = () => {
             </Box>
 
             {/* Wishlist Button */}
-            <IconButton 
-              size="large" 
-              aria-label="wishlist" 
-              onClick={() => navigate('/wishlist')} 
-              sx={{ 
+            <IconButton
+              size="large"
+              aria-label="wishlist"
+              onClick={() => navigate('/wishlist')}
+              sx={{
                 color: theme.palette.primary.main,
                 minWidth: 48,
                 minHeight: 48,
@@ -587,11 +714,11 @@ const Header: React.FC = () => {
             </IconButton>
 
             {/* Cart & Profile & Dark Mode Toggle */}
-            <IconButton 
-              size="large" 
-              aria-label="cart" 
-              onClick={() => navigate('/cart')} 
-              sx={{ 
+            <IconButton
+              size="large"
+              aria-label="cart"
+              onClick={() => navigate('/cart')}
+              sx={{
                 color: theme.palette.primary.main,
                 minWidth: 48,
                 minHeight: 48,
@@ -608,9 +735,9 @@ const Header: React.FC = () => {
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
-            <IconButton 
-              size="large" 
-              sx={{ 
+            <IconButton
+              size="large"
+              sx={{
                 color: theme.palette.primary.main,
                 minWidth: 48,
                 minHeight: 48,
@@ -621,14 +748,14 @@ const Header: React.FC = () => {
                   transform: 'scale(1.05)',
                 },
                 transition: 'all 0.2s ease-in-out',
-              }} 
+              }}
               onClick={handleAccountMenuOpen}
             >
               <AccountCircle fontSize="large" />
             </IconButton>
             {/* Dark mode toggle */}
-            <IconButton 
-              sx={{ 
+            <IconButton
+              sx={{
                 minWidth: 48,
                 minHeight: 48,
                 borderRadius: '50%',
@@ -638,8 +765,8 @@ const Header: React.FC = () => {
                   transform: 'scale(1.05)',
                 },
                 transition: 'all 0.2s ease-in-out',
-              }} 
-              onClick={colorMode.toggleColorMode} 
+              }}
+              onClick={colorMode.toggleColorMode}
               color="inherit"
             >
               {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
@@ -648,13 +775,13 @@ const Header: React.FC = () => {
         </Box>
 
         {/* Mobile Toolbar - Keep existing mobile layout */}
-        <Toolbar 
-          sx={{ 
-            display: { xs: 'flex', md: 'none' }, 
-            justifyContent: 'space-between', 
+        <Toolbar
+          sx={{
+            display: { xs: 'flex', md: 'none' },
+            justifyContent: 'space-between',
             minHeight: { xs: 56, sm: 64 },
             px: { xs: 1, sm: 2 },
-            background: theme.palette.mode === 'light' 
+            background: theme.palette.mode === 'light'
               ? `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`
               : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
             borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
@@ -720,17 +847,17 @@ const Header: React.FC = () => {
           </Box>
 
           {/* Mobile Icons */}
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: { xs: 0.5, sm: 1 },
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: { xs: 1, sm: 1 },
               ml: 'auto',
             }}
           >
-            <IconButton 
-              onClick={() => setSearchOpen(true)} 
-              sx={{ 
+            <IconButton
+              onClick={() => setSearchOpen(true)}
+              sx={{
                 color: theme.palette.primary.main,
                 minWidth: 44,
                 minHeight: 44,
@@ -746,11 +873,11 @@ const Header: React.FC = () => {
             >
               <SearchIcon fontSize="small" />
             </IconButton>
-            
+
             {/* Mobile Wishlist Button */}
-            <IconButton 
-              onClick={() => navigate('/wishlist')} 
-              sx={{ 
+            <IconButton
+              onClick={() => navigate('/wishlist')}
+              sx={{
                 color: theme.palette.primary.main,
                 minWidth: 44,
                 minHeight: 44,
@@ -768,11 +895,11 @@ const Header: React.FC = () => {
                 <FavoriteIcon fontSize="small" />
               </Badge>
             </IconButton>
-            <IconButton 
-              size="large" 
-              aria-label="cart" 
-              onClick={() => navigate('/cart')} 
-              sx={{ 
+            <IconButton
+              size="large"
+              aria-label="cart"
+              onClick={() => navigate('/cart')}
+              sx={{
                 color: theme.palette.primary.main,
                 minWidth: 44,
                 minHeight: 44,
@@ -790,8 +917,8 @@ const Header: React.FC = () => {
                 <ShoppingCartIcon fontSize="small" />
               </Badge>
             </IconButton>
-            <IconButton 
-              sx={{ 
+            <IconButton
+              sx={{
                 color: theme.palette.primary.main,
                 minWidth: 44,
                 minHeight: 44,
@@ -803,14 +930,14 @@ const Header: React.FC = () => {
                   transform: 'scale(1.05)',
                 },
                 transition: 'all 0.2s ease-in-out',
-              }} 
+              }}
               onClick={handleAccountMenuOpen}
             >
               <AccountCircle fontSize="small" />
             </IconButton>
             {/* Dark mode toggle */}
-            <IconButton 
-              sx={{ 
+            <IconButton
+              sx={{
                 minWidth: 44,
                 minHeight: 44,
                 p: 1,
@@ -821,15 +948,15 @@ const Header: React.FC = () => {
                   transform: 'scale(1.05)',
                 },
                 transition: 'all 0.2s ease-in-out',
-              }} 
-              onClick={colorMode.toggleColorMode} 
+              }}
+              onClick={colorMode.toggleColorMode}
               color="inherit"
             >
               {theme.palette.mode === 'dark' ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
             </IconButton>
-            <IconButton 
-              onClick={() => setDrawerOpen(true)} 
-              sx={{ 
+            <IconButton
+              onClick={() => setDrawerOpen(true)}
+              sx={{
                 color: theme.palette.primary.main,
                 minWidth: 44,
                 minHeight: 44,
@@ -849,27 +976,29 @@ const Header: React.FC = () => {
         </Toolbar>
 
         {/* Enhanced Mobile Drawer */}
-        <Drawer 
-          anchor="left" 
-          open={drawerOpen} 
+        <Drawer
+          anchor="left"
+          open={drawerOpen}
           onClose={() => setDrawerOpen(false)}
           sx={{
+            zIndex: 9999,
             '& .MuiDrawer-paper': {
               width: { xs: '100vw', sm: 320 },
               maxWidth: '100vw',
-              background: theme.palette.mode === 'light' 
+              background: theme.palette.mode === 'light'
                 ? `linear-gradient(135deg, #f0fff0 0%, #e8f5e8 100%)`
                 : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
               borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+              zIndex: 9999,
             },
           }}
         >
-          <Box 
-            sx={{ 
-              width: '100%', 
-              p: { xs: 2, sm: 3 }, 
-              height: '100%', 
-              display: 'flex', 
+          <Box
+            sx={{
+              width: '100%',
+              p: { xs: 2, sm: 3 },
+              height: '100%',
+              display: 'flex',
               flexDirection: 'column',
               overflow: 'auto',
             }}
@@ -878,7 +1007,7 @@ const Header: React.FC = () => {
               <Typography variant="h6" color="primary" fontWeight={700}>
                 Menu
               </Typography>
-              <IconButton 
+              <IconButton
                 onClick={() => setDrawerOpen(false)}
                 sx={{
                   minWidth: 44,
@@ -895,7 +1024,7 @@ const Header: React.FC = () => {
                 <CloseIcon />
               </IconButton>
             </Box>
-            
+
             <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
               {/* Wishlist Link */}
               <motion.div
@@ -917,10 +1046,10 @@ const Header: React.FC = () => {
                     textTransform: 'none',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 1.5,
+                    gap: 2,
                     minHeight: 48,
                     px: 2,
-                    py: 1.5,
+                    py: 2,
                     borderRadius: 1,
                     '&:hover': {
                       backgroundColor: alpha(theme.palette.primary.main, 0.08),
@@ -931,7 +1060,7 @@ const Header: React.FC = () => {
                   Wishlist ({wishlistCount})
                 </Button>
               </motion.div>
-              
+
               {/* Cart Link */}
               <motion.div
                 initial={{ x: -40, opacity: 0 }}
@@ -952,10 +1081,10 @@ const Header: React.FC = () => {
                     textTransform: 'none',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 1.5,
+                    gap: 2,
                     minHeight: 48,
                     px: 2,
-                    py: 1.5,
+                    py: 2,
                     borderRadius: 1,
                     '&:hover': {
                       backgroundColor: alpha(theme.palette.primary.main, 0.08),
@@ -966,7 +1095,7 @@ const Header: React.FC = () => {
                   Cart ({cartCount})
                 </Button>
               </motion.div>
-              
+
               {navLinks.map((link, idx) => {
                 const hasDropdown = !!link.dropdown;
                 const isDropdownOpen = mobileDropdownOpen[link.label];
@@ -1001,10 +1130,10 @@ const Header: React.FC = () => {
                           textTransform: 'none',
                           display: 'flex',
                           alignItems: 'center',
-                          gap: 1.5,
+                          gap: 2,
                           minHeight: 48,
                           px: 2,
-                          py: 1.5,
+                          py: 2,
                           borderRadius: 1,
                           '&:hover': {
                             backgroundColor: alpha(theme.palette.primary.main, 0.08),
@@ -1021,11 +1150,11 @@ const Header: React.FC = () => {
                         {link.label === 'Farm store' && (
                           <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
                         )}
-                        
+
                         <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
                           {link.label}
                         </Typography>
-                        
+
                         {hasDropdown && (
                           <motion.div
                             animate={{ rotate: isDropdownOpen ? 180 : 0 }}
@@ -1035,7 +1164,7 @@ const Header: React.FC = () => {
                           </motion.div>
                         )}
                       </Button>
-                      
+
                       {/* Mobile Dropdown */}
                       {hasDropdown && (
                         <Collapse in={isDropdownOpen}>
@@ -1062,7 +1191,7 @@ const Header: React.FC = () => {
                                       textTransform: 'none',
                                       display: 'flex',
                                       alignItems: 'center',
-                                      gap: 1.5,
+                                      gap: 2,
                                       minHeight: 44,
                                       px: 2,
                                       py: 1,
@@ -1106,7 +1235,7 @@ const Header: React.FC = () => {
                 );
               })}
             </Box>
-            
+
             {/* Admin-specific mobile menu items */}
             {isAdmin && (
               <>
@@ -1125,7 +1254,7 @@ const Header: React.FC = () => {
                 >
                   Admin Actions
                 </Typography>
-                
+
                 <motion.div
                   initial={{ x: -40, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -1162,7 +1291,7 @@ const Header: React.FC = () => {
                     </Typography>
                   </Button>
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ x: -40, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -1199,7 +1328,7 @@ const Header: React.FC = () => {
                     </Typography>
                   </Button>
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ x: -40, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -1236,7 +1365,7 @@ const Header: React.FC = () => {
                     </Typography>
                   </Button>
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ x: -40, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -1275,7 +1404,7 @@ const Header: React.FC = () => {
                 </motion.div>
               </>
             )}
-            
+
             {/* User Profile and Logout Options */}
             {isAuthenticated && (
               <>
@@ -1294,7 +1423,7 @@ const Header: React.FC = () => {
                 >
                   Account
                 </Typography>
-                
+
                 <motion.div
                   initial={{ x: -40, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -1331,7 +1460,7 @@ const Header: React.FC = () => {
                     </Typography>
                   </Button>
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ x: -40, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -1379,13 +1508,15 @@ const Header: React.FC = () => {
           onClose={() => setSearchOpen(false)}
           fullScreen
           sx={{
+            zIndex: 9999,
             '& .MuiDialog-paper': {
               background: theme.palette.background.default,
+              zIndex: 9999,
             },
           }}
         >
           <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <IconButton 
+            <IconButton
               onClick={() => setSearchOpen(false)}
               sx={{
                 minWidth: 44,
@@ -1394,8 +1525,8 @@ const Header: React.FC = () => {
             >
               <CloseIcon />
             </IconButton>
-            <Box 
-              component="form" 
+            <Box
+              component="form"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSearch(searchQuery);
@@ -1426,17 +1557,19 @@ const Header: React.FC = () => {
           open={Boolean(accountMenuAnchor)}
           onClose={handleAccountMenuClose}
           sx={{
+            zIndex: 9999,
             '& .MuiPaper-root': {
               minWidth: 200,
               borderRadius: 2,
               mt: 1,
+              zIndex: 9999,
             },
           }}
         >
           {/* Regular user menu items */}
-          <MenuItem 
+          <MenuItem
             onClick={handleProfileClick}
-            sx={{ 
+            sx={{
               minHeight: 48,
               gap: 1.5,
             }}
@@ -1446,14 +1579,14 @@ const Header: React.FC = () => {
             </ListItemIcon>
             <ListItemText>Profile</ListItemText>
           </MenuItem>
-          
+
           {/* Admin-specific menu items */}
           {isAdmin && (
             <>
               <Divider sx={{ my: 1 }} />
-              <MenuItem 
+              <MenuItem
                 onClick={handleCreateProduct}
-                sx={{ 
+                sx={{
                   minHeight: 48,
                   gap: 1.5,
                 }}
@@ -1463,9 +1596,9 @@ const Header: React.FC = () => {
                 </ListItemIcon>
                 <ListItemText>Create Product</ListItemText>
               </MenuItem>
-              <MenuItem 
+              <MenuItem
                 onClick={handleCreateCategory}
-                sx={{ 
+                sx={{
                   minHeight: 48,
                   gap: 1.5,
                 }}
@@ -1475,9 +1608,9 @@ const Header: React.FC = () => {
                 </ListItemIcon>
                 <ListItemText>Create Category</ListItemText>
               </MenuItem>
-              <MenuItem 
+              <MenuItem
                 onClick={handleManageProducts}
-                sx={{ 
+                sx={{
                   minHeight: 48,
                   gap: 1.5,
                 }}
@@ -1487,9 +1620,9 @@ const Header: React.FC = () => {
                 </ListItemIcon>
                 <ListItemText>Manage Products</ListItemText>
               </MenuItem>
-              <MenuItem 
+              <MenuItem
                 onClick={handleManageCategories}
-                sx={{ 
+                sx={{
                   minHeight: 48,
                   gap: 1.5,
                 }}
@@ -1502,10 +1635,10 @@ const Header: React.FC = () => {
               <Divider sx={{ my: 1 }} />
             </>
           )}
-          
-          <MenuItem 
+
+          <MenuItem
             onClick={handleLogout}
-            sx={{ 
+            sx={{
               minHeight: 48,
               gap: 1.5,
             }}

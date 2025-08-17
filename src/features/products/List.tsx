@@ -1,4 +1,4 @@
-import { Box, Grid, Button, Typography, useTheme, IconButton, Collapse, Fade, alpha } from '@mui/material';
+import { Box, Grid, Button, Typography, useTheme, IconButton, Collapse, Fade, alpha, LinearProgress, CircularProgress, Skeleton } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
 import ProductCard, { type Product } from '../../components/ProductCard';
 import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from './api';
@@ -63,8 +63,8 @@ export function ProductList() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  const { data: allProducts, isLoading: isLoadingAll, isError: isErrorAll } = useGetProductsQuery();
-  const { data: categoriesData } = useGetCategoriesQuery();
+  const { data: allProducts, isLoading: isLoadingAll, isError: isErrorAll, refetch: refetchAllProducts } = useGetProductsQuery();
+  const { data: categoriesData, isLoading: isLoadingCategories, refetch: refetchCategories } = useGetCategoriesQuery();
   
   // Fetch products by category when a category is selected
   const { data: categoryProducts, isLoading: isLoadingCategory, isError: isErrorCategory } = useGetProductsByCategoryQuery(
@@ -76,6 +76,81 @@ export function ProductList() {
   const products = selectedCategory.id ? categoryProducts : allProducts;
   const isLoading = selectedCategory.id ? isLoadingCategory : isLoadingAll;
   const isError = selectedCategory.id ? isErrorCategory : isErrorAll;
+
+  // Add network status indicator
+  const [networkStatus, setNetworkStatus] = useState<'online' | 'offline'>('online');
+  
+  useEffect(() => {
+    const handleOnline = () => setNetworkStatus('online');
+    const handleOffline = () => setNetworkStatus('offline');
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    // Check initial status
+    setNetworkStatus(navigator.onLine ? 'online' : 'offline');
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Force refetch on component mount to ensure data is loaded
+  useEffect(() => {
+    console.log('ProductList component mounted, triggering API calls...');
+    // Refetch products and categories when component mounts
+    const timer = setTimeout(() => {
+      console.log('Executing API calls...');
+      refetchAllProducts();
+      refetchCategories();
+    }, 100); // Small delay to ensure component is fully mounted
+    
+    return () => clearTimeout(timer);
+  }, [refetchAllProducts, refetchCategories]);
+
+  // Debug logging to see loading states
+  useEffect(() => {
+    console.log('Loading states:', {
+      isLoadingAll,
+      isLoadingCategories,
+      isLoadingCategory,
+      hasAllProducts: !!allProducts,
+      hasCategories: !!categoriesData,
+      productsCount: allProducts?.length || 0,
+      categoriesCount: categoriesData?.length || 0
+    });
+    
+    // Log API configuration
+    console.log('API Configuration:', {
+      baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+      isOnline: navigator.onLine,
+      networkStatus
+    });
+  }, [isLoadingAll, isLoadingCategories, isLoadingCategory, allProducts, categoriesData, networkStatus]);
+
+  // Add a loading state for initial mount when no data is available
+  const isInitialLoading = !allProducts && !categoriesData && !isErrorAll && !isErrorCategory;
+  
+  // Add a more aggressive loading state that shows immediately on mount
+  const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
+  const [showInitialLoading, setShowInitialLoading] = useState(true);
+  
+  useEffect(() => {
+    // Show initial loading immediately
+    setShowInitialLoading(true);
+    
+    // Set initial loading state to true after a short delay
+    const timer = setTimeout(() => {
+      setHasInitiallyLoaded(true);
+      setShowInitialLoading(false);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+  
+  // Check if we're in a network error state
+  const hasNetworkError = isErrorAll || isErrorCategory;
 
   // Map backend data to ProductCard props (if needed)
   const mappedProducts: Product[] = (products || []).map((p: any) => ({
@@ -205,6 +280,7 @@ export function ProductList() {
         py: { xs: 2, sm: 3, md: 4 },
         // Prevent horizontal scroll
         overflowX: 'hidden',
+        // Add top margin to ensure content is below fixed header
       }}
     >
       {/* Modern Carousel Banner */}
@@ -217,6 +293,7 @@ export function ProductList() {
           overflow: 'hidden',
           mb: { xs: 3, sm: 4, md: 5 },
           boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+          // Add significant margin-top to ensure banner is below fixed header
         }}
         onMouseEnter={handleCarouselHover}
         onMouseLeave={handleCarouselLeave}
@@ -320,7 +397,7 @@ export function ProductList() {
                       fontWeight: 600,
                       fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
                       px: { xs: 3, sm: 4, md: 5 },
-                      py: { xs: 1.5, sm: 2, md: 2.5 },
+                      py: { xs: 2, sm: 2, md: 3 },
                       borderRadius: '50px',
                       textTransform: 'none',
                       boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
@@ -419,6 +496,67 @@ export function ProductList() {
       
       <FeatureHighlightsRow />
       
+      {/* Initial Loading State - Shows immediately when page loads */}
+      {(showInitialLoading || isInitialLoading || isLoadingAll || (!allProducts && !isErrorAll) || !hasInitiallyLoaded) && !selectedCategory.id && (
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center',
+            py: { xs: 4, sm: 6, md: 8 },
+            px: 2,
+            mb: { xs: 3, sm: 4, md: 5 },
+          }}
+        >
+          <Typography 
+            variant="h5" 
+            color="primary" 
+            textAlign="center" 
+            sx={{ 
+              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+              fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' },
+              fontWeight: 600,
+              mb: 3,
+            }}
+          >
+            Loading Your Products...
+          </Typography>
+          
+          {/* Animated Progress Bar */}
+          <Box sx={{ width: '100%', maxWidth: 500, mb: 4 }}>
+            <LinearProgress 
+              sx={{
+                height: 12,
+                borderRadius: 6,
+                backgroundColor: alpha(theme.palette.primary.main, 0.15),
+                '& .MuiLinearProgress-bar': {
+                  borderRadius: 6,
+                  background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 50%, ${theme.palette.primary.main} 100%)`,
+                  backgroundSize: '200% 100%',
+                  animation: 'loading-shimmer 2s ease-in-out infinite',
+                },
+                '@keyframes loading-shimmer': {
+                  '0%': { backgroundPosition: '200% 0' },
+                  '100%': { backgroundPosition: '-200% 0' },
+                },
+              }}
+            />
+          </Box>
+          
+          {/* Loading Spinner */}
+          <CircularProgress 
+            size={50}
+            thickness={5}
+            sx={{
+              color: theme.palette.primary.main,
+              '& .MuiCircularProgress-circle': {
+                strokeLinecap: 'round',
+              },
+            }}
+          />
+        </Box>
+      )}
+      
       <Typography 
         variant="h4" 
         fontWeight={700} 
@@ -429,9 +567,28 @@ export function ProductList() {
           fontFamily: `'Playfair Display', 'Merriweather', serif`,
           fontSize: { xs: '1.5rem', sm: '2rem', md: '2.25rem' },
           px: { xs: 2, sm: 0 },
+          opacity: isLoadingAll && !selectedCategory.id ? 0.7 : 1,
+          transition: 'opacity 0.3s ease-in-out',
+          '@keyframes pulse': {
+            '0%': { opacity: 1 },
+            '50%': { opacity: 0.3 },
+            '100%': { opacity: 1 },
+          },
         }}
       >
         Your Favorites | All in One Place
+        {isLoadingAll && !selectedCategory.id && (
+          <Box 
+            component="span" 
+            sx={{ 
+              display: 'inline-block',
+              ml: 1,
+              animation: 'pulse 1.5s ease-in-out infinite',
+            }}
+          >
+            ...
+          </Box>
+        )}
       </Typography>
       
       <div 
@@ -472,7 +629,7 @@ export function ProductList() {
           sx={{
             display: 'flex',
             overflowX: 'auto',
-            gap: { xs: 2, sm: 2.5, md: 3 },
+            gap: { xs: 2, sm: 3, md: 3 },
             px: { xs: 4, sm: 5 }, // Space for arrows
             py: { xs: 2, sm: 3, md: 4 },
             scrollbarWidth: 'none', // Hide scrollbar on Firefox
@@ -481,52 +638,68 @@ export function ProductList() {
             scrollBehavior: 'smooth',
           }}
         >
-          {categories.map((cat) => (
-            <Button
-              key={cat.id || cat.name}
-              onClick={() => handleCategoryClick(cat)}
-              sx={{
-                fontWeight: 800,
-                fontSize: { xs: 14, sm: 16, md: 17 },
-                letterSpacing: 0.5,
-                borderRadius: 99,
-                px: { xs: 3, sm: 3.5, md: 4 },
-                py: { xs: 1.5, sm: 2, md: 2.5 },
-                minWidth: { xs: 90, sm: 110, md: 130 },
-                minHeight: { xs: 44, sm: 48, md: 52 },
-                whiteSpace: 'nowrap',
-                flexShrink: 0, // Prevent shrinking
-                boxShadow: selectedCategory.id === cat.id ? 4 : 2,
-                bgcolor: selectedCategory.id === cat.id 
-                  ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
-                  : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
-                color: selectedCategory.id === cat.id ? 'common.white' : 'primary.dark',
-                border: selectedCategory.id === cat.id ? '2px solid' : '1px solid',
-                borderColor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.300',
-                transition: 'all 0.3s cubic-bezier(.4,2,.6,1)',
-                textShadow: selectedCategory.id === cat.id
-                  ? '0 2px 8px rgba(0,0,0,0.18), 0 1px 1px rgba(0,0,0,0.10)'
-                  : 'none',
-                '&:hover': {
+          {isLoadingCategories ? (
+            // Category loading skeletons
+            Array.from({ length: 6 }).map((_, index) => (
+              <Skeleton
+                key={index}
+                variant="rectangular"
+                width={130}
+                height={52}
+                sx={{ 
+                  borderRadius: 99,
+                  flexShrink: 0,
+                }}
+              />
+            ))
+          ) : (
+            categories.map((cat) => (
+              <Button
+                key={cat.id || cat.name}
+                onClick={() => handleCategoryClick(cat)}
+                sx={{
+                  fontWeight: 800,
+                  fontSize: { xs: 14, sm: 16, md: 17 },
+                  letterSpacing: 0.5,
+                  borderRadius: 99,
+                  px: { xs: 3, sm: 4, md: 4 },
+                  py: { xs: 2, sm: 2, md: 3 },
+                  minWidth: { xs: 90, sm: 110, md: 130 },
+                  minHeight: { xs: 44, sm: 48, md: 52 },
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0, // Prevent shrinking
+                  boxShadow: selectedCategory.id === cat.id ? 4 : 2,
                   bgcolor: selectedCategory.id === cat.id 
-                    ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`
-                    : `linear-gradient(135deg, ${theme.palette.grey[100]} 0%, ${theme.palette.grey[200]} 100%)`,
-                  color: selectedCategory.id === cat.id ? 'common.white' : 'primary.main',
-                  borderColor: 'primary.main',
-                  boxShadow: 6,
+                    ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
+                    : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
+                  color: selectedCategory.id === cat.id ? 'common.white' : 'primary.dark',
+                  border: selectedCategory.id === cat.id ? '2px solid' : '1px solid',
+                  borderColor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.300',
+                  transition: 'all 0.3s cubic-bezier(.4,2,.6,1)',
                   textShadow: selectedCategory.id === cat.id
-                    ? '0 2px 12px rgba(0,0,0,0.22)'
-                    : '0 1px 4px rgba(0,0,0,0.10)',
-                  transform: { xs: 'none', sm: 'translateY(-3px)' }, // Enhanced transform on desktop
-                },
-                '&:active': {
-                  transform: 'scale(0.96)',
-                },
-              }}
-            >
-              {cat.name}
-            </Button>
-          ))}
+                    ? '0 2px 8px rgba(0,0,0,0.18), 0 1px 1px rgba(0,0,0,0.10)'
+                    : 'none',
+                  '&:hover': {
+                    bgcolor: selectedCategory.id === cat.id 
+                      ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`
+                      : `linear-gradient(135deg, ${theme.palette.grey[100]} 0%, ${theme.palette.grey[200]} 100%)`,
+                    color: selectedCategory.id === cat.id ? 'common.white' : 'primary.main',
+                    borderColor: 'primary.main',
+                    boxShadow: 6,
+                    textShadow: selectedCategory.id === cat.id
+                      ? '0 2px 12px rgba(0,0,0,0.22)'
+                      : '0 1px 4px rgba(0,0,0,0.10)',
+                    transform: { xs: 'none', sm: 'translateY(-3px)' }, // Enhanced transform on desktop
+                  },
+                  '&:active': {
+                    transform: 'scale(0.96)',
+                  },
+                }}
+              >
+                {cat.name}
+              </Button>
+            ))
+          )}
         </Box>
         
         {showRight && (
@@ -556,19 +729,57 @@ export function ProductList() {
       {/* Spacer between category filter and products */}
       <Box sx={{ height: { xs: 3, sm: 4, md: 5 } }} />
       
-      {/* Responsive Product Grid */}
-      {isLoading ? (
+      {/* Category Loading Indicator */}
+      {isLoadingCategory && selectedCategory.id && (
         <Box 
           sx={{ 
             display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center',
-            minHeight: { xs: 300, sm: 350, md: 400 },
-            px: 2,
-            mt: { xs: 4, sm: 5, md: 6 },
-            py: { xs: 4, sm: 5, md: 6 },
+            alignItems: 'center', 
+            justifyContent: 'center',
+            mb: 3,
+            py: 2,
           }}
         >
+          <CircularProgress 
+            size={20} 
+            thickness={4}
+            sx={{ mr: 2, color: theme.palette.primary.main }}
+          />
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{ fontStyle: 'italic' }}
+          >
+            Switching to {selectedCategory.name}...
+          </Typography>
+        </Box>
+      )}
+      
+      {/* Responsive Product Grid */}
+      {showInitialLoading || isInitialLoading || isLoading || (!products && !isError) || !hasInitiallyLoaded ? (
+        <Box>
+          {/* Loading Progress Bar */}
+          <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', mb: 4 }}>
+            <LinearProgress 
+              sx={{
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                '& .MuiLinearProgress-bar': {
+                  borderRadius: 4,
+                  background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                  animation: 'loading-pulse 2s ease-in-out infinite',
+                },
+                '@keyframes loading-pulse': {
+                  '0%': { opacity: 1 },
+                  '50%': { opacity: 0.7 },
+                  '100%': { opacity: 1 },
+                },
+              }}
+            />
+          </Box>
+          
+          {/* Loading Text with Category */}
           <Typography 
             variant="h6" 
             color="text.secondary" 
@@ -576,15 +787,146 @@ export function ProductList() {
             sx={{ 
               fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
               fontSize: { xs: '1rem', sm: '1.25rem' },
+              mb: 2,
             }}
           >
-            Loading {selectedCategory.name !== 'All' ? `${selectedCategory.name} products` : 'products'}...
+            {isInitialLoading 
+              ? 'Initializing products...' 
+              : `Loading ${selectedCategory.name !== 'All' ? `${selectedCategory.name} products` : 'products'}...`
+            }
           </Typography>
+          
+          {/* Network Status Indicator */}
+          {networkStatus === 'offline' && (
+            <Typography 
+              variant="body2" 
+              color="warning.main" 
+              textAlign="center" 
+              sx={{ 
+                fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                mb: 3,
+                fontStyle: 'italic',
+              }}
+            >
+              ⚠️ You appear to be offline. Please check your internet connection.
+            </Typography>
+          )}
+          
+          {/* Skeleton Loading Grid */}
+          <Grid 
+            container 
+            spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
+            sx={{ 
+              px: { xs: 2, sm: 0 },
+              justifyContent: { xs: 'center', sm: 'flex-start' },
+            }}
+          >
+            {Array.from({ length: initialProductCount }).map((_, index) => (
+              <Grid 
+                key={index}
+                size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'stretch',
+                }}
+              >
+                <Box 
+                  sx={{ 
+                    width: '100%',
+                    maxWidth: { xs: '100%', sm: 350, md: 320 },
+                    p: 2,
+                  }}
+                >
+                  {/* Product Image Skeleton */}
+                  <Skeleton
+                    variant="rectangular"
+                    width="100%"
+                    height={200}
+                    sx={{ 
+                      borderRadius: 2, 
+                      mb: 2,
+                      animation: 'pulse 1.5s ease-in-out infinite',
+                    }}
+                  />
+                  
+                  {/* Product Title Skeleton */}
+                  <Skeleton
+                    variant="text"
+                    width="80%"
+                    height={24}
+                    sx={{ mb: 1 }}
+                  />
+                  
+                  {/* Product Description Skeleton */}
+                  <Skeleton
+                    variant="text"
+                    width="60%"
+                    height={20}
+                    sx={{ mb: 2 }}
+                  />
+                  
+                  {/* Price Skeleton */}
+                  <Skeleton
+                    variant="text"
+                    width="40%"
+                    height={28}
+                    sx={{ mb: 2 }}
+                  />
+                  
+                  {/* Button Skeleton */}
+                  <Skeleton
+                    variant="rectangular"
+                    width="100%"
+                    height={44}
+                    sx={{ borderRadius: 2 }}
+                  />
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+          
+          {/* Loading Spinner at Bottom */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <CircularProgress 
+              size={40}
+              thickness={4}
+              sx={{
+                color: theme.palette.primary.main,
+                '& .MuiCircularProgress-circle': {
+                  strokeLinecap: 'round',
+                },
+              }}
+            />
+          </Box>
+          
+          {/* Manual Refresh Button for debugging */}
+          {isInitialLoading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  refetchAllProducts();
+                  refetchCategories();
+                }}
+                sx={{
+                  borderRadius: 2,
+                  px: 3,
+                  py: 1,
+                  fontWeight: 600,
+                }}
+              >
+                Refresh Products
+              </Button>
+            </Box>
+          )}
         </Box>
       ) : isError ? (
         <Box 
           sx={{ 
             display: 'flex', 
+            flexDirection: 'column',
             justifyContent: 'center', 
             alignItems: 'center',
             minHeight: { xs: 300, sm: 350, md: 400 },
@@ -600,20 +942,55 @@ export function ProductList() {
             sx={{ 
               fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
               fontSize: { xs: '1rem', sm: '1.25rem' },
+              mb: 2,
             }}
           >
             Failed to load products.
           </Typography>
+          
+          <Typography 
+            variant="body2" 
+            color="text.secondary" 
+            textAlign="center" 
+            sx={{ 
+              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+              fontSize: { xs: '0.9rem', sm: '1rem' },
+              mb: 3,
+              maxWidth: 400,
+            }}
+          >
+            {hasNetworkError 
+              ? 'There seems to be a connection issue. Please check your internet connection and try again.'
+              : 'Unable to fetch products at the moment. Please try refreshing the page.'
+            }
+          </Typography>
+          
+          <Button
+            variant="contained"
+            onClick={() => {
+              refetchAllProducts();
+              refetchCategories();
+            }}
+            sx={{
+              borderRadius: 2,
+              px: 4,
+              py: 2,
+              fontWeight: 600,
+            }}
+          >
+            Try Again
+          </Button>
         </Box>
       ) : mappedProducts.length > 0 ? (
         <Box>
           {/* Initial Products - Responsive Grid */}
           <Grid 
             container 
-            spacing={{ xs: 3, sm: 4, md: 5 }} 
+            spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
             sx={{ 
               mt: { xs: 3, sm: 4, md: 5 },
-              px: { xs: 1, sm: 0 },
+              px: { xs: 2, sm: 0 },
+              justifyContent: { xs: 'center', sm: 'flex-start' },
             }}
           >
             {displayedProducts.map((product, index) => (
@@ -623,6 +1000,7 @@ export function ProductList() {
                 sx={{
                   display: 'flex',
                   justifyContent: 'center',
+                  alignItems: 'stretch',
                 }}
               >
                 <Fade in timeout={300 + (index * 100)}>
@@ -654,10 +1032,11 @@ export function ProductList() {
             <Collapse in={showAllProducts} timeout={400} easing="ease-in-out">
                           <Grid 
               container 
-              spacing={{ xs: 3, sm: 4, md: 5 }} 
+              spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
               sx={{ 
                 mt: { xs: 3, sm: 4, md: 5 },
-                px: { xs: 1, sm: 0 },
+                px: { xs: 2, sm: 0 },
+                justifyContent: { xs: 'center', sm: 'flex-start' },
               }}
             >
                 {mappedProducts.slice(initialProductCount).map((product, index) => (
@@ -667,6 +1046,7 @@ export function ProductList() {
                     sx={{
                       display: 'flex',
                       justifyContent: 'center',
+                      alignItems: 'stretch',
                     }}
                   >
                     <Fade in timeout={300 + (index * 50)}>
@@ -706,7 +1086,7 @@ export function ProductList() {
                 sx={{
                   borderRadius: 99,
                   px: { xs: 3, sm: 4 },
-                  py: { xs: 1.25, sm: 1.5 },
+                  py: { xs: 1, sm: 2 },
                   fontWeight: 600,
                   fontSize: { xs: 14, sm: 16 },
                   letterSpacing: 0.5,
@@ -798,7 +1178,7 @@ export function ProductList() {
             sx={{
               mt: { xs: 2, sm: 3 },
               px: { xs: 3, sm: 4 },
-              py: { xs: 1, sm: 1.5 },
+              py: { xs: 1, sm: 2 },
               fontSize: { xs: '0.9rem', sm: '1rem' },
               minHeight: { xs: 44, sm: 48 },
               borderRadius: 2,

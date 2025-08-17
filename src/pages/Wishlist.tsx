@@ -142,7 +142,7 @@ const Wishlist: React.FC = () => {
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
                       WebkitBoxOrient: 'vertical',
-                      mb: 1.5,
+                      mb: 2,
                     }}
                   >
                     {item.product.description}

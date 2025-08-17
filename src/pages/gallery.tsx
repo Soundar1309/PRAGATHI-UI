@@ -8,7 +8,11 @@ const sectionVariant = {
 
 export default function GalleryPage() {
   return (
-    <Container maxWidth="xl" sx={{ py: { xs: 5, md: 8 } }}>
+    <Container maxWidth="xl" sx={{ 
+        py: { xs: 5, md: 8 },
+        // Add top margin to ensure content is below fixed header
+        // mt: { xs: '100px', sm: '100px', md: '180px', lg: '150px' }
+    }}>
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariant}>
         <Typography variant="h3" fontWeight={800} color="#111" mb={4} textAlign="center">
           Gallery

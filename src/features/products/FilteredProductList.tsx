@@ -124,14 +124,31 @@ export function FilteredProductList() {
     };
 
     return (
-        <Box sx={{ maxWidth: 1400, mx: 'auto', px: { xs: 1, sm: 2, md: 4 }, py: 4 }}>
+        <Box sx={{ 
+            maxWidth: 1400, 
+            mx: 'auto', 
+            px: { xs: 2, sm: 2, md: 4 }, 
+            py: 4,
+            // Add top margin to ensure content is below fixed header
+            // mt: { xs: '100px', sm: '100px', md: '180px', lg: '150px' }
+        }}>
 
             {/* Category Filter */}
-            <Box sx={{ position: 'relative', mb: 2 }}>
+            <Box sx={{ position: 'relative', mb: { xs: 3, sm: 2 } }}>
                 {showLeft && (
                     <IconButton
                         onClick={() => handleScroll('left')}
-                        sx={{ position: 'absolute', left: 0, top: '50%', zIndex: 1, transform: 'translateY(-50%)' }}
+                        sx={{ 
+                            position: 'absolute', 
+                            left: { xs: -8, sm: 0 }, 
+                            top: '50%', 
+                            zIndex: 1, 
+                            transform: 'translateY(-50%)',
+                            backgroundColor: 'background.paper',
+                            boxShadow: 2,
+                            minWidth: { xs: 36, sm: 44 },
+                            minHeight: { xs: 36, sm: 44 },
+                        }}
                     >
                         <ChevronLeftIcon />
                     </IconButton>
@@ -141,8 +158,8 @@ export function FilteredProductList() {
                     sx={{
                         display: 'flex',
                         overflowX: 'auto',
-                        gap: 1,
-                        px: 5, // space for arrows
+                        gap: { xs: 1, sm: 1, md: 2 },
+                        px: { xs: 3, sm: 5 }, // space for arrows
                         scrollbarWidth: 'none', // hide scrollbar on Firefox
                         '&::-webkit-scrollbar': { display: 'none' }, // hide scrollbar on Chrome
                     }}
@@ -160,12 +177,12 @@ export function FilteredProductList() {
                             onClick={() => handleCategoryClick(cat)}
                             sx={{
                                 fontWeight: 800, // bolder
-                                fontSize: 17, // slightly larger
+                                fontSize: { xs: 14, sm: 16, md: 17 }, // responsive font size
                                 letterSpacing: 0.5,
                                 borderRadius: 99,
-                                px: 3,
-                                py: 1,
-                                minWidth: 120,
+                                px: { xs: 2, sm: 3 },
+                                py: { xs: 1, sm: 1 },
+                                minWidth: { xs: 100, sm: 120 },
                                 whiteSpace: 'nowrap',
                                 boxShadow: selectedCategory.id === cat.id ? 3 : 0,
                                 bgcolor: selectedCategory.id === cat.id ? 'primary.main' : 'grey.100',
@@ -197,7 +214,17 @@ export function FilteredProductList() {
                 {showRight && (
                     <IconButton
                         onClick={() => handleScroll('right')}
-                        sx={{ position: 'absolute', right: 0, top: '50%', zIndex: 1, transform: 'translateY(-50%)' }}
+                        sx={{ 
+                            position: 'absolute', 
+                            right: { xs: -8, sm: 0 }, 
+                            top: '50%', 
+                            zIndex: 1, 
+                            transform: 'translateY(-50%)',
+                            backgroundColor: 'background.paper',
+                            boxShadow: 2,
+                            minWidth: { xs: 36, sm: 44 },
+                            minHeight: { xs: 36, sm: 44 },
+                        }}
                     >
                         <ChevronRightIcon />
                     </IconButton>
@@ -216,11 +243,34 @@ export function FilteredProductList() {
             ) : mappedProducts.length > 0 ? (
                 <Box>
                     {/* Initial 4 Products */}
-                    <Grid container spacing={3} sx={{ mt: 2 }}>
+                    <Grid 
+                        container 
+                        spacing={{ xs: 2, sm: 3, md: 4 }} 
+                        sx={{ 
+                            mt: 2,
+                            justifyContent: { xs: 'center', sm: 'flex-start' },
+                        }}
+                    >
                         {displayedProducts.map((product) => (
-                            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product.id}>
+                            <Grid 
+                                size={{ xs: 12, sm: 6, md: 3 }} 
+                                key={product.id}
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'stretch',
+                                }}
+                            >
                                 <Fade in timeout={300}>
-                                    <Box onClick={() => handleProductClick(product.id)} sx={{ cursor: 'pointer', height: '100%' }}>
+                                    <Box 
+                                        onClick={() => handleProductClick(product.id)} 
+                                        sx={{ 
+                                            cursor: 'pointer', 
+                                            height: '100%',
+                                            width: '100%',
+                                            maxWidth: { xs: '100%', sm: 350, md: 320 },
+                                        }}
+                                    >
                                         <ProductCard
                                             product={product}
                                             onAddToCart={() => handleAddToCartClick(product)}
@@ -234,11 +284,34 @@ export function FilteredProductList() {
                     {/* Additional Products (Collapsible) */}
                     {hasMoreProducts && (
                         <Collapse in={showAllProducts} timeout={400} easing="ease-in-out">
-                            <Grid container spacing={3} sx={{ mt: 2 }}>
+                            <Grid 
+                                container 
+                                spacing={{ xs: 2, sm: 3, md: 4 }} 
+                                sx={{ 
+                                    mt: 2,
+                                    justifyContent: { xs: 'center', sm: 'flex-start' },
+                                }}
+                            >
                                 {mappedProducts.slice(4).map((product, index) => (
-                                    <Grid size={{ xs: 12, sm: 6, md: 3 }} key={product.id}>
+                                    <Grid 
+                                        size={{ xs: 12, sm: 6, md: 3 }} 
+                                        key={product.id}
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'stretch',
+                                        }}
+                                    >
                                         <Fade in timeout={300 + (index * 50)}>
-                                            <Box onClick={() => handleProductClick(product.id)} sx={{ cursor: 'pointer', height: '100%' }}>
+                                            <Box 
+                                                onClick={() => handleProductClick(product.id)} 
+                                                sx={{ 
+                                                    cursor: 'pointer', 
+                                                    height: '100%',
+                                                    width: '100%',
+                                                    maxWidth: { xs: '100%', sm: 350, md: 320 },
+                                                }}
+                                            >
                                                 <ProductCard
                                                     product={product}
                                                     onAddToCart={() => handleAddToCartClick(product)}
@@ -253,7 +326,12 @@ export function FilteredProductList() {
 
                     {/* See More/Less Button */}
                     {hasMoreProducts && (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                        <Box sx={{ 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            mt: { xs: 5, sm: 4 },
+                            px: 2,
+                        }}>
                             <Button
                                 onClick={handleToggleProducts}
                                 variant="outlined"
@@ -261,10 +339,10 @@ export function FilteredProductList() {
                                 endIcon={showAllProducts ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                 sx={{
                                     borderRadius: 99,
-                                    px: 4,
-                                    py: 1.5,
+                                    px: { xs: 3, sm: 4 },
+                                    py: { xs: 1.5, sm: 2 },
                                     fontWeight: 600,
-                                    fontSize: 16,
+                                    fontSize: { xs: 14, sm: 16 },
                                     letterSpacing: 0.5,
                                     borderWidth: 2,
                                     borderColor: 'primary.main',
@@ -295,10 +373,11 @@ export function FilteredProductList() {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        minHeight: 320,
-                        height: '40vh',
+                        minHeight: { xs: 280, sm: 320 },
+                        height: { xs: '30vh', sm: '40vh' },
                         width: '100%',
-                        mt: 4,
+                        mt: { xs: 5, sm: 4 },
+                        px: 2,
                     }}
                 >
                     <Grow in timeout={500}>

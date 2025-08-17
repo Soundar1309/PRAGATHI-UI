@@ -67,7 +67,13 @@ export default function ContactPage() {
   };
 
   return (
-    <Box sx={{ bgcolor: "#F7F9FB", minHeight: "100vh", pb: 8 }}>
+    <Box sx={{ 
+        bgcolor: "#F7F9FB", 
+        minHeight: "100vh", 
+        pb: 8,
+        // Add top margin to ensure content is below fixed header
+        // mt: { xs: '100px', sm: '100px', md: '180px', lg: '150px' }
+    }}>
       {/* Hero Section */}
       <Box
         sx={{
@@ -181,7 +187,7 @@ export default function ContactPage() {
                         fontWeight: 700,
                         borderRadius: 2,
                         px: 4,
-                        py: 1.5,
+                        py: 2,
                         boxShadow: "0 2px 8px rgba(59,130,246,0.08)",
                         textTransform: "none",
                         fontFamily: "Inter, system-ui, sans-serif",
@@ -227,7 +233,7 @@ export default function ContactPage() {
                       Pragathi Nature Farms, Hyderabad, India
                     </Typography>
                   </Box>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mt: 1 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 1 }}>
                     <IconButton href="https://wa.me/919876543210" target="_blank" rel="noopener" aria-label="WhatsApp" sx={{ color: "#25D366" }}>
                       <WhatsAppIcon />
                     </IconButton>

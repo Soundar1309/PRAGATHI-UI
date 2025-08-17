@@ -43,7 +43,8 @@ export default function App() {
             minHeight: '100vh',
             display: 'flex',
             flexDirection: 'column',
-            // Prevent horizontal scroll
+            // Allow vertical scrolling for sticky to work
+            overflowY: 'auto',
             overflowX: 'hidden',
             width: '100%',
           }}
@@ -58,6 +59,10 @@ export default function App() {
               width: '100%',
               // Remove any potential horizontal scroll
               overflowX: 'hidden',
+              // Ensure enough content height for proper layout
+              minHeight: '100vh',
+              // Add top margin to account for fixed header height
+              mt: { xs: '96px', sm: '128px', md: '160px', lg: '192px' },
             }}
           >
             <Container

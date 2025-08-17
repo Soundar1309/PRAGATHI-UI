@@ -117,9 +117,9 @@ export function FeatureHighlightsRow() {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 1.5,
-                  px: 2.5,
-                  py: 1.2,
+                  gap: 2,
+                  px: 3,
+                  py: 1,
                   borderRadius: 99,
                   bgcolor: theme.palette.mode === 'light' 
                     ? theme.palette.background.paper
@@ -127,7 +127,7 @@ export function FeatureHighlightsRow() {
                   boxShadow: theme.palette.mode === 'light'
                     ? "0 2px 8px rgba(44,70,57,0.10)"
                     : `0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}`,
-                  mx: 0.5,
+                  mx: 1,
                   minWidth: { xs: 120, sm: 150, md: 180 },
                   maxWidth: { xs: 140, sm: 180, md: 220 },
                   cursor: "pointer",
