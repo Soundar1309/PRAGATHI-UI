@@ -77,7 +77,7 @@ const Wishlist: React.FC = () => {
 
       <Grid container spacing={3}>
         {wishlist.map((item) => (
-          <Grid key={item.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+          <Grid key={item.id} size={{ xs: 12, sm: 6, md: 8, lg: 3 }}>
             <Card
               sx={{
                 height: '100%',

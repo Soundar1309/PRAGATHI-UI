@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { useLoginMutation } from './api';
 import { register } from '../../api/auth';
 import { Box, Button, TextField, Typography, Tabs, Tab } from '@mui/material';
-import { usePendingActions } from '../../hooks/usePendingActions';
+
 
 export function LoginRegister() {
   const [tab, setTab] = useState(0);
   const [login, { isLoading: isLoggingIn, error: loginError }] = useLoginMutation();
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
-  const { executePendingAction } = usePendingActions();
+
 
   // Login state
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
@@ -27,12 +27,8 @@ export function LoginRegister() {
     e.preventDefault();
     try {
       await login(loginForm).unwrap();
-      // Execute any pending actions (like add to cart)
-      await executePendingAction();
-      // If no pending action, redirect to home
-      if (!localStorage.getItem('pendingAction')) {
-        window.location.href = '/';
-      }
+      // Redirect to home after successful login
+      window.location.href = '/';
     } catch (error) {
       console.error('Login error:', error);
     }
@@ -51,12 +47,8 @@ export function LoginRegister() {
       setTab(0);
       // Optionally auto-login with the new credentials
       await login({ email: registerForm.email, password: registerForm.password }).unwrap();
-      // Execute any pending actions (like add to cart)
-      await executePendingAction();
-      // If no pending action, redirect to home
-      if (!localStorage.getItem('pendingAction')) {
-        window.location.href = '/';
-      }
+      // Redirect to home after successful registration and login
+      window.location.href = '/';
     } catch (err: any) {
       console.error('Registration error:', err);
       setRegisterError(

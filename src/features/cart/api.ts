@@ -38,29 +38,46 @@ export interface Cart {
 export const cartApi = createApi({
   reducerPath: 'cartApi',
   baseQuery: baseQueryWithReauth,
+  tagTypes: ['Cart'],
   endpoints: (builder) => ({
     getCart: builder.query<Cart, void>({
-      query: () => '/carts/carts/',
+      query: () => {
+        console.log('getCart query called');
+        return '/carts/carts/';
+      },
+      providesTags: ['Cart'],
     }),
     addItem: builder.mutation<any, { product_id: number; quantity: number }>({
-      query: (body) => ({
-        url: '/carts/cart_items/',
-        method: 'POST',
-        body,
-      }),
+      query: (body) => {
+        console.log('addItem mutation called with:', body);
+        return {
+          url: '/carts/cart_items/',
+          method: 'POST',
+          body,
+        };
+      },
+      invalidatesTags: ['Cart'],
     }),
     updateItem: builder.mutation<any, { id: number; quantity: number }>({
-      query: ({ id, quantity }) => ({
-        url: `/carts/cart_items/${id}/`,
-        method: 'PUT',
-        body: { quantity },
-      }),
+      query: ({ id, quantity }) => {
+        console.log('updateItem mutation called with:', { id, quantity });
+        return {
+          url: `/carts/cart_items/${id}/`,
+          method: 'PUT',
+          body: { quantity },
+        };
+      },
+      invalidatesTags: ['Cart'],
     }),
     removeItem: builder.mutation<any, number>({
-      query: (id) => ({
-        url: `/carts/cart_items/${id}/`,
-        method: 'DELETE',
-      }),
+      query: (id) => {
+        console.log('removeItem mutation called with:', id);
+        return {
+          url: `/carts/cart_items/${id}/`,
+          method: 'DELETE',
+        };
+      },
+      invalidatesTags: ['Cart'],
     }),
   }),
 });

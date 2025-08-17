@@ -91,7 +91,7 @@ export default function App() {
                 <Route path="/orders/new" element={<OrderCreate />} />
                 <Route path="/orders/:id" element={<RequireAuth><OrderDetail /></RequireAuth>} />
                 <Route path="/cart" element={<CartPage />} />
-                <Route path="/wishlist" element={<RequireAuth><Wishlist /></RequireAuth>} />
+                <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/login" element={<LoginRegister />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/gallery" element={<GalleryPage />} />

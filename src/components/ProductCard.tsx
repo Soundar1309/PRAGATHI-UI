@@ -34,7 +34,6 @@ export interface Product {
 interface ProductCardProps {
   product: Product;
   onAddToCart?: (product: Product) => void;
-  onAuthRequired?: (message?: string) => void;
 }
 
 const ELLIPSIS_SX: SxProps = {
@@ -284,10 +283,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           <WishlistButton
             productId={product.id}
             size="small"
-            onAuthRequired={() => {
-              // Handle authentication requirement - could redirect to login
-              console.log('Authentication required for wishlist');
-            }}
           />
 
           <Button

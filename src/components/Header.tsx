@@ -183,7 +183,7 @@ const Header: React.FC = () => {
   const { role } = useUserRole();
   const isAuthenticated = !!localStorage.getItem('jwt');
   const isAdmin = isAuthenticated && role === 'admin';
-  const { data: cartData } = useGetCartQuery(undefined, { skip: !isAuthenticated });
+  const { data: cartData } = useGetCartQuery();
   const cartCount = cartData?.item_count || 0;
   const { wishlist } = useWishlist();
   const wishlistCount = wishlist.length;

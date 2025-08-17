@@ -7,15 +7,13 @@ import { useWishlist } from '../contexts/WishlistContext';
 interface WishlistButtonProps {
   productId: number;
   size?: 'small' | 'medium' | 'large';
-  onAuthRequired?: () => void;
 }
 
 const WishlistButton: React.FC<WishlistButtonProps> = ({ 
   productId, 
-  size = 'medium',
-  onAuthRequired 
+  size = 'medium'
 }) => {
-  const { isInWishlist, addToWishlist, removeFromWishlist, error, clearError } = useWishlist();
+  const { wishlist, isInWishlist, addToWishlist, removeFromWishlist, error, clearError } = useWishlist();
   const [isLoading, setIsLoading] = useState(false);
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -31,23 +29,17 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
     // Prevent the click from bubbling up to parent click handlers
     event.stopPropagation();
     
-    // Check if user is authenticated
-    const token = localStorage.getItem('jwt');
-    if (!token) {
-      console.log('No JWT token found, authentication required');
-      if (onAuthRequired) {
-        onAuthRequired();
-      }
-      return;
-    }
-
     try {
       setIsLoading(true);
       clearError(); // Clear any previous errors
       
+      console.log('Current wishlist state:', wishlist);
+      console.log('Is product in wishlist before toggle:', isInWishlist(productId));
+      
       if (isInWishlist(productId)) {
         console.log('Removing product from wishlist:', productId);
         await removeFromWishlist(productId);
+        console.log('Product removed from wishlist');
         setSnackbar({
           open: true,
           message: 'Removed from wishlist',
@@ -56,19 +48,23 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
       } else {
         console.log('Adding product to wishlist:', productId);
         await addToWishlist(productId);
+        console.log('Product added to wishlist');
         setSnackbar({
           open: true,
           message: 'Added to wishlist',
           severity: 'success'
         });
       }
+      
+      // Log the updated state after operation
+      console.log('Wishlist state after operation:', wishlist);
+      console.log('Is product in wishlist after toggle:', isInWishlist(productId));
+      
     } catch (error: any) {
       console.error('Wishlist operation failed:', error);
       
       let errorMessage = 'Failed to update wishlist';
-      if (error.message === 'Authentication required') {
-        errorMessage = 'Please log in to use wishlist';
-      } else if (error.response?.data?.message) {
+      if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.message) {
         errorMessage = error.message;

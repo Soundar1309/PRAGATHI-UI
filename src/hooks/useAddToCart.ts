@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAddItemMutation } from '../features/cart/api';
 import { useSnackbar } from 'notistack';
+import { useAddItemMutation } from '../features/cart/api';
 
 interface AddToCartParams {
   productId: number;
@@ -16,33 +16,14 @@ export const useAddToCart = () => {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleAddToCart = async ({ productId, quantity = 1, productTitle = 'Product' }: AddToCartParams) => {
+    console.log('handleAddToCart called with:', { productId, quantity, productTitle });
     setIsProcessing(true);
 
     try {
-      // Check if user is authenticated
-      const token = localStorage.getItem('jwt');
-      
-      if (!token) {
-        // User is not authenticated - save intended action and redirect to login
-        const pendingAction = {
-          type: 'ADD_TO_CART',
-          productId,
-          quantity,
-          timestamp: Date.now(),
-        };
-        localStorage.setItem('pendingAction', JSON.stringify(pendingAction));
-        
-        enqueueSnackbar('Please log in to add items to your cart', { 
-          variant: 'info',
-          autoHideDuration: 3000,
-        });
-        
-        navigate('/login');
-        return;
-      }
-
-      // User is authenticated - add to cart immediately
-      await addItem({ product_id: productId, quantity }).unwrap();
+      console.log('Calling addItem mutation...');
+      // Add to cart immediately (no authentication required)
+      const result = await addItem({ product_id: productId, quantity }).unwrap();
+      console.log('Add to cart successful:', result);
       
       enqueueSnackbar(`${productTitle} added to cart successfully!`, { 
         variant: 'success',
@@ -54,28 +35,16 @@ export const useAddToCart = () => {
       
     } catch (error: any) {
       console.error('Add to cart error:', error);
+      console.error('Error details:', {
+        status: error?.status,
+        data: error?.data,
+        message: error?.message,
+        error: error?.error
+      });
       
       let errorMessage = 'Failed to add item to cart';
       
-      if (error?.status === 401) {
-        // Token expired or invalid - redirect to login
-        localStorage.removeItem('jwt');
-        const pendingAction = {
-          type: 'ADD_TO_CART',
-          productId,
-          quantity,
-          timestamp: Date.now(),
-        };
-        localStorage.setItem('pendingAction', JSON.stringify(pendingAction));
-        
-        enqueueSnackbar('Session expired. Please log in again.', { 
-          variant: 'warning',
-          autoHideDuration: 4000,
-        });
-        
-        navigate('/login');
-        return;
-      } else if (error?.data?.message) {
+      if (error?.data?.message) {
         errorMessage = error.data.message;
       } else if (error?.error) {
         errorMessage = error.error;
