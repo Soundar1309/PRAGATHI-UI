@@ -276,24 +276,29 @@ export function ProductList() {
         maxWidth: '100%',
         width: '100%',
         mx: 'auto', 
-        px: { xs: 0, sm: 1, md: 2 }, 
         py: { xs: 2, sm: 3, md: 4 },
-        // Prevent horizontal scroll
+        // Prevent horizontal scroll and ensure proper positioning
         overflowX: 'hidden',
+        position: 'relative',
         // Add top margin to ensure content is below fixed header
       }}
     >
       {/* Modern Carousel Banner */}
       <Box
         sx={{
-          width: '100%',
+          width: '100vw',
           height: { xs: 200, sm: 300, md: 400, lg: 500, xl: 600 },
           position: 'relative',
-          borderRadius: { xs: 2, sm: 3, md: 4 },
           overflow: 'hidden',
           mb: { xs: 3, sm: 4, md: 5 },
           boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-          // Add significant margin-top to ensure banner is below fixed header
+          // Remove curved edges and make full width
+          marginLeft: { xs: '-16px', sm: '-24px', md: '-32px' },
+          marginRight: { xs: '-16px', sm: '-24px', md: '-32px' },
+          // Ensure proper centering and positioning
+          // Ensure proper positioning for full-width layout
+          left: '50%',
+          transform: 'translateX(-50%)',
         }}
         onMouseEnter={handleCarouselHover}
         onMouseLeave={handleCarouselLeave}
@@ -312,6 +317,10 @@ export function ProductList() {
               left: 0,
               width: '100%',
               height: '100%',
+              // Ensure proper centering
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             <Box
@@ -320,9 +329,14 @@ export function ProductList() {
                 height: '100%',
                 backgroundImage: `url(${carouselSlides[currentSlide].image})`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                backgroundPosition: 'center center',
                 backgroundRepeat: 'no-repeat',
                 position: 'relative',
+                // Ensure image is properly centered and covers the full area
+                overflow: 'hidden',
+                // Force image to be perfectly centered
+                backgroundOrigin: 'center',
+                backgroundClip: 'border-box',
               }}
             >
               {/* Overlay */}
@@ -494,7 +508,10 @@ export function ProductList() {
         </Box>
       </Box>
       
-      <FeatureHighlightsRow />
+      {/* Content Container with proper padding */}
+      <Box sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+        <FeatureHighlightsRow />
+      </Box>
       
       {/* Initial Loading State - Shows immediately when page loads */}
       {(showInitialLoading || isInitialLoading || isLoadingAll || (!allProducts && !isErrorAll) || !hasInitiallyLoaded) && !selectedCategory.id && (
