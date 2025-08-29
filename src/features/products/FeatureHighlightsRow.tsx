@@ -96,6 +96,7 @@ export function FeatureHighlightsRow() {
           "&::-webkit-scrollbar": { display: "none" },
           justifyContent: "space-between",
           alignItems: "center",
+          display: { xs: "flex", sm: "flex" },
         }}
       >
         {features.map((feature, _index) => {
@@ -116,73 +117,91 @@ export function FeatureHighlightsRow() {
               <Box
                 sx={{
                   display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
                   alignItems: "center",
-                  gap: 2,
-                  px: 3,
-                  py: 1,
-                  borderRadius: 99,
-                  bgcolor: theme.palette.mode === 'light' 
-                    ? theme.palette.background.paper
-                    : alpha(theme.palette.background.paper, 0.9),
-                  boxShadow: theme.palette.mode === 'light'
-                    ? "0 2px 8px rgba(44,70,57,0.10)"
-                    : `0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}`,
-                  mx: 1,
-                  minWidth: { xs: 120, sm: 150, md: 180 },
-                  maxWidth: { xs: 140, sm: 180, md: 220 },
+                  gap: { xs: 0, sm: 2 },
+                  px: { xs: 1, sm: 3 },
+                  py: { xs: 1, sm: 1 },
+                  borderRadius: { xs: 2, sm: 99 },
+                  bgcolor: {
+                    xs: "transparent",
+                    sm: theme.palette.mode === 'light' 
+                      ? theme.palette.background.paper
+                      : alpha(theme.palette.background.paper, 0.9)
+                  },
+                  boxShadow: {
+                    xs: "none",
+                    sm: theme.palette.mode === 'light'
+                      ? "0 2px 8px rgba(44,70,57,0.10)"
+                      : `0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}`
+                  },
+                  mx: { xs: 0.5, sm: 1 },
+                  minWidth: { xs: 60, sm: 150, md: 180 },
+                  maxWidth: { xs: 80, sm: 180, md: 220 },
                   cursor: "pointer",
                   transition: "box-shadow 0.25s, transform 0.25s",
                   "&:hover": {
-                    boxShadow: `0 4px 18px ${alpha(theme.palette.primary.main, 0.3)}`,
-                    transform: "scale(1.06)",
-                    bgcolor: theme.palette.mode === 'light' 
-                      ? theme.palette.grey[100]
-                      : alpha(theme.palette.background.paper, 0.95),
+                    boxShadow: {
+                      xs: "none",
+                      sm: `0 4px 18px ${alpha(theme.palette.primary.main, 0.3)}`
+                    },
+                    transform: { xs: "none", sm: "scale(1.06)" },
+                    bgcolor: {
+                      xs: "transparent",
+                      sm: theme.palette.mode === 'light' 
+                        ? theme.palette.grey[100]
+                        : alpha(theme.palette.background.paper, 0.95)
+                    },
                   },
                 }}
                 tabIndex={0}
                 aria-label={feature.label}
               >
-                <motion.div
-                  variants={iconVariants}
-                  whileHover="hover"
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: "50%",
-                    background: theme.palette.mode === 'light'
-                      ? `linear-gradient(135deg, ${theme.palette.primary.main} 60%, ${theme.palette.primary.dark} 100%)`
-                      : `linear-gradient(135deg, ${theme.palette.primary.main} 40%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
-                    boxShadow: theme.palette.mode === 'light'
-                      ? `0 2px 8px ${alpha(theme.palette.primary.main, 0.3)}`
-                      : `0 2px 8px ${alpha(theme.palette.primary.main, 0.4)}`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 12,
-                    flexShrink: 0,
+                <Box
+                  sx={{
+                    width: { xs: 32, sm: 44 },
+                    height: { xs: 32, sm: 44 },
+                    marginRight: { xs: 0, sm: 12 },
                   }}
                 >
-                  <Icon
-                    sx={{
-                      color: theme.palette.common.white,
-                      fontSize: 30,
-                      transition: 'color 0.2s, font-size 0.2s',
-                      '&:hover': {
-                        color: theme.palette.primary.light,
-                        fontSize: 34,
-                      },
+                  <motion.div
+                    variants={iconVariants}
+                    whileHover="hover"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
                     }}
-                  />
-                </motion.div>
+                  >
+                    <Icon
+                      sx={{
+                        color: theme.palette.primary.main,
+                        fontSize: { xs: 20, sm: 30 },
+                        transition: 'color 0.2s, font-size 0.2s',
+                        '&:hover': {
+                          color: theme.palette.primary.light,
+                          fontSize: { xs: 24, sm: 34 },
+                        },
+                      }}
+                    />
+                  </motion.div>
+                </Box>
                 <Typography
                   variant="subtitle2"
                   fontWeight={800}
                   sx={{
-                    fontSize: 16,
+                    fontSize: { xs: 8, sm: 16 },
                     color: theme.palette.text.primary,
                     letterSpacing: 0.5,
                     userSelect: "none",
+                    display: { xs: "block", sm: "block" },
+                    textAlign: { xs: "center", sm: "left" },
+                    lineHeight: { xs: 1.1, sm: 1.4 },
+                    mt: { xs: 0.5, sm: 0 },
                   }}
                 >
                   {feature.label}
