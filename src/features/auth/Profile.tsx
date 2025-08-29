@@ -44,16 +44,14 @@ export function Profile() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
+    name: '',
     phone: '',
   });
 
   useEffect(() => {
     if (user) {
       setFormData({
-        first_name: user.first_name || '',
-        last_name: user.last_name || '',
+        name: user.name || '',
         phone: user.phone || '',
       });
     }
@@ -75,8 +73,7 @@ export function Profile() {
     // Reset form data to original values
     if (user) {
       setFormData({
-        first_name: user.first_name || '',
-        last_name: user.last_name || '',
+        name: user.name || '',
         phone: user.phone || '',
       });
     }
@@ -113,9 +110,7 @@ export function Profile() {
 
   const getFullName = () => {
     if (!user) return '';
-    const firstName = user.first_name || '';
-    const lastName = user.last_name || '';
-    return `${firstName} ${lastName}`.trim() || 'User';
+    return user.name || 'User';
   };
 
   const getInitials = () => {
@@ -325,15 +320,15 @@ export function Profile() {
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <PersonIcon sx={{ color: theme.palette.primary.main, mr: 2 }} />
                     <Typography variant="subtitle2" color="text.secondary" fontWeight={600}>
-                      First Name
+                      Full Name
                     </Typography>
                   </Box>
                   {isEditing ? (
                     <TextField
                       fullWidth
-                      value={formData.first_name}
-                      onChange={handleInputChange('first_name')}
-                      placeholder="Enter your first name"
+                      value={formData.name}
+                      onChange={handleInputChange('name')}
+                      placeholder="Enter your full name"
                       sx={{ pl: 4 }}
                     />
                   ) : (
@@ -344,35 +339,7 @@ export function Profile() {
                         pl: 4
                       }}
                     >
-                      {user?.first_name || 'Not provided'}
-                    </Typography>
-                  )}
-                </Grid>
-
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <PersonIcon sx={{ color: theme.palette.primary.main, mr: 2 }} />
-                    <Typography variant="subtitle2" color="text.secondary" fontWeight={600}>
-                      Last Name
-                    </Typography>
-                  </Box>
-                  {isEditing ? (
-                    <TextField
-                      fullWidth
-                      value={formData.last_name}
-                      onChange={handleInputChange('last_name')}
-                      placeholder="Enter your last name"
-                      sx={{ pl: 4 }}
-                    />
-                  ) : (
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                        pl: 4
-                      }}
-                    >
-                      {user?.last_name || 'Not provided'}
+                      {user?.name || 'Not provided'}
                     </Typography>
                   )}
                 </Grid>

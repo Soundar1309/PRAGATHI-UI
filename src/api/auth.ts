@@ -4,10 +4,9 @@ export interface LoginResponse {
   user: {
     id: number;
     email: string;
-    username: string;
-    first_name: string;
-    last_name: string;
+    name: string;
     role: string;
+    phone?: string;
   };
   access: string;
   refresh: string;
@@ -15,11 +14,9 @@ export interface LoginResponse {
 
 export interface RegisterData {
   email: string;
-  username: string;
+  name: string;
   password: string;
   password_confirmation: string;
-  first_name: string;
-  last_name: string;
   phone?: string;
 }
 

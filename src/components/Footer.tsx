@@ -81,11 +81,11 @@ const Footer: React.FC = () => {
                                     variant="body2"
                                     sx={{
                                         fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                                        lineHeight: 1.5,
+                                        lineHeight: 1.5,    
                                         wordBreak: 'break-word',
                                     }}
                                 >
-                                    123, Organic Street, Chennai, India
+                                    4/196, West Thottam, Jakkarpalayam, Pollachi, Tamil Nadu - 642202
                                 </Typography>
                             </Stack>
 

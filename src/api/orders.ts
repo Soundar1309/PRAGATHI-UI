@@ -17,8 +17,7 @@ export interface Order {
   user: {
     id: number;
     email: string;
-    first_name: string;
-    last_name: string;
+    name: string;
   };
   address: {
     id: number;
@@ -31,8 +30,7 @@ export interface Order {
   delivery?: {
     id: number;
     email: string;
-    first_name: string;
-    last_name: string;
+    name: string;
   };
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
   total: number;

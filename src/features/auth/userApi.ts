@@ -4,8 +4,7 @@ import { baseQueryWithReauth } from '../../api/baseQueryWithAuth';
 export interface UserProfile {
   id: number;
   email: string;
-  first_name: string;
-  last_name: string;
+  name: string;
   phone: string;
   date_joined: string;
   role: string;

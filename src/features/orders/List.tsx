@@ -431,7 +431,7 @@ export function OrderList() {
                             fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`
                           }}
                         >
-                          Delivery: {order.delivery.first_name} {order.delivery.last_name}
+                          Delivery: {order.delivery.name}
                         </Typography>
                       )}
                     </Box>

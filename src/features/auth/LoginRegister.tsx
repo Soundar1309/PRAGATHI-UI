@@ -13,14 +13,13 @@ export function LoginRegister() {
 
   // Login state
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
-  // Register state - Updated to include all required fields
+  // Register state - Updated to include name and phone fields
   const [registerForm, setRegisterForm] = useState({ 
     email: '', 
-    username: '',
+    name: '',
     password: '', 
     password_confirmation: '',
-    first_name: '',
-    last_name: ''
+    phone: ''
   });
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -53,7 +52,7 @@ export function LoginRegister() {
       console.error('Registration error:', err);
       setRegisterError(
         err?.response?.data?.email?.[0] || 
-        err?.response?.data?.username?.[0] || 
+        err?.response?.data?.name?.[0] || 
         err?.response?.data?.password?.[0] || 
         err?.response?.data?.non_field_errors?.[0] || 
         'Registration failed. Please check your information.'
@@ -110,25 +109,18 @@ export function LoginRegister() {
               onChange={e => setRegisterForm(f => ({ ...f, email: e.target.value }))} 
             />
             <TextField 
-              label="Username" 
+              label="Full Name" 
               fullWidth 
               margin="normal" 
-              value={registerForm.username} 
-              onChange={e => setRegisterForm(f => ({ ...f, username: e.target.value }))} 
+              value={registerForm.name} 
+              onChange={e => setRegisterForm(f => ({ ...f, name: e.target.value }))} 
             />
             <TextField 
-              label="First Name" 
+              label="Phone Number" 
               fullWidth 
               margin="normal" 
-              value={registerForm.first_name} 
-              onChange={e => setRegisterForm(f => ({ ...f, first_name: e.target.value }))} 
-            />
-            <TextField 
-              label="Last Name" 
-              fullWidth 
-              margin="normal" 
-              value={registerForm.last_name} 
-              onChange={e => setRegisterForm(f => ({ ...f, last_name: e.target.value }))} 
+              value={registerForm.phone} 
+              onChange={e => setRegisterForm(f => ({ ...f, phone: e.target.value }))} 
             />
             <TextField 
               label="Password" 
