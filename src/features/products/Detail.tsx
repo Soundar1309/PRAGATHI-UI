@@ -40,6 +40,11 @@ export function ProductDetail() {
     }
   };
 
+  // Determine pricing display
+  const displayPrice = product.price; // Always show the price field
+  const originalPrice = product.original_price || 10000; // Use original_price or default
+  const hasOffer = originalPrice > displayPrice; // Show offer if original price is higher than current price
+
   return (
     <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 1, sm: 2, md: 4 }, py: 4 }}>
       <Grid container spacing={4}>
@@ -67,11 +72,28 @@ export function ProductDetail() {
                   fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
                 }}
               />
+              {hasOffer && (
+                <Chip
+                  label={`${Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% OFF`}
+                  size="small"
+                  sx={{
+                    position: 'absolute',
+                    top: 16,
+                    right: 16,
+                    bgcolor: theme.palette.error.main,
+                    color: '#fff',
+                    fontWeight: 600,
+                    borderRadius: 1,
+                    boxShadow: theme.shadows[1],
+                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  }}
+                />
+              )}
               {product.free_delivery && (
                 <Tooltip title="Free Delivery">
                   <Box sx={{
                     position: 'absolute',
-                    top: 16,
+                    top: hasOffer ? 48 : 16,
                     right: 16,
                     display: 'flex',
                     alignItems: 'center',
@@ -107,11 +129,52 @@ export function ProductDetail() {
                   ({product.review_count || 0} reviews)
                 </Typography>
               </Stack>
-              <Typography variant="h6" color="primary" fontWeight={700} sx={{ mb: 2, fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
-                {product.price != null && !isNaN(Number(product.price))
-                  ? Number(product.price).toFixed(2)
-                  : '--'}
-              </Typography>
+              
+              {/* Pricing Display */}
+              <Box sx={{ mb: 2 }}>
+                {hasOffer ? (
+                  <Stack direction="row" alignItems="center" spacing={2}>
+                    <Typography 
+                      variant="h4" 
+                      color="primary" 
+                      fontWeight={700} 
+                      sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}
+                    >
+                      ₹{Number(displayPrice).toFixed(2)}
+                    </Typography>
+                    <Typography 
+                      variant="h5" 
+                      color="text.secondary" 
+                      sx={{ 
+                        textDecoration: 'line-through',
+                        opacity: 0.7,
+                        fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` 
+                      }}
+                    >
+                      ₹{Number(originalPrice).toFixed(2)}
+                    </Typography>
+                    <Chip
+                      label={`${Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% OFF`}
+                      size="small"
+                      color="error"
+                      sx={{
+                        fontWeight: 600,
+                        fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                      }}
+                    />
+                  </Stack>
+                ) : (
+                  <Typography 
+                    variant="h4" 
+                    color="primary" 
+                    fontWeight={700} 
+                    sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}
+                  >
+                    ₹{Number(displayPrice).toFixed(2)}
+                  </Typography>
+                )}
+              </Box>
+              
               <Typography variant="body1" color="text.secondary" sx={{ mb: 2, fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
                 {product.description}
               </Typography>

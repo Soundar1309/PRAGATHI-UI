@@ -13,6 +13,7 @@ import {
   Select,
   MenuItem,
   InputAdornment,
+  Alert,
 } from '@mui/material';
 import { Add as AddIcon, Edit as EditIcon, CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import { useCreateProductMutation, useUpdateProductMutation, useGetProductQuery, useGetCategoriesQuery } from './api';
@@ -31,11 +32,13 @@ export function ProductForm({ productId }: ProductFormProps) {
     title: '',
     description: '',
     price: '',
+    original_price: '',
     stock: '',
     category_id: '',
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [priceError, setPriceError] = useState<string>('');
 
   // API hooks
   const { data: product, isLoading: isLoadingProduct } = useGetProductQuery(productId!, { 
@@ -53,6 +56,7 @@ export function ProductForm({ productId }: ProductFormProps) {
         title: product.title || '',
         description: product.description || '',
         price: product.price?.toString() || '',
+        original_price: product.original_price?.toString() || '',
         stock: product.stock?.toString() || '',
         category_id: product.category_id?.toString() || '',
       });
@@ -64,11 +68,30 @@ export function ProductForm({ productId }: ProductFormProps) {
   }, [product]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+    
+    // Clear price validation error when user types
+    if (name === 'original_price' || name === 'price') {
+      setPriceError('');
+    }
   };
 
   const handleCategoryChange = (e: any) => {
     setForm({ ...form, category_id: e.target.value });
+  };
+
+  const validatePrices = () => {
+    const originalPrice = parseFloat(form.original_price) || 0;
+    const price = parseFloat(form.price) || 0;
+    
+    if (originalPrice > 0 && price > 0 && price >= originalPrice) {
+      setPriceError('Price must be less than original price to show as an offer');
+      return false;
+    }
+    
+    setPriceError('');
+    return true;
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,6 +123,10 @@ export function ProductForm({ productId }: ProductFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!validatePrices()) {
+      return;
+    }
+    
     try {
       // Create FormData for file upload
       const formData = new FormData();
@@ -108,6 +135,14 @@ export function ProductForm({ productId }: ProductFormProps) {
       formData.append('price', form.price);
       formData.append('stock', form.stock);
       formData.append('category_id', form.category_id);
+      
+      // Add original_price if provided
+      if (form.original_price) {
+        formData.append('original_price', form.original_price);
+      }
+      
+      // Automatically set offer_price to the same value as price
+      formData.append('offer_price', form.price);
       
       if (selectedImage) {
         formData.append('image', selectedImage);
@@ -128,6 +163,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                           err?.data?.stock?.[0] || 
                           err?.data?.category_id?.[0] || 
                           err?.data?.image?.[0] || 
+                          err?.data?.original_price?.[0] ||
                           err?.data?.non_field_errors?.[0] || 
                           'Failed to save product';
       enqueueSnackbar(errorMessage, { variant: 'error' });
@@ -221,7 +257,7 @@ export function ProductForm({ productId }: ProductFormProps) {
               }}
             />
 
-            <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+            <Box sx={{ display: 'flex', gap: 2, mt: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
               <TextField
                 label="Price"
                 name="price"
@@ -246,6 +282,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                   min: 0,
                   step: 0.01,
                 }}
+                helperText="This will be displayed as the offer price"
               />
               
               <TextField
@@ -270,6 +307,44 @@ export function ProductForm({ productId }: ProductFormProps) {
                 }}
               />
             </Box>
+
+            {/* Original Price Field */}
+            <Typography variant="h6" sx={{ mt: 3, mb: 2, fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, color: theme.palette.primary.main }}>
+              Pricing Options
+            </Typography>
+            
+            <TextField
+              label="Original Price"
+              name="original_price"
+              type="number"
+              value={form.original_price}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              variant="outlined"
+              disabled={isLoading}
+              placeholder="10000"
+              InputProps={{
+                startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                },
+              }}
+              inputProps={{
+                min: 0,
+                step: 0.01,
+              }}
+              helperText="Default: ₹10000 (leave empty to use default). This will be shown with strikethrough when price is lower."
+            />
+
+            {priceError && (
+              <Alert severity="error" sx={{ mt: 1 }}>
+                {priceError}
+              </Alert>
+            )}
 
             <FormControl fullWidth margin="normal" disabled={isLoading}>
               <InputLabel>Category</InputLabel>

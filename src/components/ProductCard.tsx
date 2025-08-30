@@ -25,10 +25,14 @@ export interface Product {
   description?: string;
   image: string;
   price: number;
+  original_price?: number;
+  offer_price?: number;
   category: string;
   rating?: number;
   reviewCount?: number;
   freeDelivery?: boolean;
+  has_offer?: boolean;
+  discount_percentage?: number;
 }
 
 interface ProductCardProps {
@@ -68,6 +72,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       });
     }
   };
+
+  // Determine which price to display
+  const displayPrice = product.price; // Always show the price field
+  const originalPrice = product.original_price || 10000; // Use original_price or default
+  const hasOffer = originalPrice > displayPrice; // Show offer if original price is higher than current price
 
   return (
     <Card
@@ -135,12 +144,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             ...ELLIPSIS_SX,
           }}
         />
+        {hasOffer && (
+          <Chip
+            label={`${Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% OFF`}
+            size="small"
+            sx={{
+              position: 'absolute',
+              top: { xs: 8, sm: 12 },
+              right: { xs: 8, sm: 12 },
+              bgcolor: theme.palette.error.main,
+              color: '#fff',
+              fontWeight: 600,
+              borderRadius: 1,
+              boxShadow: theme.shadows[1],
+              fontSize: { xs: '0.65rem', sm: '0.7rem' },
+              maxWidth: { xs: 80, sm: 100 },
+              ...ELLIPSIS_SX,
+            }}
+          />
+        )}
         {product.freeDelivery && (
           <Tooltip title="Free Delivery">
             <Box sx={{
               position: 'absolute',
               top: { xs: 8, sm: 12 },
-              right: { xs: 8, sm: 12 },
+              right: hasOffer ? { xs: 8, sm: 12 } : { xs: 8, sm: 12 },
+              bottom: hasOffer ? { xs: 'auto', sm: 'auto' } : 'auto',
               display: 'flex',
               alignItems: 'center',
               bgcolor: '#fff',
@@ -149,6 +178,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               py: 1,
               boxShadow: theme.shadows[1],
               gap: 1,
+              transform: hasOffer ? 'translateY(32px)' : 'none',
             }}>
               <LocalShippingIcon
                 color="success"
@@ -259,19 +289,50 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         gap: { xs: 2, sm: 0 },
         width: '100%',
       }}>
-        <Typography
-          variant="h6"
-          color="primary"
-          fontWeight={700}
-          sx={{
-            fontSize: { xs: '1.1rem', sm: '1.25rem' },
-            textAlign: 'left',
-            flexShrink: 0,
-            mr: { xs: 1, sm: 0 },
-          }}
-        >
-          ₹{Number(product.price).toFixed(2)}
-        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+          {hasOffer ? (
+            <>
+              <Typography
+                variant="h6"
+                color="primary"
+                fontWeight={700}
+                sx={{
+                  fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                  textAlign: 'left',
+                  flexShrink: 0,
+                  mr: { xs: 1, sm: 0 },
+                }}
+              >
+                ₹{Number(displayPrice).toFixed(2)}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  textDecoration: 'line-through',
+                  fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                  opacity: 0.7,
+                }}
+              >
+                ₹{Number(originalPrice).toFixed(2)}
+              </Typography>
+            </>
+          ) : (
+            <Typography
+              variant="h6"
+              color="primary"
+              fontWeight={700}
+              sx={{
+                fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                textAlign: 'left',
+                flexShrink: 0,
+                mr: { xs: 1, sm: 0 },
+              }}
+            >
+              ₹{Number(displayPrice).toFixed(2)}
+            </Typography>
+          )}
+        </Box>
 
         <Box sx={{
           display: 'flex',
@@ -296,7 +357,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               minWidth: { xs: 100, sm: 120 },
               minHeight: { xs: 40, sm: 40 },
               fontSize: { xs: '0.9rem', sm: '0.875rem' },
-              px: { xs: 2, sm: 2 },
               py: { xs: 1, sm: 1 },
               position: 'relative',
               // Enhanced touch feedback
