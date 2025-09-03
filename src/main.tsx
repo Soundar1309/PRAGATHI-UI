@@ -8,10 +8,10 @@ import { SnackbarProvider } from 'notistack';
 import getTheme from './theme';
 
 // Context for palette mode
-export const ColorModeContext = createContext({ toggleColorMode: () => { }, mode: 'light' as 'light' | 'dark' });
+export const ColorModeContext = createContext({ toggleColorMode: () => { }, mode: 'dark' as 'light' | 'dark' });
 
 const Main = () => {
-  const [mode, setMode] = useState<'light' | 'dark'>('light');
+  const [mode, setMode] = useState<'light' | 'dark'>('dark');
 
   const colorMode = useMemo(() => ({
     mode,

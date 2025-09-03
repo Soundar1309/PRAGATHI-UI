@@ -9,6 +9,7 @@ import {
   Stack,
   Paper,
   IconButton,
+  useTheme,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import EmailIcon from "@mui/icons-material/Email";
@@ -27,6 +28,7 @@ const heroBg =
   "linear-gradient(0deg,rgba(31,41,55,0.32),rgba(31,41,55,0.10)), url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat";
 
 export default function ContactPage() {
+  const theme = useTheme();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -87,30 +89,47 @@ export default function ContactPage() {
       >
         <Container maxWidth="sm" sx={{ zIndex: 2, textAlign: "center", py: { xs: 4, md: 7 } }}>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={sectionVariant}>
-            <Typography
-              variant="h3"
+            <Box
               sx={{
-                color: "#111",
-                fontWeight: 800,
-                letterSpacing: 1,
-                mb: 1,
-                fontFamily: "Inter, system-ui, sans-serif",
+                background: 'rgba(255, 255, 255, 0.95)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 4,
+                p: { xs: 3, md: 4 },
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
               }}
             >
-              Contact Us
-            </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                color: "#222",
-                fontWeight: 400,
-                mb: 0,
-                maxWidth: 600,
-                mx: "auto",
-              }}
-            >
-              We’d love to hear from you. Reach out to us anytime.
-            </Typography>
+              <Typography
+                variant="h3"
+                sx={{
+                  color: theme.palette.primary.main,
+                  fontWeight: 800,
+                  letterSpacing: '-0.02em',
+                  mb: 2,
+                  fontFamily: 'Playfair Display, serif',
+                  textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                  fontSize: { xs: '2rem', sm: '2.5rem', md: '2.8rem' },
+                  lineHeight: 1.2,
+                }}
+              >
+                Contact Us
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: '#2d3748',
+                  fontWeight: 500,
+                  mb: 0,
+                  maxWidth: 600,
+                  mx: "auto",
+                  fontFamily: 'Inter, sans-serif',
+                  lineHeight: 1.6,
+                  fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
+                }}
+              >
+                We'd love to hear from you. Reach out to us anytime.
+              </Typography>
+            </Box>
           </motion.div>
         </Container>
       </Box>

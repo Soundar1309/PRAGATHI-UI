@@ -69,7 +69,7 @@ export function ProductDetail() {
                   fontWeight: 600,
                   borderRadius: 1,
                   boxShadow: theme.shadows[1],
-                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontFamily: 'Inter, sans-serif',
                 }}
               />
               {hasOffer && (
@@ -85,7 +85,7 @@ export function ProductDetail() {
                     fontWeight: 600,
                     borderRadius: 1,
                     boxShadow: theme.shadows[1],
-                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                    fontFamily: 'Inter, sans-serif',
                   }}
                 />
               )}
@@ -117,15 +117,15 @@ export function ProductDetail() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[3], p: 3, height: '100%' }}>
             <CardContent>
-              <Typography variant="h4" fontWeight={700} gutterBottom color="primary" sx={{ fontFamily: `'Playfair Display', 'Merriweather', serif` }}>
+              <Typography variant="h4" fontWeight={700} gutterBottom color="primary" sx={{ fontFamily: 'Playfair Display, serif' }}>
                 {product.title}
               </Typography>
               <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
                 <Rating value={product.rating || 0} precision={0.1} size="medium" readOnly sx={{ color: theme.palette.primary.main }} />
-                <Typography variant="h6" color="text.secondary" sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+                <Typography variant="h6" color="text.secondary" sx={{ fontFamily: 'Inter, sans-serif' }}>
                   {product.rating?.toFixed(1) || '0.0'}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+                <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'Inter, sans-serif' }}>
                   ({product.review_count || 0} reviews)
                 </Typography>
               </Stack>
@@ -138,7 +138,7 @@ export function ProductDetail() {
                       variant="h4" 
                       color="primary" 
                       fontWeight={700} 
-                      sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}
+                      sx={{ fontFamily: 'Inter, sans-serif' }}
                     >
                       ₹{Number(displayPrice).toFixed(2)}
                     </Typography>
@@ -148,7 +148,7 @@ export function ProductDetail() {
                       sx={{ 
                         textDecoration: 'line-through',
                         opacity: 0.7,
-                        fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` 
+                        fontFamily: 'Inter, sans-serif' 
                       }}
                     >
                       ₹{Number(originalPrice).toFixed(2)}
@@ -159,7 +159,7 @@ export function ProductDetail() {
                       color="error"
                       sx={{
                         fontWeight: 600,
-                        fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                        fontFamily: 'Inter, sans-serif',
                       }}
                     />
                   </Stack>
@@ -168,14 +168,14 @@ export function ProductDetail() {
                     variant="h4" 
                     color="primary" 
                     fontWeight={700} 
-                    sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}
+                    sx={{ fontFamily: 'Inter, sans-serif' }}
                   >
                     ₹{Number(displayPrice).toFixed(2)}
                   </Typography>
                 )}
               </Box>
               
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 2, fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+              <Typography variant="body1" color="text.secondary" sx={{ mb: 2, fontFamily: 'Inter, sans-serif' }}>
                 {product.description}
               </Typography>
               <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
@@ -190,14 +190,14 @@ export function ProductDetail() {
                 <Button
                   variant="contained"
                   color="secondary"
-                  sx={{ fontWeight: 700, borderRadius: 1, boxShadow: 'none', fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}
+                  sx={{ fontWeight: 700, borderRadius: 1, boxShadow: 'none', fontFamily: 'Inter, sans-serif' }}
                   onClick={handleAddToCart}
                   disabled={isAdding}
                 >
                   {isAdding ? 'Adding...' : 'Add to Cart'}
                 </Button>
               </Stack>
-              <Typography variant="body2" color="text.secondary" sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+              <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'Inter, sans-serif' }}>
                 Category: {product.category?.name || product.category || ''}
               </Typography>
             </CardContent>

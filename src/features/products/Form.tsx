@@ -201,7 +201,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                 fontWeight: 700,
                 color: theme.palette.primary.main,
                 mb: 1,
-                fontFamily: `'Playfair Display', 'Merriweather', serif`,
+                fontFamily: 'Playfair Display, serif',
               }}
             >
               {productId ? 'Edit Product' : 'Create New Product'}
@@ -209,7 +209,7 @@ export function ProductForm({ productId }: ProductFormProps) {
             <Typography
               variant="body1"
               color="text.secondary"
-              sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}
+              sx={{ fontFamily: 'Inter, sans-serif' }}
             >
               {productId ? 'Update product information' : 'Add a new product to your store'}
             </Typography>
@@ -229,7 +229,7 @@ export function ProductForm({ productId }: ProductFormProps) {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 2,
-                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontFamily: 'Inter, sans-serif',
                 },
               }}
               inputProps={{
@@ -252,7 +252,7 @@ export function ProductForm({ productId }: ProductFormProps) {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 2,
-                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontFamily: 'Inter, sans-serif',
                 },
               }}
             />
@@ -275,7 +275,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
-                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                    fontFamily: 'Inter, sans-serif',
                   },
                 }}
                 inputProps={{
@@ -299,7 +299,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
-                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                    fontFamily: 'Inter, sans-serif',
                   },
                 }}
                 inputProps={{
@@ -309,7 +309,7 @@ export function ProductForm({ productId }: ProductFormProps) {
             </Box>
 
             {/* Original Price Field */}
-            <Typography variant="h6" sx={{ mt: 3, mb: 2, fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, color: theme.palette.primary.main }}>
+            <Typography variant="h6" sx={{ mt: 3, mb: 2, fontFamily: 'Inter, sans-serif', color: theme.palette.primary.main }}>
               Pricing Options
             </Typography>
             
@@ -330,7 +330,7 @@ export function ProductForm({ productId }: ProductFormProps) {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 2,
-                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontFamily: 'Inter, sans-serif',
                 },
               }}
               inputProps={{
@@ -355,7 +355,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                 required
                 sx={{
                   borderRadius: 2,
-                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontFamily: 'Inter, sans-serif',
                 }}
               >
                 {categories?.map((category) => (
@@ -368,7 +368,7 @@ export function ProductForm({ productId }: ProductFormProps) {
 
             {/* Image Upload Section */}
             <Box sx={{ mt: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2, fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+              <Typography variant="h6" sx={{ mb: 2, fontFamily: 'Inter, sans-serif' }}>
                 Product Image
               </Typography>
               
@@ -414,7 +414,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                 ) : (
                   <Box>
                     <CloudUploadIcon sx={{ fontSize: 48, color: theme.palette.primary.main, mb: 2 }} />
-                    <Typography variant="body1" sx={{ mb: 1, fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+                    <Typography variant="body1" sx={{ mb: 1, fontFamily: 'Inter, sans-serif' }}>
                       Click to upload image
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -442,7 +442,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                   flex: { xs: 1, sm: 'none' },
                   minHeight: 48,
                   fontWeight: 600,
-                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontFamily: 'Inter, sans-serif',
                   borderRadius: 2,
                   textTransform: 'none',
                   fontSize: '1rem',
@@ -459,7 +459,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                   flex: { xs: 1, sm: 'none' },
                   minHeight: 48,
                   fontWeight: 600,
-                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontFamily: 'Inter, sans-serif',
                   borderRadius: 2,
                   textTransform: 'none',
                   fontSize: '1rem',

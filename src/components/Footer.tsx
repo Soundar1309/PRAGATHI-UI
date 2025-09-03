@@ -22,7 +22,7 @@ const Footer: React.FC = () => {
                 mt: { xs: 4, sm: 6, md: 8 },
                 pt: { xs: 4, sm: 5, md: 6 },
                 pb: { xs: 2, sm: 3 },
-                fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                fontFamily: 'Inter, sans-serif',
                 // Prevent horizontal scroll
                 width: '100%',
                 overflowX: 'hidden',
@@ -81,8 +81,14 @@ const Footer: React.FC = () => {
                                     variant="body2"
                                     sx={{
                                         fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                                        lineHeight: 1.5,    
+                                        lineHeight: 1.6,    
                                         wordBreak: 'break-word',
+                                        color: theme.palette.text.primary,
+                                        fontWeight: 400,
+                                        letterSpacing: '0.01em',
+                                        textAlign: { xs: 'center', md: 'left' },
+                                        maxWidth: '100%',
+                                        transition: 'color 0.3s ease-in-out',
                                     }}
                                 >
                                     4/196, West Thottam, Jakkarpalayam, Pollachi, Tamil Nadu - 642202
@@ -109,7 +115,14 @@ const Footer: React.FC = () => {
                                     variant="body2"
                                     sx={{
                                         fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                        lineHeight: 1.6,
                                         wordBreak: 'break-word',
+                                        color: theme.palette.text.primary,
+                                        fontWeight: 400,
+                                        letterSpacing: '0.01em',
+                                        textAlign: { xs: 'center', md: 'left' },
+                                        maxWidth: '100%',
+                                        transition: 'color 0.3s ease-in-out',
                                     }}
                                 >
                                     hello@pragathifarms.com

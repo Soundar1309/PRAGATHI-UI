@@ -9,7 +9,8 @@
   --brand-dark: #222;
   --brand-paper: #fff;
   --motif-svg: url('data:image/svg+xml;utf8,<svg width="100%25" height="16" viewBox="0 0 100 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 8 Q10 0 20 8 T40 8 T60 8 T80 8 T100 8" stroke="%23406343" stroke-width="2" fill="none"/></svg>');
-  font-family: 'Inter', 'Lato', 'Manrope', system-ui, sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
   color-scheme: light dark;
   color: var(--brand-dark);
   background-color: var(--brand-beige);
@@ -19,7 +20,7 @@
   -moz-osx-font-smoothing: grayscale;
   
   /* Responsive font sizes using clamp for fluid typography */
-  --font-size-base: clamp(0.875rem, 2.5vw, 1rem);
+  --font-size-base: 1rem; /* 16px base */
   --font-size-sm: clamp(0.8125rem, 2.25vw, 0.95rem);
   --font-size-lg: clamp(1rem, 3vw, 1.125rem);
   --font-size-xl: clamp(1.125rem, 3.5vw, 1.25rem);
@@ -120,7 +121,7 @@ h6 {
 }
 
 p, span, li, input, textarea, select, button {
-  font-family: 'Inter', 'Lato', 'Manrope', system-ui, sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: var(--font-size-base);
   line-height: 1.6;
   word-wrap: break-word;

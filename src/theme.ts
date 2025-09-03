@@ -120,7 +120,8 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
     },
     // Enhanced responsive typography
     typography: {
-      fontFamily: 'Inter, Lato, Manrope, sans-serif',
+      fontFamily: 'Inter, sans-serif',
+      fontSize: 16, // Base font size
       h1: {
         fontFamily: 'Playfair Display, Merriweather, serif',
         fontWeight: 700,
@@ -205,34 +206,20 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
         },
       },
       body1: {
-        fontFamily: 'Inter, Lato, Manrope, sans-serif',
-        fontSize: '0.875rem', // 14px base
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '1rem', // 16px base
         lineHeight: 1.6,
-        '@media (min-width:480px)': {
-          fontSize: '0.9375rem', // 15px
-        },
-        '@media (min-width:1024px)': {
-          fontSize: '1rem', // 16px
-        },
       },
       body2: {
-        fontFamily: 'Inter, Lato, Manrope, sans-serif',
-        fontSize: '0.8125rem', // 13px base
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '0.875rem', // 14px base
         lineHeight: 1.5,
-        '@media (min-width:480px)': {
-          fontSize: '0.875rem', // 14px
-        },
-        '@media (min-width:1024px)': {
-          fontSize: '0.95rem', // 15px
-        },
       },
       button: {
-        fontSize: '0.875rem', // 14px base
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '1rem', // 16px base
         fontWeight: 600,
         textTransform: 'none',
-        '@media (min-width:480px)': {
-          fontSize: '0.9375rem', // 15px
-        },
       },
     },
     // Responsive spacing
