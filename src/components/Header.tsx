@@ -124,16 +124,17 @@ const Search = styled('div')(({ theme }) => ({
   marginLeft: 0,
   width: '100%',
   transition: 'all 0.2s ease-in-out',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: 'auto',
-    minWidth: '200px',
-  },
   [theme.breakpoints.up('md')]: {
-    minWidth: '250px',
+    minWidth: '180px',
+    maxWidth: '200px',
   },
   [theme.breakpoints.up('lg')]: {
-    minWidth: '300px',
+    minWidth: '220px',
+    maxWidth: '250px',
+  },
+  [theme.breakpoints.up('xl')]: {
+    minWidth: '250px',
+    maxWidth: '280px',
   },
 }));
 
@@ -151,17 +152,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   width: '100%',
   '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    padding: theme.spacing(0.75, 1, 0.75, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(3)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
-    fontSize: '0.875rem',
-    [theme.breakpoints.up('sm')]: {
+    fontSize: '0.8rem',
+    [theme.breakpoints.up('md')]: {
+      fontSize: '0.85rem',
+    },
+    [theme.breakpoints.up('lg')]: {
       fontSize: '0.9rem',
     },
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-      fontSize: '1rem',
+    [theme.breakpoints.up('xl')]: {
+      fontSize: '0.95rem',
     },
   },
 }));
@@ -352,10 +355,13 @@ const Header: React.FC = () => {
             display: { xs: 'none', md: 'flex' },
             justifyContent: 'space-between',
             alignItems: 'center',
-            px: { md: 3, lg: 4 },
-            py: 2,
+            px: { md: 2, lg: 3, xl: 4 },
+            py: { md: 1.5, lg: 2 },
             borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
             position: 'relative',
+            minHeight: { md: 64, lg: 72 },
+            flexWrap: 'nowrap',
+            overflow: 'hidden',
             '&::before': {
               content: '""',
               position: 'absolute',
@@ -370,7 +376,7 @@ const Header: React.FC = () => {
           }}
         >
           {/* Logo Container */}
-          <Box>
+          <Box sx={{ flexShrink: 0, minWidth: 0 }}>
             <Button
               component={NavLink}
               to="/"
@@ -378,19 +384,19 @@ const Header: React.FC = () => {
                 p: 0,
                 minWidth: 0,
                 fontWeight: 700,
-                fontSize: { md: 20, lg: 22, xl: 24 },
+                fontSize: { md: 16, lg: 18, xl: 20 },
                 color: theme.palette.primary.main,
                 textTransform: 'none',
-                letterSpacing: 1,
-                fontFamily: `'Playfair Display', 'Merriweather', serif`,
+                letterSpacing: 0.5,
+                fontFamily: 'Playfair Display, serif',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 flexDirection: 'row',
                 alignItems: 'center',
-                gap: 2,
+                gap: { md: 1, lg: 1.5 },
                 '&:hover': {
                   background: 'transparent',
-                  transform: 'translateY(-2px)',
+                  transform: 'translateY(-1px)',
                 },
                 transition: 'all 0.3s ease-in-out',
               }}
@@ -399,9 +405,9 @@ const Header: React.FC = () => {
                 src="/logo.jpg"
                 alt="Pragathi Natural Farms"
                 style={{
-                  height: 'clamp(40px, 5vw, 50px)',
-                  width: 'clamp(50px, 5vw, 50px)',
-                  borderRadius: 8,
+                  height: 'clamp(32px, 4vw, 40px)',
+                  width: 'clamp(32px, 4vw, 40px)',
+                  borderRadius: 6,
                   background: theme.palette.background.paper,
                   maxWidth: '100%',
                 }}
@@ -411,10 +417,22 @@ const Header: React.FC = () => {
                 sx={{
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
-                  ml: 5,
+                  display: { md: 'none', lg: 'inline' },
+                  maxWidth: { lg: 200, xl: 250 },
                 }}
               >
                 Pragathi Natural Farms
+              </Box>
+              <Box
+                component="span"
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: { md: 'inline', lg: 'none' },
+                  maxWidth: 120,
+                }}
+              >
+                Pragathi Farms
               </Box>
             </Button>
           </Box>
@@ -422,10 +440,13 @@ const Header: React.FC = () => {
           {/* Navigation Links - Moved to top row */}
           <Box
             sx={{
-              display: 'flex',
+              display: { md: 'flex', lg: 'flex' },
               alignItems: 'center',
-              gap: { md: 1, lg: 2 },
-              mx: { md: 2, lg: 3 },
+              gap: { md: 0.5, lg: 1 },
+              mx: { md: 1, lg: 2 },
+              flexShrink: 1,
+              minWidth: 0,
+              overflow: 'hidden',
             }}
           >
             {navLinks.map((link) => {
@@ -460,8 +481,8 @@ const Header: React.FC = () => {
                     sx={{
                       color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
                       fontWeight: 600,
-                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                      fontSize: { md: 14, lg: 15, xl: 16 },
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: { md: 12, lg: 13, xl: 14 },
                       background: isActive
                         ? alpha(theme.palette.primary.main, 0.1)
                         : 'transparent',
@@ -469,21 +490,25 @@ const Header: React.FC = () => {
                       textTransform: 'none',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 1,
-                      minHeight: 40,
-                      px: { md: 2, lg: 2, xl: 3 },
-                      py: 1,
+                      gap: 0.5,
+                      minHeight: 36,
+                      px: { md: 1, lg: 1.5, xl: 2 },
+                      py: 0.5,
                       borderRadius: 1,
                       border: isActive
                         ? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
                         : '1px solid transparent',
                       transition: 'all 0.3s ease-in-out',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      maxWidth: { md: 100, lg: 120, xl: 140 },
                       '&:hover': {
                         backgroundColor: alpha(theme.palette.primary.main, 0.12),
                         color: theme.palette.primary.main,
                         borderColor: alpha(theme.palette.primary.main, 0.4),
                         transform: 'translateY(-1px)',
-                        boxShadow: `0 4px 12px ${alpha(theme.palette.primary.main, 0.15)}`,
+                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.15)}`,
                       },
                     }}
                   >
@@ -662,16 +687,19 @@ const Header: React.FC = () => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: { md: 2, lg: 2 },
+              gap: { md: 1, lg: 1.5 },
+              flexShrink: 0,
+              minWidth: 0,
             }}
           >
             {/* Desktop Search Bar */}
             <Box
               sx={{
-                display: 'flex',
+                display: { md: 'flex', lg: 'flex' },
                 alignItems: 'center',
-                flex: { md: '0 1 280px', lg: '0 1 320px' },
-                maxWidth: 320,
+                flex: { md: '0 1 200px', lg: '0 1 250px', xl: '0 1 280px' },
+                maxWidth: { md: 200, lg: 250, xl: 280 },
+                minWidth: 0,
               }}
             >
               <Box component="form" onSubmit={handleSearchSubmit} sx={{ width: '100%' }}>
@@ -692,13 +720,13 @@ const Header: React.FC = () => {
 
             {/* Wishlist Button */}
             <IconButton
-              size="large"
+              size="medium"
               aria-label="wishlist"
               onClick={() => navigate('/wishlist')}
               sx={{
                 color: theme.palette.primary.main,
-                minWidth: 48,
-                minHeight: 48,
+                minWidth: { md: 40, lg: 44 },
+                minHeight: { md: 40, lg: 44 },
                 borderRadius: '50%',
                 background: alpha(theme.palette.primary.main, 0.08),
                 '&:hover': {
@@ -709,19 +737,19 @@ const Header: React.FC = () => {
               }}
             >
               <Badge badgeContent={wishlistCount} color="error">
-                <FavoriteIcon />
+                <FavoriteIcon fontSize="small" />
               </Badge>
             </IconButton>
 
             {/* Cart & Profile & Dark Mode Toggle */}
             <IconButton
-              size="large"
+              size="medium"
               aria-label="cart"
               onClick={() => navigate('/cart')}
               sx={{
                 color: theme.palette.primary.main,
-                minWidth: 48,
-                minHeight: 48,
+                minWidth: { md: 40, lg: 44 },
+                minHeight: { md: 40, lg: 44 },
                 borderRadius: '50%',
                 background: alpha(theme.palette.primary.main, 0.08),
                 '&:hover': {
@@ -732,15 +760,15 @@ const Header: React.FC = () => {
               }}
             >
               <Badge badgeContent={cartCount} color="secondary">
-                <ShoppingCartIcon />
+                <ShoppingCartIcon fontSize="small" />
               </Badge>
             </IconButton>
             <IconButton
-              size="large"
+              size="medium"
               sx={{
                 color: theme.palette.primary.main,
-                minWidth: 48,
-                minHeight: 48,
+                minWidth: { md: 40, lg: 44 },
+                minHeight: { md: 40, lg: 44 },
                 borderRadius: '50%',
                 background: alpha(theme.palette.primary.main, 0.08),
                 '&:hover': {
@@ -751,13 +779,14 @@ const Header: React.FC = () => {
               }}
               onClick={handleAccountMenuOpen}
             >
-              <AccountCircle fontSize="large" />
+              <AccountCircle fontSize="small" />
             </IconButton>
             {/* Dark mode toggle */}
             <IconButton
+              size="medium"
               sx={{
-                minWidth: 48,
-                minHeight: 48,
+                minWidth: { md: 40, lg: 44 },
+                minHeight: { md: 40, lg: 44 },
                 borderRadius: '50%',
                 background: alpha(theme.palette.primary.main, 0.08),
                 '&:hover': {
@@ -769,7 +798,7 @@ const Header: React.FC = () => {
               onClick={colorMode.toggleColorMode}
               color="inherit"
             >
-              {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+              {theme.palette.mode === 'dark' ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
             </IconButton>
           </Box>
         </Box>
