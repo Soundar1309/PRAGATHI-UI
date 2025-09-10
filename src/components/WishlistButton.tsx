@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { IconButton, Tooltip, Snackbar, Alert } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { useWishlist } from '../contexts/WishlistContext';
+import { useWishlist } from '../hooks/useWishlist';
 
 interface WishlistButtonProps {
   productId: number;
   size?: 'small' | 'medium' | 'large';
 }
 
-const WishlistButton: React.FC<WishlistButtonProps> = ({ 
-  productId, 
+const WishlistButton: React.FC<WishlistButtonProps> = ({
+  productId,
   size = 'medium'
 }) => {
   const { wishlist, isInWishlist, addToWishlist, removeFromWishlist, error, clearError } = useWishlist();
@@ -28,14 +28,14 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
   const handleWishlistToggle = async (event: React.MouseEvent) => {
     // Prevent the click from bubbling up to parent click handlers
     event.stopPropagation();
-    
+
     try {
       setIsLoading(true);
       clearError(); // Clear any previous errors
-      
+
       console.log('Current wishlist state:', wishlist);
       console.log('Is product in wishlist before toggle:', isInWishlist(productId));
-      
+
       if (isInWishlist(productId)) {
         console.log('Removing product from wishlist:', productId);
         await removeFromWishlist(productId);
@@ -55,21 +55,22 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
           severity: 'success'
         });
       }
-      
+
       // Log the updated state after operation
       console.log('Wishlist state after operation:', wishlist);
       console.log('Is product in wishlist after toggle:', isInWishlist(productId));
-      
-    } catch (error: any) {
+
+    } catch (error: unknown) {
       console.error('Wishlist operation failed:', error);
-      
+
       let errorMessage = 'Failed to update wishlist';
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message;
+      const axiosError = error as { response?: { data?: { message?: string } }; message?: string };
+      if (axiosError.response?.data?.message) {
+        errorMessage = axiosError.response.data.message;
+      } else if (axiosError.message) {
+        errorMessage = axiosError.message;
       }
-      
+
       setSnackbar({
         open: true,
         message: errorMessage,
@@ -124,8 +125,8 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
+        <Alert
+          onClose={handleCloseSnackbar}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
         >

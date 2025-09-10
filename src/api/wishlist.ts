@@ -35,10 +35,11 @@ export const wishlistApi = {
       const response = await api.get('/wishlist/');
       console.log('Wishlist response:', response.data);
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching wishlist:', error);
-      console.error('Response data:', error.response?.data);
-      console.error('Status:', error.response?.status);
+      const axiosError = error as { response?: { data?: unknown; status?: number } };
+      console.error('Response data:', axiosError.response?.data);
+      console.error('Status:', axiosError.response?.status);
       throw error;
     }
   },
@@ -60,11 +61,12 @@ export const wishlistApi = {
       }
       
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error adding to wishlist:', error);
-      console.error('Response data:', error.response?.data);
-      console.error('Status:', error.response?.status);
-      console.error('Headers:', error.response?.headers);
+      const axiosError = error as { response?: { data?: unknown; status?: number; headers?: unknown } };
+      console.error('Response data:', axiosError.response?.data);
+      console.error('Status:', axiosError.response?.status);
+      console.error('Headers:', axiosError.response?.headers);
       throw error;
     }
   },
@@ -78,10 +80,11 @@ export const wishlistApi = {
       
       await api.delete(`/wishlist/remove/${productId}/`);
       console.log('Successfully removed from wishlist');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error removing from wishlist:', error);
-      console.error('Response data:', error.response?.data);
-      console.error('Status:', error.response?.status);
+      const axiosError = error as { response?: { data?: unknown; status?: number } };
+      console.error('Response data:', axiosError.response?.data);
+      console.error('Status:', axiosError.response?.status);
       throw error;
     }
   },
@@ -96,10 +99,11 @@ export const wishlistApi = {
       const response = await api.get(`/wishlist/check/${productId}/`);
       console.log('Check wishlist status response:', response.data);
       return response.data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error checking wishlist status:', error);
-      console.error('Response data:', error.response?.data);
-      console.error('Status:', error.response?.status);
+      const axiosError = error as { response?: { data?: unknown; status?: number } };
+      console.error('Response data:', axiosError.response?.data);
+      console.error('Status:', axiosError.response?.status);
       throw error;
     }
   },

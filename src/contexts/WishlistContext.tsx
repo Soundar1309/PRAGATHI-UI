@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { wishlistApi } from '../api/wishlist';
 import type { WishlistItem } from '../api/wishlist';
 
-interface WishlistContextType {
+export interface WishlistContextType {
   wishlist: WishlistItem[];
   isLoading: boolean;
   error: string | null;
@@ -14,15 +14,7 @@ interface WishlistContextType {
   clearError: () => void;
 }
 
-const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
-
-export const useWishlist = () => {
-  const context = useContext(WishlistContext);
-  if (context === undefined) {
-    throw new Error('useWishlist must be used within a WishlistProvider');
-  }
-  return context;
-};
+export const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
 interface WishlistProviderProps {
   children: ReactNode;
@@ -44,9 +36,10 @@ export const WishlistProvider: React.FC<WishlistProviderProps> = ({ children }) 
       const data = await wishlistApi.getWishlist();
       console.log('Wishlist data received:', data);
       setWishlist(data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error refreshing wishlist:', error);
-      setError(error?.message || 'Failed to load wishlist');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load wishlist';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -71,9 +64,10 @@ export const WishlistProvider: React.FC<WishlistProviderProps> = ({ children }) 
       
       // Also refresh from server to ensure consistency
       await refreshWishlist();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error adding to wishlist:', error);
-      setError(error?.message || 'Failed to add to wishlist');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to add to wishlist';
+      setError(errorMessage);
       throw error; // Re-throw to let the component handle it
     }
   };
@@ -89,9 +83,10 @@ export const WishlistProvider: React.FC<WishlistProviderProps> = ({ children }) 
       
       // Also refresh from server to ensure consistency
       await refreshWishlist();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error removing from wishlist:', error);
-      setError(error?.message || 'Failed to remove from wishlist');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to remove from wishlist';
+      setError(errorMessage);
       throw error; // Re-throw to let the component handle it
     }
   };

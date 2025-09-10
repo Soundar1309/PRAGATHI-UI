@@ -4,9 +4,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-// Icons for mobile navigation (used in mobile drawer)
-// import FactoryIcon from '@mui/icons-material/Factory';
-// import SpaIcon from '@mui/icons-material/Spa';
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe';
@@ -50,7 +47,7 @@ import { ColorModeContext } from '../main';
 import { useGetCartQuery } from '../features/cart/api';
 import { useLogoutMutation } from '../features/auth/api';
 import { useUserRole } from '../hooks/useUserRole';
-import { useWishlist } from '../contexts/WishlistContext';
+import { useWishlist } from '../hooks/useWishlist';
 import { useGetCategoriesQuery } from '../features/products/api';
 
 //-----------------------------------------------------------------------------------------------------------------------------
@@ -65,12 +62,12 @@ interface NavLink {
 interface DropdownItem {
   label: string;
   to: string;
-  icon?: React.ComponentType<any>;
+  icon?: React.ComponentType<{ sx?: Record<string, unknown> }>;
 }
 
 
 // Function to map category names to appropriate icons
-const getCategoryIcon = (categoryName: string): React.ComponentType<any> => {
+const getCategoryIcon = (categoryName: string): React.ComponentType<{ sx?: Record<string, unknown> }> => {
   const name = categoryName.toLowerCase();
   
   // Food and grocery items
@@ -335,7 +332,7 @@ const Header: React.FC = () => {
       localStorage.removeItem('jwt');
       handleAccountMenuClose();
       navigate('/');
-    } catch (err) {
+    } catch {
       // Handle logout error
     }
   };
@@ -582,7 +579,7 @@ const Header: React.FC = () => {
                               </Box>
                               <Box sx={{ maxHeight: 320, overflow: 'auto' }}>
                                 {link.dropdown?.map((item, index) => {
-                                  const Icon = (item as any).icon;
+                                  const Icon = item.icon;
                                   return (
                                     <MenuItem
                                       key={index}
@@ -997,7 +994,7 @@ const Header: React.FC = () => {
                     <Collapse in={isDropdownOpen}>
                       <Box sx={{ pl: 3, pt: 1 }}>
                         {link.dropdown?.map((item) => {
-                          const IconComponent = (item as any).icon;
+                          const IconComponent = item.icon;
                           return (
                             <Button
                               key={item.to}

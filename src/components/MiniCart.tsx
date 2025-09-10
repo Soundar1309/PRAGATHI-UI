@@ -13,7 +13,7 @@ const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     await removeItem(id);
   };
 
-  const total = data?.cart_items?.reduce((sum: number, item: any) => sum + item.product.price * item.quantity, 0) || 0;
+  const total = data?.cart_items?.reduce((sum: number, item: { product: { price: string }; quantity: number }) => sum + parseFloat(item.product.price) * item.quantity, 0) || 0;
 
   return (
     <Box sx={{ width: { xs: 320, sm: 400 }, p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -25,7 +25,7 @@ const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <Typography sx={{ mt: 2 }}>Your cart is empty.</Typography>
       ) : (
         <List sx={{ flexGrow: 1 }}>
-          {data.cart_items.map((item: any) => (
+          {data.cart_items.map((item: { id: number; product: { title: string; price: string; image: string }; quantity: number }) => (
             <ListItem key={item.id} secondaryAction={
               <IconButton edge="end" onClick={() => handleRemove(item.id)}>
                 <DeleteIcon />
@@ -39,7 +39,7 @@ const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 secondary={<>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Typography variant="body2">Qty: {item.quantity}</Typography>
-                    <Typography variant="body2">₹{item.product.price.toFixed(2)}</Typography>
+                    <Typography variant="body2">₹{parseFloat(item.product.price).toFixed(2)}</Typography>
                   </Stack>
                 </>}
               />

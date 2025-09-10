@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { useWishlist } from '../contexts/WishlistContext';
+import { useWishlist } from '../hooks/useWishlist';
 import { useAddToCart } from '../hooks/useAddToCart';
 import type { WishlistItem } from '../api/wishlist';
 
@@ -76,7 +76,7 @@ const Wishlist: React.FC = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        {wishlist.map((item) => (
+        {wishlist.map((item: WishlistItem) => (
           <Grid key={item.id} size={{ xs: 12, sm: 6, md: 8, lg: 3 }}>
             <Card
               sx={{

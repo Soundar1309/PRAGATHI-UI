@@ -13,7 +13,7 @@ export const authApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    login: builder.mutation<{ user: any; access: string; refresh: string }, { email: string; password: string }>({
+    login: builder.mutation<{ user: unknown; access: string; refresh: string }, { email: string; password: string }>({
       query: ({ email, password }) => ({
         url: '/users/login/',
         method: 'POST',
@@ -25,7 +25,9 @@ export const authApi = createApi({
           if (data?.access) {
             localStorage.setItem('jwt', data.access);
           }
-        } catch {}
+        } catch {
+          // Handle error silently
+        }
       },
     }),
     logout: builder.mutation<void, void>({

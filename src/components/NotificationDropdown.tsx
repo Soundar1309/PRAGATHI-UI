@@ -6,7 +6,7 @@ import { subscribeToNotifications } from '../utils/cable';
 
 export function NotificationDropdown() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<{ id: number; message: string; created_at: string; read: boolean }[]>([]);
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
