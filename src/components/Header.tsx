@@ -4,35 +4,47 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import FactoryIcon from '@mui/icons-material/Factory';
-import SpaIcon from '@mui/icons-material/Spa';
+// Icons for mobile navigation (used in mobile drawer)
+// import FactoryIcon from '@mui/icons-material/Factory';
+// import SpaIcon from '@mui/icons-material/Spa';
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 import LocalPharmacyIcon from '@mui/icons-material/LocalPharmacy';
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
-import { AppBar, Badge, Box, Button, Drawer, IconButton, Toolbar, Typography, useTheme } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import InputBase from '@mui/material/InputBase';
+import { 
+  AppBar, 
+  Badge, 
+  Box, 
+  Button, 
+  Drawer, 
+  IconButton, 
+  Toolbar, 
+  Typography, 
+  useTheme,
+  useMediaQuery,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  InputBase,
+  Popper,
+  Grow,
+  Paper,
+  Collapse,
+  Dialog
+} from '@mui/material';
 import { alpha, keyframes, styled } from '@mui/material/styles';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion'; // Not used in current implementation
 import React, { useState, useContext } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import Popper from '@mui/material/Popper';
-import Grow from '@mui/material/Grow';
-import Paper from '@mui/material/Paper';
-import Collapse from '@mui/material/Collapse';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AddIcon from '@mui/icons-material/Add';
 import CategoryIcon from '@mui/icons-material/Category';
-import Divider from '@mui/material/Divider';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { ColorModeContext } from '../main';
 import { useGetCartQuery } from '../features/cart/api';
@@ -42,8 +54,27 @@ import { useWishlist } from '../contexts/WishlistContext';
 
 //-----------------------------------------------------------------------------------------------------------------------------
 
+// TypeScript interfaces
+interface NavLink {
+  label: string;
+  to?: string;
+  dropdown?: DropdownItem[];
+}
+
+interface DropdownItem {
+  label: string;
+  to: string;
+  icon?: React.ComponentType<any>;
+}
+
+interface ProductCategory {
+  id: number;
+  name: string;
+  icon: React.ComponentType<any>;
+}
+
 // Product categories with icons
-const productCategories = [
+const productCategories: ProductCategory[] = [
   { id: 28, name: 'Agarbathi', icon: LocalActivityIcon },
   { id: 29, name: 'Annapodi', icon: LocalGroceryStoreIcon },
   { id: 30, name: 'Dhoop sticks', icon: LocalActivityIcon },
@@ -70,7 +101,7 @@ const productCategories = [
 ];
 
 // Update navLinks to support dropdowns
-const navLinks = [
+const navLinks: NavLink[] = [
   { label: 'Home', to: '/' },
   {
     label: 'Farm store',
@@ -125,16 +156,16 @@ const Search = styled('div')(({ theme }) => ({
   width: '100%',
   transition: 'all 0.2s ease-in-out',
   [theme.breakpoints.up('md')]: {
-    minWidth: '180px',
-    maxWidth: '200px',
+    minWidth: '150px',
+    maxWidth: '180px',
   },
   [theme.breakpoints.up('lg')]: {
-    minWidth: '220px',
-    maxWidth: '250px',
+    minWidth: '180px',
+    maxWidth: '220px',
   },
   [theme.breakpoints.up('xl')]: {
-    minWidth: '250px',
-    maxWidth: '280px',
+    minWidth: '200px',
+    maxWidth: '250px',
   },
 }));
 
@@ -157,6 +188,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     fontSize: '0.8rem',
+    marginLeft: theme.spacing(1),
     [theme.breakpoints.up('md')]: {
       fontSize: '0.85rem',
     },
@@ -175,13 +207,23 @@ const Header: React.FC = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [searchOpen, setSearchOpen] = React.useState(false);
+  
+  // Media queries for responsive design
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
+  const isMediumScreen = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+  
+  // State management
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [dropdownAnchor, setDropdownAnchor] = useState<null | HTMLElement>(null);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState<{ [key: string]: boolean }>({});
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [accountMenuAnchor, setAccountMenuAnchor] = useState<null | HTMLElement>(null);
+  const [moreMenuAnchor, setMoreMenuAnchor] = useState<null | HTMLElement>(null);
+  
+  // Context and hooks
   const colorMode = useContext(ColorModeContext);
   const { role } = useUserRole();
   const isAuthenticated = !!localStorage.getItem('jwt');
@@ -193,7 +235,6 @@ const Header: React.FC = () => {
   const [logout] = useLogoutMutation();
 
   const handleFarmStoreClick = () => {
-    // If clicking the main "Farm Store" button, navigate to all products
     navigate('/products');
   };
 
@@ -222,7 +263,6 @@ const Header: React.FC = () => {
     if (token) {
       setAccountMenuAnchor(event.currentTarget);
     } else {
-      // Redirect to login page if not authenticated
       navigate('/login');
     }
   };
@@ -243,7 +283,7 @@ const Header: React.FC = () => {
       handleAccountMenuClose();
       navigate('/');
     } catch (err) {
-      // setAuthError('Failed to logout.'); // This line is removed
+      // Handle logout error
     }
   };
 
@@ -267,6 +307,25 @@ const Header: React.FC = () => {
     navigate('/admin/products');
   };
 
+  // More menu handlers for medium screens
+  const handleMoreMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setMoreMenuAnchor(event.currentTarget);
+  };
+
+  const handleMoreMenuClose = () => {
+    setMoreMenuAnchor(null);
+  };
+
+  const handleWishlistClick = () => {
+    navigate('/wishlist');
+    handleMoreMenuClose();
+  };
+
+  const handleThemeToggle = () => {
+    colorMode.toggleColorMode();
+    handleMoreMenuClose();
+  };
+
   return (
     <Box
       component="header"
@@ -277,39 +336,20 @@ const Header: React.FC = () => {
         right: 0,
         zIndex: 9999,
         background: theme.palette.background.default,
-        // Prevent horizontal scroll
         width: '100%',
         overflow: 'hidden',
-        // Enhanced fixed positioning
         willChange: 'transform',
-        // Add backdrop blur for modern browsers
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
-        // Ensure proper stacking context
         isolation: 'isolate',
-        // Force fixed behavior
-        '&.sticky-header': {
-          position: 'fixed !important',
-          top: '0 !important',
-          left: '0 !important',
-          right: '0 !important',
-        },
-        // Ensure fixed works in all scenarios
-        '@media (max-width: 768px)': {
-          position: 'fixed',
-          top: 0,
-        },
-
       }}
-      className="sticky-header"
-
     >
-      {/* Running Banner */}
+      {/* Flash News Banner */}
       <Box
         sx={{
           width: '100%',
           background: theme.palette.secondary.main,
-          color: theme.palette.getContrastText(theme.palette.secondary.main),
+          color: '#ffffff',
           overflow: 'hidden',
           height: { xs: 32, sm: 36, md: 40 },
           display: 'flex',
@@ -327,13 +367,14 @@ const Header: React.FC = () => {
             animation: `${marquee} 18s linear infinite`,
             px: 2,
             fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
+            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
           }}
         >
           🔥 Free Shipping Alert! No delivery charges across India – shop your favorite items today!
         </Typography>
       </Box>
 
-      {/* AppBar and rest of header */}
+      {/* Main AppBar */}
       <AppBar
         position="static"
         color="transparent"
@@ -344,39 +385,20 @@ const Header: React.FC = () => {
             : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
           boxShadow: 'none',
           borderBottom: `1.5px solid ${theme.palette.divider}`,
-          // Ensure AppBar works with sticky header
           position: 'relative',
           zIndex: 1,
         }}
       >
-        {/* First Row - Logo & Icons (Desktop Only) */}
-        <Box
+        <Toolbar
           sx={{
-            display: { xs: 'none', md: 'flex' },
+            minHeight: { xs: 56, sm: 64, md: 72 },
+            px: { xs: 1, sm: 2, md: 3, lg: 4 },
             justifyContent: 'space-between',
-            alignItems: 'center',
-            px: { md: 2, lg: 3, xl: 4 },
-            py: { md: 1.5, lg: 2 },
-            borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
-            position: 'relative',
-            minHeight: { md: 64, lg: 72 },
-            flexWrap: 'nowrap',
-            overflow: 'hidden',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a8e6a8' fill-opacity='0.03'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-              opacity: 0.6,
-              pointerEvents: 'none',
-            },
+            gap: 2,
           }}
         >
-          {/* Logo Container */}
-          <Box sx={{ flexShrink: 0, minWidth: 0 }}>
+          {/* Logo - Always visible with no wrapping */}
+          <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             <Button
               component={NavLink}
               to="/"
@@ -384,16 +406,15 @@ const Header: React.FC = () => {
                 p: 0,
                 minWidth: 0,
                 fontWeight: 700,
-                fontSize: { md: 16, lg: 18, xl: 20 },
+                fontSize: { xs: 14, sm: 16, md: 18, lg: 20 },
                 color: theme.palette.primary.main,
                 textTransform: 'none',
                 letterSpacing: 0.5,
                 fontFamily: 'Playfair Display, serif',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                flexDirection: 'row',
+                display: 'flex',
                 alignItems: 'center',
-                gap: { md: 1, lg: 1.5 },
+                gap: { xs: 0.5, sm: 1, md: 1.5 },
+                whiteSpace: 'nowrap',
                 '&:hover': {
                   background: 'transparent',
                   transform: 'translateY(-1px)',
@@ -405,303 +426,147 @@ const Header: React.FC = () => {
                 src="/logo.jpg"
                 alt="Pragathi Natural Farms"
                 style={{
-                  height: 'clamp(32px, 4vw, 40px)',
-                  width: 'clamp(32px, 4vw, 40px)',
+                  height: 'clamp(28px, 4vw, 40px)',
+                  width: 'clamp(28px, 4vw, 40px)',
                   borderRadius: 6,
                   background: theme.palette.background.paper,
-                  maxWidth: '100%',
                 }}
               />
               <Box
                 component="span"
                 sx={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: { md: 'none', lg: 'inline' },
-                  maxWidth: { lg: 200, xl: 250 },
+                  display: 'inline',
+                  whiteSpace: 'nowrap',
+                  overflow: 'visible',
                 }}
               >
                 Pragathi Natural Farms
               </Box>
-              <Box
-                component="span"
-                sx={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: { md: 'inline', lg: 'none' },
-                  maxWidth: 120,
-                }}
-              >
-                Pragathi Farms
-              </Box>
             </Button>
           </Box>
 
-          {/* Navigation Links - Moved to top row */}
-          <Box
-            sx={{
-              display: { md: 'flex', lg: 'flex' },
-              alignItems: 'center',
-              gap: { md: 0.5, lg: 1 },
-              mx: { md: 1, lg: 2 },
-              flexShrink: 1,
-              minWidth: 0,
-              overflow: 'hidden',
-            }}
-          >
-            {navLinks.map((link) => {
-              const isActive = link.to && location.pathname === link.to;
-              const hasDropdown = !!link.dropdown;
-              return (
-                <Box
-                  key={link.label}
-                  sx={{
-                    position: 'relative',
-                  }}
-                  onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
-                    setDropdownAnchor(e.currentTarget);
-                    setOpenDropdown(link.label);
-                  } : undefined}
-                  onMouseLeave={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
-                    // Only close if we're not moving to the dropdown menu
-                    const relatedTarget = e.relatedTarget as HTMLElement;
-                    if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
-                      setOpenDropdown(null);
-                    }
-                  } : undefined}
-                >
-                  <Button
-                    component={link.to ? NavLink : 'button'}
-                    to={link.to}
-                    onClick={link.label === 'Farm store' ? handleFarmStoreClick : undefined}
-                    aria-haspopup={hasDropdown ? 'true' : undefined}
-                    aria-expanded={openDropdown === link.label ? 'true' : undefined}
-                    onFocus={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { setDropdownAnchor(e.currentTarget); setOpenDropdown(link.label); } : undefined}
-                    onBlur={hasDropdown ? (e: React.FocusEvent<HTMLElement>) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpenDropdown(null); } : undefined}
-                    sx={{
-                      color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
-                      fontWeight: 600,
-                      fontFamily: 'Inter, sans-serif',
-                      fontSize: { md: 12, lg: 13, xl: 14 },
-                      background: isActive
-                        ? alpha(theme.palette.primary.main, 0.1)
-                        : 'transparent',
-                      position: 'relative',
-                      textTransform: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 0.5,
-                      minHeight: 36,
-                      px: { md: 1, lg: 1.5, xl: 2 },
-                      py: 0.5,
-                      borderRadius: 1,
-                      border: isActive
-                        ? `1px solid ${alpha(theme.palette.primary.main, 0.3)}`
-                        : '1px solid transparent',
-                      transition: 'all 0.3s ease-in-out',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      maxWidth: { md: 100, lg: 120, xl: 140 },
-                      '&:hover': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.12),
-                        color: theme.palette.primary.main,
-                        borderColor: alpha(theme.palette.primary.main, 0.4),
-                        transform: 'translateY(-1px)',
-                        boxShadow: `0 2px 8px ${alpha(theme.palette.primary.main, 0.15)}`,
-                      },
-                    }}
-                  >
-                    {link.label}
-                  </Button>
-
-                  {/* Dropdown Menu */}
-                  {hasDropdown && openDropdown === link.label && (
-                    <Popper
-                      open={openDropdown === link.label}
-                      anchorEl={dropdownAnchor}
-                      placement="bottom-start"
-                      transition
-                      disablePortal={false}
-                      style={{ zIndex: 9999 }}
-                      modifiers={[
-                        {
-                          name: 'preventOverflow',
-                          enabled: true,
-                          options: {
-                            altAxis: true,
-                            tether: false,
-                          },
-                        },
-                        {
-                          name: 'flip',
-                          enabled: true,
-                        },
-                        {
-                          name: 'offset',
-                          options: {
-                            offset: [0, 8],
-                          },
-                        },
-                      ]}
-                      onMouseEnter={() => setOpenDropdown(link.label)}
-                      onMouseLeave={() => setOpenDropdown(null)}
-                    >
-                      {({ TransitionProps, placement }) => (
-                        <Grow
-                          {...TransitionProps}
-                          style={{ transformOrigin: placement === 'bottom-start' ? 'left top' : 'left bottom' }}
-                        >
-                          <Paper
-                            elevation={8}
-                            sx={{
-                              mt: 1,
-                              minWidth: 220,
-                              maxHeight: 400, // Limit height for scrolling
-                              background: theme.palette.background.paper,
-                              border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                              borderRadius: 2,
-                              overflow: 'hidden', // Hide overflow for header
-                              position: 'relative',
-                              zIndex: 9999,
-                              boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
-                              '&::before': {
-                                content: '""',
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                background: theme.palette.background.paper,
-                                zIndex: -1,
-                              },
-                            }}
-                          >
-                            {/* Dropdown Header */}
-                            <Box
-                              sx={{
-                                py: 2,
-                                px: 3,
-                                background: alpha(theme.palette.primary.main, 0.05),
-                                borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                                borderTopLeftRadius: 2,
-                                borderTopRightRadius: 2,
-                              }}
-                            >
-                              <Typography
-                                variant="subtitle2"
-                                sx={{
-                                  fontWeight: 700,
-                                  color: theme.palette.primary.main,
-                                  fontSize: 13,
-                                  textTransform: 'uppercase',
-                                  letterSpacing: 1,
-                                }}
-                              >
-                                {link.label}
-                              </Typography>
-                            </Box>
-
-                            {/* Scrollable Content */}
-                            <Box
-                              sx={{
-                                maxHeight: 320, // Account for header
-                                overflow: 'auto',
-                                // Custom scrollbar styling
-                                '&::-webkit-scrollbar': {
-                                  width: 8,
-                                },
-                                '&::-webkit-scrollbar-track': {
-                                  background: alpha(theme.palette.grey[200], 0.5),
-                                  borderRadius: 4,
-                                },
-                                '&::-webkit-scrollbar-thumb': {
-                                  background: alpha(theme.palette.primary.main, 0.6),
-                                  borderRadius: 4,
-                                  '&:hover': {
-                                    background: alpha(theme.palette.primary.main, 0.8),
-                                  },
-                                },
-                              }}
-                            >
-                              {link.dropdown?.map((item, index) => {
-                                const Icon = (item as any).icon;
-                                return (
-                                  <MenuItem
-                                    key={index}
-                                    component={NavLink}
-                                    to={item.to}
-                                    onClick={() => setOpenDropdown(null)}
-                                    sx={{
-                                      py: 2,
-                                      px: 3,
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      gap: 2,
-                                      minHeight: 56,
-                                      borderBottom: `1px solid ${alpha(theme.palette.grey[200], 0.3)}`,
-                                      '&:last-child': {
-                                        borderBottom: 'none',
-                                      },
-                                      '&:hover': {
-                                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                                        transform: 'translateX(4px)',
-                                      },
-                                      transition: 'all 0.2s ease-in-out',
-                                    }}
-                                  >
-                                    {Icon && (
-                                      <Icon
-                                        sx={{
-                                          fontSize: 22,
-                                          color: theme.palette.primary.main,
-                                          flexShrink: 0,
-                                        }}
-                                      />
-                                    )}
-                                    <ListItemText
-                                      primary={item.label}
-                                      primaryTypographyProps={{
-                                        fontSize: 15,
-                                        fontWeight: 600,
-                                        color: theme.palette.text.primary,
-                                        letterSpacing: 0.3,
-                                      }}
-                                    />
-                                  </MenuItem>
-                                );
-                              })}
-                            </Box>
-                          </Paper>
-                        </Grow>
-                      )}
-                    </Popper>
-                  )}
-                </Box>
-              );
-            })}
-          </Box>
-
-          {/* Right Side Icons & Search */}
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: { md: 1, lg: 1.5 },
-              flexShrink: 0,
-              minWidth: 0,
-            }}
-          >
-            {/* Desktop Search Bar */}
+          {/* Navigation Links - Large and Medium screens */}
+          {(isLargeScreen || isMediumScreen) && (
             <Box
               sx={{
-                display: { md: 'flex', lg: 'flex' },
+                display: 'flex',
                 alignItems: 'center',
-                flex: { md: '0 1 200px', lg: '0 1 250px', xl: '0 1 280px' },
-                maxWidth: { md: 200, lg: 250, xl: 280 },
-                minWidth: 0,
+                gap: 1,
+                flex: 1,
+                justifyContent: 'center',
+                mx: 2,
               }}
             >
+              {navLinks.map((link) => {
+                const isActive = link.to && location.pathname === link.to;
+                const hasDropdown = !!link.dropdown;
+                return (
+                  <Box
+                    key={link.label}
+                    sx={{ position: 'relative' }}
+                    onMouseEnter={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
+                      setDropdownAnchor(e.currentTarget);
+                      setOpenDropdown(link.label);
+                    } : undefined}
+                    onMouseLeave={hasDropdown ? (e: React.MouseEvent<HTMLElement>) => {
+                      const relatedTarget = e.relatedTarget as HTMLElement;
+                      if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
+                        setOpenDropdown(null);
+                      }
+                    } : undefined}
+                  >
+                    <Button
+                      component={link.to ? NavLink : 'button'}
+                      to={link.to}
+                      onClick={link.label === 'Farm store' ? handleFarmStoreClick : undefined}
+                      sx={{
+                        color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
+                        fontWeight: 600,
+                        fontSize: { md: 13, lg: 14 },
+                        textTransform: 'none',
+                        px: { md: 1.5, lg: 2 },
+                        py: 1,
+                        borderRadius: 1,
+                        whiteSpace: 'nowrap',
+                        '&:hover': {
+                          backgroundColor: alpha(theme.palette.primary.main, 0.12),
+                          color: theme.palette.primary.main,
+                        },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+                        transition: 'all 0.3s ease-in-out',
+                      }}
+                    >
+                      {link.label}
+                    </Button>
+
+                    {/* Dropdown Menu for Large and Medium Screens */}
+                    {hasDropdown && openDropdown === link.label && (
+                      <Popper
+                        open={openDropdown === link.label}
+                        anchorEl={dropdownAnchor}
+                        placement="bottom-start"
+                        transition
+                        style={{ zIndex: 9999 }}
+                      >
+                        {({ TransitionProps }) => (
+                          <Grow {...TransitionProps}>
+                            <Paper
+                              elevation={8}
+                              sx={{
+                                mt: 1,
+                                minWidth: 220,
+                                maxHeight: 400,
+                                background: theme.palette.background.paper,
+                                border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+                                borderRadius: 2,
+                                overflow: 'hidden',
+                                zIndex: 9999,
+                              }}
+                            >
+                              <Box sx={{ py: 2, px: 3, background: alpha(theme.palette.primary.main, 0.05) }}>
+                                <Typography variant="subtitle2" sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
+                                  {link.label}
+                                </Typography>
+                              </Box>
+                              <Box sx={{ maxHeight: 320, overflow: 'auto' }}>
+                                {link.dropdown?.map((item, index) => {
+                                  const Icon = (item as any).icon;
+                                  return (
+                                    <MenuItem
+                                      key={index}
+                                      component={NavLink}
+                                      to={item.to}
+                                      onClick={() => setOpenDropdown(null)}
+                                      sx={{
+                                        py: 2,
+                                        px: 3,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 2,
+                                        '&:hover': {
+                                          backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                                        },
+                                      }}
+                                    >
+                                      {Icon && <Icon sx={{ fontSize: 22, color: theme.palette.primary.main }} />}
+                                      <ListItemText primary={item.label} />
+                                    </MenuItem>
+                                  );
+                                })}
+                              </Box>
+                            </Paper>
+                          </Grow>
+                        )}
+                      </Popper>
+                    )}
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+
+          {/* Search Bar - Large and Medium screens */}
+          {(isLargeScreen || isMediumScreen) && (
+            <Box sx={{ flex: { md: '0 1 150px', lg: '0 1 200px' }, maxWidth: { md: 150, lg: 200 } }}>
               <Box component="form" onSubmit={handleSearchSubmit} sx={{ width: '100%' }}>
                 <Search>
                   <SearchIconWrapper>
@@ -717,973 +582,493 @@ const Header: React.FC = () => {
                 </Search>
               </Box>
             </Box>
+          )}
 
-            {/* Wishlist Button */}
-            <IconButton
-              size="medium"
-              aria-label="wishlist"
-              onClick={() => navigate('/wishlist')}
-              sx={{
-                color: theme.palette.primary.main,
-                minWidth: { md: 40, lg: 44 },
-                minHeight: { md: 40, lg: 44 },
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              <Badge badgeContent={wishlistCount} color="error">
-                <FavoriteIcon fontSize="small" />
-              </Badge>
-            </IconButton>
+          {/* Right Side Icons */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+            {/* Large Screen Icons - All visible */}
+            {isLargeScreen && (
+              <>
+                <IconButton
+                  onClick={() => navigate('/wishlist')}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    minWidth: 40,
+                    minHeight: 40,
+                    borderRadius: '50%',
+                    background: alpha(theme.palette.primary.main, 0.08),
+                    '&:hover': {
+                      background: alpha(theme.palette.primary.main, 0.15),
+                      transform: 'scale(1.05)',
+                    },
+                  }}
+                >
+                  <Badge badgeContent={wishlistCount} color="error">
+                    <FavoriteIcon fontSize="small" />
+                  </Badge>
+                </IconButton>
 
-            {/* Cart & Profile & Dark Mode Toggle */}
-            <IconButton
-              size="medium"
-              aria-label="cart"
-              onClick={() => navigate('/cart')}
-              sx={{
-                color: theme.palette.primary.main,
-                minWidth: { md: 40, lg: 44 },
-                minHeight: { md: 40, lg: 44 },
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              <Badge badgeContent={cartCount} color="secondary">
-                <ShoppingCartIcon fontSize="small" />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="medium"
-              sx={{
-                color: theme.palette.primary.main,
-                minWidth: { md: 40, lg: 44 },
-                minHeight: { md: 40, lg: 44 },
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-              onClick={handleAccountMenuOpen}
-            >
-              <AccountCircle fontSize="small" />
-            </IconButton>
-            {/* Dark mode toggle */}
-            <IconButton
-              size="medium"
-              sx={{
-                minWidth: { md: 40, lg: 44 },
-                minHeight: { md: 40, lg: 44 },
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-              onClick={colorMode.toggleColorMode}
-              color="inherit"
-            >
-              {theme.palette.mode === 'dark' ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
-            </IconButton>
-          </Box>
-        </Box>
+                <IconButton
+                  onClick={() => navigate('/cart')}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    minWidth: 40,
+                    minHeight: 40,
+                    borderRadius: '50%',
+                    background: alpha(theme.palette.primary.main, 0.08),
+                    '&:hover': {
+                      background: alpha(theme.palette.primary.main, 0.15),
+                      transform: 'scale(1.05)',
+                    },
+                  }}
+                >
+                  <Badge badgeContent={cartCount} color="secondary">
+                    <ShoppingCartIcon fontSize="small" />
+                  </Badge>
+                </IconButton>
 
-        {/* Mobile Toolbar - Keep existing mobile layout */}
-        <Toolbar
-          sx={{
-            display: { xs: 'flex', md: 'none' },
-            justifyContent: 'space-between',
-            minHeight: { xs: 56, sm: 64 },
-            px: { xs: 1, sm: 2 },
-            background: theme.palette.mode === 'light'
-              ? `linear-gradient(135deg, #d4f7d4 0%, #f0fff0 100%)`
-              : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
-            borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
-          }}
-        >
-          {/* Logo for Mobile */}
-          <Box sx={{ display: 'flex', alignItems: 'center', flex: { xs: 1, sm: 'none' } }}>
-            <Button
-              component={NavLink}
-              to="/"
-              sx={{
-                p: 0,
-                minWidth: 0,
-                mr: { xs: 1, sm: 2 },
-                fontWeight: 700,
-                fontSize: { xs: 16, sm: 18 },
-                color: theme.palette.primary.main,
-                textTransform: 'none',
-                letterSpacing: 1,
-                fontFamily: `'Playfair Display', 'Merriweather', serif`,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                flexDirection: { xs: 'column', sm: 'row' },
-                alignItems: 'center',
-                gap: { xs: 0, sm: 1 },
-                '&:hover': {
-                  background: 'transparent',
-                },
-              }}
-            >
-              <img
-                src="/logo.jpg"
-                alt="Pragathi Natural Farms"
-                style={{
-                  height: 'clamp(28px, 5vw, 36px)',
-                  marginRight: theme.breakpoints.up('sm') ? 8 : 0,
-                  borderRadius: 8,
-                  background: theme.palette.background.paper,
-                  maxWidth: '100%',
-                }}
-              />
-              <Box
-                component="span"
-                sx={{
-                  display: { xs: 'none', sm: 'inline' },
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                Pragathi Natural Farms
-              </Box>
-              <Box
-                component="span"
-                sx={{
-                  display: { xs: 'inline', sm: 'none' },
-                  fontSize: '0.7rem',
-                  textAlign: 'center',
-                }}
-              >
-                Pragathi
-              </Box>
-            </Button>
-          </Box>
+                <IconButton
+                  onClick={colorMode.toggleColorMode}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    minWidth: 40,
+                    minHeight: 40,
+                    borderRadius: '50%',
+                    background: alpha(theme.palette.primary.main, 0.08),
+                    '&:hover': {
+                      background: alpha(theme.palette.primary.main, 0.15),
+                      transform: 'scale(1.05)',
+                    },
+                  }}
+                >
+                  {theme.palette.mode === 'dark' ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
+                </IconButton>
 
-          {/* Mobile Icons */}
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: { xs: 1, sm: 1 },
-              ml: 'auto',
-            }}
-          >
-            <IconButton
-              onClick={() => setSearchOpen(true)}
-              sx={{
-                color: theme.palette.primary.main,
-                minWidth: 44,
-                minHeight: 44,
-                p: 1,
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              <SearchIcon fontSize="small" />
-            </IconButton>
+                <IconButton
+                  onClick={handleAccountMenuOpen}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    minWidth: 40,
+                    minHeight: 40,
+                    borderRadius: '50%',
+                    background: alpha(theme.palette.primary.main, 0.08),
+                    '&:hover': {
+                      background: alpha(theme.palette.primary.main, 0.15),
+                      transform: 'scale(1.05)',
+                    },
+                  }}
+                >
+                  <AccountCircle fontSize="small" />
+                </IconButton>
+              </>
+            )}
 
-            {/* Mobile Wishlist Button */}
-            <IconButton
-              onClick={() => navigate('/wishlist')}
-              sx={{
-                color: theme.palette.primary.main,
-                minWidth: 44,
-                minHeight: 44,
-                p: 1,
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              <Badge badgeContent={wishlistCount} color="error">
-                <FavoriteIcon fontSize="small" />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="cart"
-              onClick={() => navigate('/cart')}
-              sx={{
-                color: theme.palette.primary.main,
-                minWidth: 44,
-                minHeight: 44,
-                p: 1,
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              <Badge badgeContent={cartCount} color="secondary">
-                <ShoppingCartIcon fontSize="small" />
-              </Badge>
-            </IconButton>
-            <IconButton
-              sx={{
-                color: theme.palette.primary.main,
-                minWidth: 44,
-                minHeight: 44,
-                p: 1,
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-              onClick={handleAccountMenuOpen}
-            >
-              <AccountCircle fontSize="small" />
-            </IconButton>
-            {/* Dark mode toggle */}
-            <IconButton
-              sx={{
-                minWidth: 44,
-                minHeight: 44,
-                p: 1,
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-              onClick={colorMode.toggleColorMode}
-              color="inherit"
-            >
-              {theme.palette.mode === 'dark' ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
-            </IconButton>
-            <IconButton
-              onClick={() => setDrawerOpen(true)}
-              sx={{
-                color: theme.palette.primary.main,
-                minWidth: 44,
-                minHeight: 44,
-                p: 1,
-                borderRadius: '50%',
-                background: alpha(theme.palette.primary.main, 0.08),
-                '&:hover': {
-                  background: alpha(theme.palette.primary.main, 0.15),
-                  transform: 'scale(1.05)',
-                },
-                transition: 'all 0.2s ease-in-out',
-              }}
-            >
-              <MenuIcon fontSize="small" />
-            </IconButton>
-          </Box>
-        </Toolbar>
+            {/* Medium Screen Icons - Cart and Account only */}
+            {isMediumScreen && (
+              <>
+                <IconButton
+                  onClick={() => navigate('/cart')}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    minWidth: 40,
+                    minHeight: 40,
+                    borderRadius: '50%',
+                    background: alpha(theme.palette.primary.main, 0.08),
+                    '&:hover': {
+                      background: alpha(theme.palette.primary.main, 0.15),
+                      transform: 'scale(1.05)',
+                    },
+                  }}
+                >
+                  <Badge badgeContent={cartCount} color="secondary">
+                    <ShoppingCartIcon fontSize="small" />
+                  </Badge>
+                </IconButton>
 
-        {/* Enhanced Mobile Drawer */}
-        <Drawer
-          anchor="left"
-          open={drawerOpen}
-          onClose={() => setDrawerOpen(false)}
-          sx={{
-            zIndex: 9999,
-            '& .MuiDrawer-paper': {
-              width: { xs: '100vw', sm: 320 },
-              maxWidth: '100vw',
-              background: theme.palette.mode === 'light'
-                ? `linear-gradient(135deg, #f0fff0 0%, #e8f5e8 100%)`
-                : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
-              borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
-              zIndex: 9999,
-            },
-          }}
-        >
-          <Box
-            sx={{
-              width: '100%',
-              p: { xs: 2, sm: 3 },
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'auto',
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" color="primary" fontWeight={700}>
-                Menu
-              </Typography>
+                <IconButton
+                  onClick={handleAccountMenuOpen}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    minWidth: 40,
+                    minHeight: 40,
+                    borderRadius: '50%',
+                    background: alpha(theme.palette.primary.main, 0.08),
+                    '&:hover': {
+                      background: alpha(theme.palette.primary.main, 0.15),
+                      transform: 'scale(1.05)',
+                    },
+                  }}
+                >
+                  <AccountCircle fontSize="small" />
+                </IconButton>
+
+                {/* More Menu for Medium Screens */}
+                <IconButton
+                  onClick={handleMoreMenuOpen}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    minWidth: 40,
+                    minHeight: 40,
+                    borderRadius: '50%',
+                    background: alpha(theme.palette.primary.main, 0.08),
+                    '&:hover': {
+                      background: alpha(theme.palette.primary.main, 0.15),
+                      transform: 'scale(1.05)',
+                    },
+                  }}
+                >
+                  <MenuIcon fontSize="small" />
+                </IconButton>
+              </>
+            )}
+
+            {/* Small Screen - Only Hamburger Menu */}
+            {isSmallScreen && (
               <IconButton
-                onClick={() => setDrawerOpen(false)}
+                onClick={() => setDrawerOpen(true)}
                 sx={{
-                  minWidth: 44,
-                  minHeight: 44,
+                  color: theme.palette.primary.main,
+                  minWidth: 40,
+                  minHeight: 40,
                   borderRadius: '50%',
                   background: alpha(theme.palette.primary.main, 0.08),
                   '&:hover': {
                     background: alpha(theme.palette.primary.main, 0.15),
                     transform: 'scale(1.05)',
                   },
-                  transition: 'all 0.2s ease-in-out',
                 }}
               >
-                <CloseIcon />
+                <MenuIcon fontSize="small" />
               </IconButton>
-            </Box>
-
-            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {/* Wishlist Link */}
-              <motion.div
-                initial={{ x: -40, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.05 * 0, type: 'spring', stiffness: 300, damping: 24 }}
-              >
-                <Button
-                  component={NavLink}
-                  to="/wishlist"
-                  onClick={() => setDrawerOpen(false)}
-                  sx={{
-                    color: location.pathname === '/wishlist' ? theme.palette.primary.main : theme.palette.text.secondary,
-                    fontWeight: 600,
-                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                    fontSize: { xs: 16, sm: 18 },
-                    justifyContent: 'flex-start',
-                    width: '100%',
-                    textTransform: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                    minHeight: 48,
-                    px: 2,
-                    py: 2,
-                    borderRadius: 1,
-                    '&:hover': {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                    },
-                  }}
-                >
-                  <FavoriteIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                  Wishlist ({wishlistCount})
-                </Button>
-              </motion.div>
-
-              {/* Cart Link */}
-              <motion.div
-                initial={{ x: -40, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.05 * 1, type: 'spring', stiffness: 300, damping: 24 }}
-              >
-                <Button
-                  component={NavLink}
-                  to="/cart"
-                  onClick={() => setDrawerOpen(false)}
-                  sx={{
-                    color: location.pathname === '/cart' ? theme.palette.primary.main : theme.palette.text.secondary,
-                    fontWeight: 600,
-                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                    fontSize: { xs: 16, sm: 18 },
-                    justifyContent: 'flex-start',
-                    width: '100%',
-                    textTransform: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                    minHeight: 48,
-                    px: 2,
-                    py: 2,
-                    borderRadius: 1,
-                    '&:hover': {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                    },
-                  }}
-                >
-                  <ShoppingCartIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                  Cart ({cartCount})
-                </Button>
-              </motion.div>
-
-              {navLinks.map((link, idx) => {
-                const hasDropdown = !!link.dropdown;
-                const isDropdownOpen = mobileDropdownOpen[link.label];
-                return (
-                  <motion.div
-                    key={link.label}
-                    initial={{ x: -40, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.05 * (idx + 1), type: 'spring', stiffness: 300, damping: 24 }}
-                  >
-                    <Box>
-                      <Button
-                        component={link.to && !hasDropdown ? NavLink : 'button'}
-                        to={link.to && !hasDropdown ? link.to : undefined}
-                        onClick={() => {
-                          if (hasDropdown) {
-                            setMobileDropdownOpen(prev => ({
-                              ...prev,
-                              [link.label]: !prev[link.label]
-                            }));
-                          } else if (link.to) {
-                            setDrawerOpen(false);
-                          }
-                        }}
-                        sx={{
-                          color: (link.to && location.pathname === link.to) ? theme.palette.primary.main : theme.palette.text.secondary,
-                          fontWeight: 600,
-                          fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                          fontSize: { xs: 16, sm: 18 },
-                          justifyContent: 'flex-start',
-                          width: '100%',
-                          textTransform: 'none',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 2,
-                          minHeight: 48,
-                          px: 2,
-                          py: 2,
-                          borderRadius: 1,
-                          '&:hover': {
-                            backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                          },
-                        }}
-                      >
-                        {/* Icons for main nav items */}
-                        {link.label === 'Engineering Solutions' && (
-                          <FactoryIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                        )}
-                        {link.label === 'Nursery' && (
-                          <SpaIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                        )}
-                        {link.label === 'Farm store' && (
-                          <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                        )}
-
-                        <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
-                          {link.label}
-                        </Typography>
-
-                        {hasDropdown && (
-                          <motion.div
-                            animate={{ rotate: isDropdownOpen ? 180 : 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <Typography sx={{ color: theme.palette.primary.main }}>▼</Typography>
-                          </motion.div>
-                        )}
-                      </Button>
-
-                      {/* Mobile Dropdown */}
-                      {hasDropdown && (
-                        <Collapse in={isDropdownOpen}>
-                          <Box sx={{ pl: 3, pt: 1 }}>
-                            {link.dropdown.map((item, itemIdx) => {
-                              const IconComponent = (item as any).icon;
-                              return (
-                                <motion.div
-                                  key={item.to}
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: itemIdx * 0.05 }}
-                                >
-                                  <Button
-                                    component={NavLink}
-                                    to={item.to}
-                                    onClick={() => setDrawerOpen(false)}
-                                    sx={{
-                                      color: theme.palette.text.secondary,
-                                      fontWeight: 500,
-                                      fontSize: { xs: 14, sm: 16 },
-                                      justifyContent: 'flex-start',
-                                      width: '100%',
-                                      textTransform: 'none',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      gap: 2,
-                                      minHeight: 44,
-                                      px: 2,
-                                      py: 1,
-                                      borderRadius: 1,
-                                      '&:hover': {
-                                        backgroundColor: alpha(theme.palette.primary.main, 0.04),
-                                        transform: 'translateX(4px)',
-                                      },
-                                      transition: 'all 0.2s ease-in-out',
-                                    }}
-                                  >
-                                    {IconComponent && (
-                                      <IconComponent
-                                        sx={{
-                                          color: theme.palette.primary.main,
-                                          fontSize: 18,
-                                          flexShrink: 0
-                                        }}
-                                      />
-                                    )}
-                                    <Typography
-                                      variant="body2"
-                                      sx={{
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap',
-                                        textAlign: 'left',
-                                      }}
-                                    >
-                                      {item.label}
-                                    </Typography>
-                                  </Button>
-                                </motion.div>
-                              );
-                            })}
-                          </Box>
-                        </Collapse>
-                      )}
-                    </Box>
-                  </motion.div>
-                );
-              })}
-            </Box>
-
-            {/* Admin-specific mobile menu items */}
-            {isAdmin && (
-              <>
-                <Divider sx={{ my: 2, mx: 2 }} />
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    px: 2,
-                    py: 1,
-                    color: theme.palette.text.secondary,
-                    fontWeight: 600,
-                    fontSize: '0.875rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  Admin Actions
-                </Typography>
-
-                <motion.div
-                  initial={{ x: -40, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.05 * (navLinks.length + 1), type: 'spring', stiffness: 300, damping: 24 }}
-                >
-                  <Button
-                    onClick={() => {
-                      setDrawerOpen(false);
-                      navigate('/admin/products/new');
-                    }}
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      fontWeight: 600,
-                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                      fontSize: { xs: 16, sm: 18 },
-                      justifyContent: 'flex-start',
-                      width: '100%',
-                      textTransform: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      minHeight: 48,
-                      px: 2,
-                      py: 1.5,
-                      borderRadius: 1,
-                      '&:hover': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                      },
-                    }}
-                  >
-                    <AddIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
-                      Create Product
-                    </Typography>
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  initial={{ x: -40, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.05 * (navLinks.length + 2), type: 'spring', stiffness: 300, damping: 24 }}
-                >
-                  <Button
-                    onClick={() => {
-                      setDrawerOpen(false);
-                      navigate('/admin/categories/new');
-                    }}
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      fontWeight: 600,
-                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                      fontSize: { xs: 16, sm: 18 },
-                      justifyContent: 'flex-start',
-                      width: '100%',
-                      textTransform: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      minHeight: 48,
-                      px: 2,
-                      py: 1.5,
-                      borderRadius: 1,
-                      '&:hover': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                      },
-                    }}
-                  >
-                    <CategoryIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
-                      Create Category
-                    </Typography>
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  initial={{ x: -40, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.05 * (navLinks.length + 3), type: 'spring', stiffness: 300, damping: 24 }}
-                >
-                  <Button
-                    onClick={() => {
-                      setDrawerOpen(false);
-                      navigate('/admin/products');
-                    }}
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      fontWeight: 600,
-                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                      fontSize: { xs: 16, sm: 18 },
-                      justifyContent: 'flex-start',
-                      width: '100%',
-                      textTransform: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      minHeight: 48,
-                      px: 2,
-                      py: 1.5,
-                      borderRadius: 1,
-                      '&:hover': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                      },
-                    }}
-                  >
-                    <ListAltIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
-                      Manage Products
-                    </Typography>
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  initial={{ x: -40, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.05 * (navLinks.length + 4), type: 'spring', stiffness: 300, damping: 24 }}
-                >
-                  <Button
-                    onClick={() => {
-                      setDrawerOpen(false);
-                      navigate('/admin/categories');
-                    }}
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      fontWeight: 600,
-                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                      fontSize: { xs: 16, sm: 18 },
-                      justifyContent: 'flex-start',
-                      width: '100%',
-                      textTransform: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      minHeight: 48,
-                      px: 2,
-                      py: 1.5,
-                      borderRadius: 1,
-                      '&:hover': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                      },
-                    }}
-                  >
-                    <ListAltIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
-                      Manage Categories
-                    </Typography>
-                  </Button>
-                </motion.div>
-              </>
-            )}
-
-            {/* User Profile and Logout Options */}
-            {isAuthenticated && (
-              <>
-                <Divider sx={{ my: 2, mx: 2 }} />
-                <Typography
-                  variant="subtitle2"
-                  sx={{
-                    px: 2,
-                    py: 1,
-                    color: theme.palette.text.secondary,
-                    fontWeight: 600,
-                    fontSize: '0.875rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: 0.5,
-                  }}
-                >
-                  Account
-                </Typography>
-
-                <motion.div
-                  initial={{ x: -40, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.05 * (navLinks.length + (isAdmin ? 5 : 1)), type: 'spring', stiffness: 300, damping: 24 }}
-                >
-                  <Button
-                    onClick={() => {
-                      setDrawerOpen(false);
-                      navigate('/profile');
-                    }}
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      fontWeight: 600,
-                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                      fontSize: { xs: 16, sm: 18 },
-                      justifyContent: 'flex-start',
-                      width: '100%',
-                      textTransform: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      minHeight: 48,
-                      px: 2,
-                      py: 1.5,
-                      borderRadius: 1,
-                      '&:hover': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                      },
-                    }}
-                  >
-                    <PersonIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
-                      Profile
-                    </Typography>
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  initial={{ x: -40, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.05 * (navLinks.length + (isAdmin ? 6 : 2)), type: 'spring', stiffness: 300, damping: 24 }}
-                >
-                  <Button
-                    onClick={async () => {
-                      setDrawerOpen(false);
-                      await handleLogout();
-                    }}
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      fontWeight: 600,
-                      fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-                      fontSize: { xs: 16, sm: 18 },
-                      justifyContent: 'flex-start',
-                      width: '100%',
-                      textTransform: 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1.5,
-                      minHeight: 48,
-                      px: 2,
-                      py: 1.5,
-                      borderRadius: 1,
-                      '&:hover': {
-                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                      },
-                    }}
-                  >
-                    <LogoutIcon sx={{ color: theme.palette.primary.main, fontSize: 22 }} />
-                    <Typography variant="body1" sx={{ flex: 1, textAlign: 'left' }}>
-                      Logout
-                    </Typography>
-                  </Button>
-                </motion.div>
-              </>
             )}
           </Box>
-        </Drawer>
+        </Toolbar>
+      </AppBar>
 
-        {/* Mobile Search Dialog */}
-        <Dialog
-          open={searchOpen}
-          onClose={() => setSearchOpen(false)}
-          fullScreen
-          sx={{
-            zIndex: 9999,
-            '& .MuiDialog-paper': {
-              background: theme.palette.background.default,
-              zIndex: 9999,
-            },
-          }}
-        >
-          <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <IconButton
-              onClick={() => setSearchOpen(false)}
-              sx={{
-                minWidth: 44,
-                minHeight: 44,
-              }}
-            >
+      {/* More Menu for Medium Screens */}
+      <Menu
+        anchorEl={moreMenuAnchor}
+        open={Boolean(moreMenuAnchor)}
+        onClose={handleMoreMenuClose}
+        sx={{ zIndex: 9999 }}
+      >
+        <MenuItem onClick={handleWishlistClick}>
+          <ListItemIcon>
+            <FavoriteIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Wishlist ({wishlistCount})</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleThemeToggle}>
+          <ListItemIcon>
+            {theme.palette.mode === 'dark' ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
+          </ListItemIcon>
+          <ListItemText>{theme.palette.mode === 'dark' ? 'Light Mode' : 'Dark Mode'}</ListItemText>
+        </MenuItem>
+      </Menu>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        sx={{
+          zIndex: 9999,
+          '& .MuiDrawer-paper': {
+            width: { xs: '100vw', sm: 320 },
+            maxWidth: '100vw',
+            background: theme.palette.mode === 'light'
+              ? `linear-gradient(135deg, #f0fff0 0%, #e8f5e8 100%)`
+              : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
+            borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+          },
+        }}
+      >
+        <Box sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Typography variant="h6" color="primary" fontWeight={700}>
+              Menu
+            </Typography>
+            <IconButton onClick={() => setDrawerOpen(false)}>
               <CloseIcon />
             </IconButton>
-            <Box
-              component="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSearch(searchQuery);
-              }}
-              sx={{ flex: 1 }}
-            >
-              <InputBase
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                autoFocus
-                sx={{
-                  width: '100%',
-                  fontSize: '1.1rem',
-                  p: 1,
-                  border: `2px solid ${theme.palette.primary.main}`,
-                  borderRadius: 1,
-                  minHeight: 48,
-                }}
-              />
+          </Box>
+
+          {/* Mobile Search */}
+          <Box sx={{ mb: 3 }}>
+            <Box component="form" onSubmit={handleSearchSubmit}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search products..."
+                  inputProps={{ 'aria-label': 'search' }}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleSearchKeyPress}
+                />
+              </Search>
             </Box>
           </Box>
-        </Dialog>
 
-        {/* Account Menu */}
-        <Menu
-          anchorEl={accountMenuAnchor}
-          open={Boolean(accountMenuAnchor)}
-          onClose={handleAccountMenuClose}
-          sx={{
-            zIndex: 9999,
-            '& .MuiPaper-root': {
-              minWidth: 200,
-              borderRadius: 2,
-              mt: 1,
-              zIndex: 9999,
-            },
-          }}
-        >
-          {/* Regular user menu items */}
-          <MenuItem
-            onClick={handleProfileClick}
-            sx={{
-              minHeight: 48,
-              gap: 1.5,
-            }}
-          >
-            <ListItemIcon>
-              <PersonIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Profile</ListItemText>
-          </MenuItem>
+          {/* Mobile Navigation Links */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, flex: 1 }}>
+            {/* Wishlist */}
+            <Button
+              component={NavLink}
+              to="/wishlist"
+              onClick={() => setDrawerOpen(false)}
+              sx={{
+                color: location.pathname === '/wishlist' ? theme.palette.primary.main : theme.palette.text.secondary,
+                fontWeight: 600,
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                py: 1.5,
+                px: 2,
+                borderRadius: 1,
+                '&:hover': {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                },
+              }}
+            >
+              <FavoriteIcon sx={{ color: theme.palette.primary.main }} />
+              Wishlist ({wishlistCount})
+            </Button>
 
-          {/* Admin-specific menu items */}
-          {isAdmin && (
-            <>
-              <Divider sx={{ my: 1 }} />
-              <MenuItem
-                onClick={handleCreateProduct}
-                sx={{
-                  minHeight: 48,
-                  gap: 1.5,
-                }}
-              >
-                <ListItemIcon>
-                  <AddIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Create Product</ListItemText>
-              </MenuItem>
-              <MenuItem
-                onClick={handleCreateCategory}
-                sx={{
-                  minHeight: 48,
-                  gap: 1.5,
-                }}
-              >
-                <ListItemIcon>
-                  <CategoryIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Create Category</ListItemText>
-              </MenuItem>
-              <MenuItem
-                onClick={handleManageProducts}
-                sx={{
-                  minHeight: 48,
-                  gap: 1.5,
-                }}
-              >
-                <ListItemIcon>
-                  <ListAltIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Manage Products</ListItemText>
-              </MenuItem>
-              <MenuItem
-                onClick={handleManageCategories}
-                sx={{
-                  minHeight: 48,
-                  gap: 1.5,
-                }}
-              >
-                <ListItemIcon>
-                  <ListAltIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Manage Categories</ListItemText>
-              </MenuItem>
-              <Divider sx={{ my: 1 }} />
-            </>
-          )}
+            {/* Cart */}
+            <Button
+              component={NavLink}
+              to="/cart"
+              onClick={() => setDrawerOpen(false)}
+              sx={{
+                color: location.pathname === '/cart' ? theme.palette.primary.main : theme.palette.text.secondary,
+                fontWeight: 600,
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                py: 1.5,
+                px: 2,
+                borderRadius: 1,
+                '&:hover': {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                },
+              }}
+            >
+              <ShoppingCartIcon sx={{ color: theme.palette.primary.main }} />
+              Cart ({cartCount})
+            </Button>
 
-          <MenuItem
-            onClick={handleLogout}
-            sx={{
-              minHeight: 48,
-              gap: 1.5,
-            }}
-          >
-            <ListItemIcon>
-              <LogoutIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText>Logout</ListItemText>
-          </MenuItem>
-        </Menu>
+            {/* Theme Toggle */}
+            <Button
+              onClick={() => {
+                colorMode.toggleColorMode();
+                setDrawerOpen(false);
+              }}
+              sx={{
+                color: theme.palette.text.secondary,
+                fontWeight: 600,
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                py: 1.5,
+                px: 2,
+                borderRadius: 1,
+                '&:hover': {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                },
+              }}
+            >
+              {theme.palette.mode === 'dark' ? (
+                <Brightness7Icon sx={{ color: theme.palette.primary.main }} />
+              ) : (
+                <Brightness4Icon sx={{ color: theme.palette.primary.main }} />
+              )}
+              {theme.palette.mode === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            </Button>
 
-        {/* Error Snackbar */}
-        {/* This block is removed as per the edit hint */}
-      </AppBar>
+            <Divider sx={{ my: 2 }} />
+
+            {/* Navigation Links */}
+            {navLinks.map((link) => {
+              const hasDropdown = !!link.dropdown;
+              const isDropdownOpen = mobileDropdownOpen[link.label];
+              return (
+                <Box key={link.label}>
+                  <Button
+                    component={link.to && !hasDropdown ? NavLink : 'button'}
+                    to={link.to && !hasDropdown ? link.to : undefined}
+                    onClick={() => {
+                      if (hasDropdown) {
+                        setMobileDropdownOpen(prev => ({
+                          ...prev,
+                          [link.label]: !prev[link.label]
+                        }));
+                      } else if (link.to) {
+                        setDrawerOpen(false);
+                      }
+                    }}
+                    sx={{
+                      color: (link.to && location.pathname === link.to) ? theme.palette.primary.main : theme.palette.text.secondary,
+                      fontWeight: 600,
+                      justifyContent: 'flex-start',
+                      textTransform: 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      py: 1.5,
+                      px: 2,
+                      borderRadius: 1,
+                      width: '100%',
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                      },
+                    }}
+                  >
+                    {link.label}
+                    {hasDropdown && (
+                      <Box sx={{ ml: 'auto' }}>
+                        {isDropdownOpen ? '▲' : '▼'}
+                      </Box>
+                    )}
+                  </Button>
+
+                  {/* Mobile Dropdown */}
+                  {hasDropdown && (
+                    <Collapse in={isDropdownOpen}>
+                      <Box sx={{ pl: 3, pt: 1 }}>
+                        {link.dropdown?.map((item) => {
+                          const IconComponent = (item as any).icon;
+                          return (
+                            <Button
+                              key={item.to}
+                              component={NavLink}
+                              to={item.to}
+                              onClick={() => setDrawerOpen(false)}
+                              sx={{
+                                color: theme.palette.text.secondary,
+                                fontWeight: 500,
+                                justifyContent: 'flex-start',
+                                textTransform: 'none',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2,
+                                py: 1,
+                                px: 2,
+                                borderRadius: 1,
+                                width: '100%',
+                                '&:hover': {
+                                  backgroundColor: alpha(theme.palette.primary.main, 0.04),
+                                },
+                              }}
+                            >
+                              {IconComponent && (
+                                <IconComponent sx={{ color: theme.palette.primary.main, fontSize: 18 }} />
+                              )}
+                              {item.label}
+                            </Button>
+                          );
+                        })}
+                      </Box>
+                    </Collapse>
+                  )}
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+      </Drawer>
+
+      {/* Mobile Search Dialog */}
+      <Dialog
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        fullScreen
+        sx={{ zIndex: 9999 }}
+      >
+        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+          <IconButton onClick={() => setSearchOpen(false)}>
+            <CloseIcon />
+          </IconButton>
+          <Box component="form" onSubmit={handleSearchSubmit} sx={{ flex: 1 }}>
+            <InputBase
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              autoFocus
+              sx={{
+                width: '100%',
+                fontSize: '1.1rem',
+                p: 1,
+                border: `2px solid ${theme.palette.primary.main}`,
+                borderRadius: 1,
+                minHeight: 48,
+              }}
+            />
+          </Box>
+        </Box>
+      </Dialog>
+
+      {/* Account Menu */}
+      <Menu
+        anchorEl={accountMenuAnchor}
+        open={Boolean(accountMenuAnchor)}
+        onClose={handleAccountMenuClose}
+        sx={{ zIndex: 9999 }}
+      >
+        <MenuItem onClick={handleProfileClick}>
+          <ListItemIcon>
+            <PersonIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Profile</ListItemText>
+        </MenuItem>
+
+        {isAdmin && (
+          <>
+            <Divider />
+            <MenuItem onClick={handleCreateProduct}>
+              <ListItemIcon>
+                <AddIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Create Product</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleCreateCategory}>
+              <ListItemIcon>
+                <CategoryIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Create Category</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleManageProducts}>
+              <ListItemIcon>
+                <ListAltIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Manage Products</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleManageCategories}>
+              <ListItemIcon>
+                <ListAltIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Manage Categories</ListItemText>
+            </MenuItem>
+            <Divider />
+          </>
+        )}
+
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Logout</ListItemText>
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };
 
-export default Header; 
+export default Header;

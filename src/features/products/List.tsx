@@ -193,18 +193,8 @@ export function ProductList() {
     setTimeout(() => setIsAutoPlaying(true), 3000);
   };
 
-  // Navigate to next/previous slide
-  const goToNext = () => {
-    setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 3000);
-  };
-
-  const goToPrev = () => {
-    setCurrentSlide((prev) => (prev - 1 + carouselSlides.length) % carouselSlides.length);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 3000);
-  };
+  // Note: goToNext and goToPrev functions removed as arrows are no longer used
+  // Carousel now uses auto-play and dot navigation only
 
   // Responsive product display counts
   const getInitialProductCount = () => {
@@ -430,52 +420,50 @@ export function ProductList() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Navigation Arrows */}
-        <IconButton
-          onClick={goToPrev}
+        {/* Auto-play indicator */}
+        <Box
           sx={{
             position: 'absolute',
-            left: { xs: 8, sm: 16, md: 24 },
-            top: '50%',
-            transform: 'translateY(-50%)',
-            backgroundColor: 'rgba(255,255,255,0.9)',
-            color: theme.palette.primary.main,
-            minWidth: { xs: 40, sm: 48, md: 56 },
-            minHeight: { xs: 40, sm: 48, md: 56 },
-            '&:hover': {
-              backgroundColor: 'rgba(255,255,255,1)',
-              transform: 'translateY(-50%) scale(1.1)',
-            },
-            transition: 'all 0.2s ease-in-out',
-            zIndex: 2,
+            top: { xs: 16, sm: 20, md: 24 },
+            right: { xs: 16, sm: 20, md: 24 },
+            zIndex: 3,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            borderRadius: 2,
+            px: 2,
+            py: 1,
+            backdropFilter: 'blur(8px)',
           }}
         >
-          <ChevronLeftIcon fontSize="large" />
-        </IconButton>
+          <Box
+            sx={{
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              backgroundColor: isAutoPlaying ? theme.palette.primary.main : theme.palette.grey[400],
+              animation: isAutoPlaying ? 'pulse 2s infinite' : 'none',
+              '@keyframes pulse': {
+                '0%': { opacity: 1 },
+                '50%': { opacity: 0.5 },
+                '100%': { opacity: 1 },
+              },
+            }}
+          />
+          <Typography
+            variant="caption"
+            sx={{
+              color: 'white',
+              fontWeight: 600,
+              fontSize: '0.75rem',
+            }}
+          >
+            Auto-play
+          </Typography>
+        </Box>
 
-        <IconButton
-          onClick={goToNext}
-          sx={{
-            position: 'absolute',
-            right: { xs: 8, sm: 16, md: 24 },
-            top: '50%',
-            transform: 'translateY(-50%)',
-            backgroundColor: 'rgba(255,255,255,0.9)',
-            color: theme.palette.primary.main,
-            minWidth: { xs: 40, sm: 48, md: 56 },
-            minHeight: { xs: 40, sm: 48, md: 56 },
-            '&:hover': {
-              backgroundColor: 'rgba(255,255,255,1)',
-              transform: 'translateY(-50%) scale(1.1)',
-            },
-            transition: 'all 0.2s ease-in-out',
-            zIndex: 2,
-          }}
-        >
-          <ChevronRightIcon fontSize="large" />
-        </IconButton>
-
-        {/* Dots Indicator */}
+        {/* Enhanced Dots Indicator */}
         <Box
           sx={{
             position: 'absolute',
@@ -483,8 +471,13 @@ export function ProductList() {
             left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex',
-            gap: 1,
+            gap: 1.5,
             zIndex: 2,
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            borderRadius: 3,
+            px: 2,
+            py: 1,
+            backdropFilter: 'blur(8px)',
           }}
         >
           {carouselSlides.map((_, index) => (
@@ -492,15 +485,18 @@ export function ProductList() {
               key={index}
               onClick={() => goToSlide(index)}
               sx={{
-                width: { xs: 8, sm: 10, md: 12 },
-                height: { xs: 8, sm: 10, md: 12 },
+                width: { xs: 10, sm: 12, md: 14 },
+                height: { xs: 10, sm: 12, md: 14 },
                 borderRadius: '50%',
-                backgroundColor: index === currentSlide ? 'white' : 'rgba(255,255,255,0.5)',
+                backgroundColor: index === currentSlide ? theme.palette.primary.main : 'rgba(255,255,255,0.4)',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease-in-out',
+                border: index === currentSlide ? `2px solid white` : '2px solid transparent',
+                boxShadow: index === currentSlide ? '0 2px 8px rgba(0,0,0,0.3)' : 'none',
                 '&:hover': {
-                  backgroundColor: index === currentSlide ? 'white' : 'rgba(255,255,255,0.8)',
-                  transform: 'scale(1.2)',
+                  backgroundColor: index === currentSlide ? theme.palette.primary.main : 'rgba(255,255,255,0.7)',
+                  transform: 'scale(1.3)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
                 },
               }}
             />
