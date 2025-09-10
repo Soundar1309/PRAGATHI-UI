@@ -36,6 +36,10 @@ export const productsApi = createApi({
     getCategory: builder.query<Category, number>({
       query: (id) => `/products/categories/${id}/`,
     }),
+    getRecentlyAddedProducts: builder.query<any[], { limit?: number }>({
+      query: ({ limit = 10 } = {}) => `/products/products/?ordering=-created_at&limit=${limit}`,
+      transformResponse: (response: { results: any[] }) => response.results || [],
+    }),
     
     // Admin endpoints (authentication required)
     createProduct: builder.mutation<any, Partial<any>>({
@@ -86,6 +90,7 @@ export const {
   useGetProductsByCategoryQuery,
   useSearchProductsQuery,
   useGetProductQuery,
+  useGetRecentlyAddedProductsQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,

@@ -1,7 +1,7 @@
 import { Box, Grid, Button, Typography, useTheme, IconButton, Collapse, Fade, alpha, LinearProgress, CircularProgress, Skeleton } from '@mui/material';
 import { useState, useRef, useEffect } from 'react';
 import ProductCard, { type Product } from '../../components/ProductCard';
-import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from './api';
+import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery, useGetRecentlyAddedProductsQuery } from './api';
 import { useNavigate } from 'react-router-dom';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -70,6 +70,12 @@ export function ProductList() {
   const { data: categoryProducts, isLoading: isLoadingCategory, isError: isErrorCategory } = useGetProductsByCategoryQuery(
     selectedCategory.id!, 
     { skip: !selectedCategory.id }
+  );
+
+  // Fetch recently added products (only when showing all products)
+  const { data: recentlyAddedProducts, isLoading: isLoadingRecentlyAdded, isError: isErrorRecentlyAdded } = useGetRecentlyAddedProductsQuery(
+    { limit: 10 },
+    { skip: selectedCategory.id !== null } // Skip when a specific category is selected
   );
 
   // Determine which data to use based on selection
@@ -165,6 +171,19 @@ export function ProductList() {
     freeDelivery: p.free_delivery,
   }));
 
+  // Map recently added products
+  const mappedRecentlyAddedProducts: Product[] = (recentlyAddedProducts || []).map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    description: p.description,
+    image: p.image,
+    price: p.price,
+    category: p.category?.name || p.category || '',
+    rating: p.rating,
+    reviewCount: p.review_count,
+    freeDelivery: p.free_delivery,
+  }));
+
   // Reset showAllProducts when category changes
   useEffect(() => {
     setShowAllProducts(false);
@@ -200,9 +219,9 @@ export function ProductList() {
   const getInitialProductCount = () => {
     // Show different amounts based on screen size
     const screenWidth = window.innerWidth;
-    if (screenWidth < 480) return 2; // Mobile: show 2 initially
-    if (screenWidth < 768) return 4; // Tablet: show 4 initially
-    return 4; // Desktop: show 4 initially
+    if (screenWidth < 480) return 6; // Mobile: show 2 initially
+    if (screenWidth < 768) return 8; // Tablet: show 4 initially
+    return 8; // Desktop: show 4 initially
   };
 
   const [initialProductCount] = useState(getInitialProductCount());
@@ -1200,6 +1219,268 @@ export function ProductList() {
           >
             View All Products
           </Button>
+        </Box>
+      )}
+
+      {/* Recently Added Section - Only show when viewing all products */}
+      {!selectedCategory.id && (
+        <Box sx={{ mt: { xs: 6, sm: 8, md: 10 } }}>
+          {/* Section Header */}
+          <Typography 
+            variant="h4" 
+            fontWeight={700} 
+            color="primary" 
+            mb={{ xs: 4, sm: 5, md: 6 }}
+            textAlign="center" 
+            sx={{ 
+              fontFamily: `'Playfair Display', 'Merriweather', serif`,
+              fontSize: { xs: '1.5rem', sm: '2rem', md: '2.25rem' },
+              px: { xs: 2, sm: 0 },
+            }}
+          >
+            Recently Added
+          </Typography>
+
+          {/* Recently Added Products Loading State */}
+          {isLoadingRecentlyAdded ? (
+            <Box>
+              {/* Loading Progress Bar */}
+              <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', mb: 4 }}>
+                <LinearProgress 
+                  sx={{
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                    '& .MuiLinearProgress-bar': {
+                      borderRadius: 4,
+                      background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                      animation: 'loading-pulse 2s ease-in-out infinite',
+                    },
+                    '@keyframes loading-pulse': {
+                      '0%': { opacity: 1 },
+                      '50%': { opacity: 0.7 },
+                      '100%': { opacity: 1 },
+                    },
+                  }}
+                />
+              </Box>
+              
+              {/* Loading Text */}
+              <Typography 
+                variant="h6" 
+                color="text.secondary" 
+                textAlign="center" 
+                sx={{ 
+                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                  mb: 4,
+                }}
+              >
+                Loading recently added products...
+              </Typography>
+              
+              {/* Skeleton Loading Grid */}
+              <Grid 
+                container 
+                spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
+                sx={{ 
+                  px: { xs: 2, sm: 0 },
+                  justifyContent: { xs: 'center', sm: 'flex-start' },
+                }}
+              >
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <Grid 
+                    key={index}
+                    size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'stretch',
+                    }}
+                  >
+                    <Box 
+                      sx={{ 
+                        width: '100%',
+                        maxWidth: { xs: '100%', sm: 350, md: 320 },
+                        p: 2,
+                      }}
+                    >
+                      {/* Product Image Skeleton */}
+                      <Skeleton
+                        variant="rectangular"
+                        width="100%"
+                        height={200}
+                        sx={{ 
+                          borderRadius: 2, 
+                          mb: 2,
+                          animation: 'pulse 1.5s ease-in-out infinite',
+                        }}
+                      />
+                      
+                      {/* Product Title Skeleton */}
+                      <Skeleton
+                        variant="text"
+                        width="80%"
+                        height={24}
+                        sx={{ mb: 1 }}
+                      />
+                      
+                      {/* Product Description Skeleton */}
+                      <Skeleton
+                        variant="text"
+                        width="60%"
+                        height={20}
+                        sx={{ mb: 2 }}
+                      />
+                      
+                      {/* Price Skeleton */}
+                      <Skeleton
+                        variant="text"
+                        width="40%"
+                        height={28}
+                        sx={{ mb: 2 }}
+                      />
+                      
+                      {/* Button Skeleton */}
+                      <Skeleton
+                        variant="rectangular"
+                        width="100%"
+                        height={44}
+                        sx={{ borderRadius: 2 }}
+                      />
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          ) : isErrorRecentlyAdded ? (
+            // Error State for Recently Added
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                flexDirection: 'column',
+                justifyContent: 'center', 
+                alignItems: 'center',
+                minHeight: { xs: 200, sm: 250 },
+                px: 2,
+                py: { xs: 4, sm: 5 },
+                borderRadius: 3,
+                background: `linear-gradient(135deg, ${alpha(theme.palette.error.main, 0.05)} 0%, ${alpha(theme.palette.background.paper, 0.8)} 100%)`,
+                border: `1px solid ${alpha(theme.palette.error.main, 0.1)}`,
+              }}
+            >
+              <Typography 
+                variant="h6" 
+                color="error" 
+                textAlign="center" 
+                sx={{ 
+                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                  mb: 2,
+                }}
+              >
+                Failed to load recently added products
+              </Typography>
+              
+              <Typography 
+                variant="body2" 
+                color="text.secondary" 
+                textAlign="center" 
+                sx={{ 
+                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
+                  mb: 3,
+                  maxWidth: 400,
+                }}
+              >
+                Unable to fetch recently added products at the moment.
+              </Typography>
+            </Box>
+          ) : mappedRecentlyAddedProducts.length > 0 ? (
+            // Recently Added Products Grid
+            <Grid 
+              container 
+              spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
+              sx={{ 
+                px: { xs: 2, sm: 0 },
+                justifyContent: { xs: 'center', sm: 'flex-start' },
+              }}
+            >
+              {mappedRecentlyAddedProducts.map((product, index) => (
+                <Grid 
+                  key={product.id}
+                  size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'stretch',
+                  }}
+                >
+                  <Fade in timeout={300 + (index * 100)}>
+                    <Box 
+                      onClick={() => handleProductClick(product.id)} 
+                      sx={{ 
+                        cursor: 'pointer', 
+                        height: '100%',
+                        width: '100%',
+                        maxWidth: { xs: '100%', sm: 350, md: 320 },
+                        transition: 'transform 0.2s ease-in-out',
+                        '&:hover': {
+                          transform: { xs: 'none', sm: 'scale(1.02)' },
+                        },
+                      }}
+                    >
+                      <ProductCard
+                        product={product}
+                        onAddToCart={() => handleAddToCartClick(product)}
+                      />
+                    </Box>
+                  </Fade>
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            // Empty State for Recently Added
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: { xs: 200, sm: 250 },
+                textAlign: 'center',
+                px: { xs: 3, sm: 4 },
+                py: { xs: 4, sm: 5 },
+                borderRadius: 3,
+                background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.8)} 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
+                border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+              }}
+            >
+              <Typography 
+                variant="h6" 
+                color="text.primary" 
+                sx={{
+                  fontFamily: `'Playfair Display', 'Merriweather', serif`,
+                  fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                  fontWeight: 600,
+                  mb: 1,
+                }}
+              >
+                No Recent Products
+              </Typography>
+              <Typography 
+                variant="body2" 
+                color="text.secondary"
+                sx={{
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
+                  lineHeight: 1.6,
+                  maxWidth: { xs: '100%', sm: 400 },
+                }}
+              >
+                No recently added products available at the moment.
+              </Typography>
+            </Box>
+          )}
         </Box>
       )}
     </Box>
