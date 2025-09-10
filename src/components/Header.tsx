@@ -51,6 +51,7 @@ import { useGetCartQuery } from '../features/cart/api';
 import { useLogoutMutation } from '../features/auth/api';
 import { useUserRole } from '../hooks/useUserRole';
 import { useWishlist } from '../contexts/WishlistContext';
+import { useGetCategoriesQuery } from '../features/products/api';
 
 //-----------------------------------------------------------------------------------------------------------------------------
 
@@ -67,51 +68,76 @@ interface DropdownItem {
   icon?: React.ComponentType<any>;
 }
 
-interface ProductCategory {
-  id: number;
-  name: string;
-  icon: React.ComponentType<any>;
-}
 
-// Product categories with icons
-const productCategories: ProductCategory[] = [
-  { id: 28, name: 'Agarbathi', icon: LocalActivityIcon },
-  { id: 29, name: 'Annapodi', icon: LocalGroceryStoreIcon },
-  { id: 30, name: 'Dhoop sticks', icon: LocalActivityIcon },
-  { id: 31, name: 'Dry Graphs', icon: LocalGroceryStoreIcon },
-  { id: 32, name: 'Dry Nuts', icon: LocalGroceryStoreIcon },
-  { id: 33, name: 'Flakes', icon: LocalGroceryStoreIcon },
-  { id: 34, name: 'Honey', icon: LocalGroceryStoreIcon },
-  { id: 35, name: 'Maavu', icon: LocalGroceryStoreIcon },
-  { id: 36, name: 'Malt', icon: LocalGroceryStoreIcon },
-  { id: 37, name: 'Masala', icon: LocalGroceryStoreIcon },
-  { id: 38, name: 'Millet', icon: LocalGroceryStoreIcon },
-  { id: 39, name: 'Noodles', icon: LocalDiningIcon },
-  { id: 40, name: 'Nuts and Seeds', icon: LocalGroceryStoreIcon },
-  { id: 41, name: 'Oil', icon: LocalGroceryStoreIcon },
-  { id: 42, name: 'Paruppu', icon: LocalGroceryStoreIcon },
-  { id: 43, name: 'Payiru', icon: LocalGroceryStoreIcon },
-  { id: 44, name: 'Rasapodi', icon: LocalGroceryStoreIcon },
-  { id: 45, name: 'Rice', icon: LocalGroceryStoreIcon },
-  { id: 46, name: 'Rock Salt', icon: LocalGroceryStoreIcon },
-  { id: 47, name: 'Soap', icon: LocalPharmacyIcon },
-  { id: 48, name: 'Soup', icon: LocalDiningIcon },
-  { id: 49, name: 'Spices', icon: LocalGroceryStoreIcon },
-  { id: 50, name: 'Tea', icon: LocalCafeIcon },
-];
+// Function to map category names to appropriate icons
+const getCategoryIcon = (categoryName: string): React.ComponentType<any> => {
+  const name = categoryName.toLowerCase();
+  
+  // Food and grocery items
+  if (name.includes('rice') || name.includes('grain') || name.includes('cereal')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('spice') || name.includes('masala') || name.includes('salt')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('oil') || name.includes('ghee')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('nut') || name.includes('seed') || name.includes('dry')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('honey') || name.includes('sweet')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('millet') || name.includes('flour') || name.includes('maavu')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('paruppu') || name.includes('dal') || name.includes('lentil')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('payiru') || name.includes('bean')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('rasapodi') || name.includes('powder')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('malt') || name.includes('extract')) {
+    return LocalGroceryStoreIcon;
+  }
+  if (name.includes('flakes') || name.includes('cereal')) {
+    return LocalGroceryStoreIcon;
+  }
+  
+  // Prepared foods
+  if (name.includes('noodle') || name.includes('pasta')) {
+    return LocalDiningIcon;
+  }
+  if (name.includes('soup') || name.includes('broth')) {
+    return LocalDiningIcon;
+  }
+  
+  // Beverages
+  if (name.includes('tea') || name.includes('coffee') || name.includes('beverage')) {
+    return LocalCafeIcon;
+  }
+  
+  // Health and wellness
+  if (name.includes('soap') || name.includes('shampoo') || name.includes('cleanser')) {
+    return LocalPharmacyIcon;
+  }
+  
+  // Religious and spiritual items
+  if (name.includes('agarbathi') || name.includes('incense') || name.includes('dhoop')) {
+    return LocalActivityIcon;
+  }
+  
+  // Default to grocery store icon for general products
+  return LocalGroceryStoreIcon;
+};
 
-// Update navLinks to support dropdowns
-const navLinks: NavLink[] = [
+// Static navigation links (non-dynamic)
+const staticNavLinks: NavLink[] = [
   { label: 'Home', to: '/' },
-  {
-    label: 'Farm store',
-    to: '/products',
-    dropdown: productCategories.map(cat => ({
-      label: cat.name,
-      to: `/products?category=${cat.id}`,
-      icon: cat.icon
-    }))
-  },
   {
     label: 'Engineering Solutions',
     dropdown: [
@@ -233,6 +259,33 @@ const Header: React.FC = () => {
   const { wishlist } = useWishlist();
   const wishlistCount = wishlist.length;
   const [logout] = useLogoutMutation();
+  
+  // Fetch categories from API
+  const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useGetCategoriesQuery();
+  
+  // Create dynamic navigation links with categories
+  const navLinks: NavLink[] = [
+    ...staticNavLinks.slice(0, 1), // Home
+    {
+      label: 'Farm store',
+      to: '/products',
+      dropdown: categoriesLoading 
+        ? [{ label: 'Loading...', to: '/products', icon: LocalGroceryStoreIcon }]
+        : categoriesError 
+          ? [{ label: 'Error loading categories', to: '/products', icon: LocalGroceryStoreIcon }]
+          : categories.length === 0
+            ? [{ label: 'No categories available', to: '/products', icon: LocalGroceryStoreIcon }]
+            : [
+                { label: 'All', to: '/products', icon: LocalGroceryStoreIcon },
+                ...categories.map(cat => ({
+                  label: cat.name,
+                  to: `/products?category=${cat.id}`,
+                  icon: getCategoryIcon(cat.name)
+                }))
+              ]
+    },
+    ...staticNavLinks.slice(1) // Rest of the static links
+  ];
 
   const handleFarmStoreClick = () => {
     navigate('/products');

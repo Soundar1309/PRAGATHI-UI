@@ -22,21 +22,18 @@ jobs:
     - name: Cache node modules
       uses: actions/cache@v4
       with:
-        path: PRAGATHI-UI/node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('PRAGATHI-UI/package-lock.json') }}
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
         
     - name: Install dependencies
-      working-directory: ./PRAGATHI-UI
       run: npm ci
       
     - name: Run linting
-      working-directory: ./PRAGATHI-UI
       run: npm run lint
       
     - name: Build application
-      working-directory: ./PRAGATHI-UI
       run: npm run build:prod
       env:
         VITE_API_URL: ${{ secrets.VITE_API_URL }}
@@ -61,6 +58,6 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         port: ${{ secrets.SERVER_PORT || 22 }}
-        source: "PRAGATHI-UI/dist/*"
+        source: "dist/*"
         target: "/home/sasikalavijayakumar/pragathi_server/frontend-dist"
-        strip_components: 2
+        strip_components: 1
