@@ -32,15 +32,33 @@ warn() {
 
 # Check if Node.js is installed
 check_node() {
-    if ! command -v node &> /dev/null; then
-        error "Node.js is not installed. Please install Node.js first."
-    fi
-    
-    if ! command -v npm &> /dev/null; then
-        error "npm is not installed. Please install npm first."
-    fi
-    
-    log "Node.js and npm are available"
+  # Load nvm if available
+  if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  fi
+  
+  # Use Node.js version from .nvmrc if available
+  if [ -f ".nvmrc" ]; then
+    log "Using Node.js version from .nvmrc"
+    nvm use
+  fi
+  
+  if ! command -v node &> /dev/null; then
+    error "Node.js is not installed. Please install Node.js first."
+  fi
+  
+  if ! command -v npm &> /dev/null; then
+    error "npm is not installed. Please install npm first."
+  fi
+  
+  # Check Node.js version
+  NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+  if [ "$NODE_VERSION" -lt 20 ]; then
+    error "Node.js version 20 or higher is required. Current version: $(node --version)"
+  fi
+  
+  log "Node.js $(node --version) and npm $(npm --version) are available"
 }
 
 # Install dependencies

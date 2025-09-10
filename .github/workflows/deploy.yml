@@ -17,9 +17,15 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
-        cache: 'npm'
-        cache-dependency-path: 'PRAGATHI-UI/package-lock.json'
+        node-version: '20'
+        
+    - name: Cache node modules
+      uses: actions/cache@v4
+      with:
+        path: PRAGATHI-UI/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('PRAGATHI-UI/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
         
     - name: Install dependencies
       working-directory: ./PRAGATHI-UI
