@@ -4,7 +4,6 @@ import {
     Grid,
     Card,
     CardContent,
-    CardMedia,
     Button,
     IconButton,
     TextField,
@@ -15,6 +14,7 @@ import {
     Alert,
     CircularProgress,
 } from '@mui/material';
+import ProductImage from '../../components/ProductImage';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -170,14 +170,12 @@ export function CartPage() {
                                     borderRadius: 2,
                                 }}>
                                     {/* Product Image */}
-                                    <CardMedia
-                                        component="img"
-                                        image={item.product.image}
+                                    <ProductImage
+                                        src={item.product.image}
                                         alt={item.product.title}
+                                        variant="list"
                                         sx={{
                                             width: { xs: '100%', sm: 200 },
-                                            height: { xs: 200, sm: 200 },
-                                            objectFit: 'cover',
                                             cursor: 'pointer',
                                         }}
                                         onClick={() => navigate(`/products/${item.product.id}`)}

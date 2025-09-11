@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Typography, IconButton, List, ListItem, ListItemAvatar, Avatar, ListItemText, Button, Divider, Stack } from '@mui/material';
+import { Box, Typography, IconButton, List, ListItem, ListItemAvatar, ListItemText, Button, Divider, Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useGetCartQuery, useRemoveItemMutation } from '../features/cart/api';
 import { useNavigate } from 'react-router-dom';
+import ProductImage from './ProductImage';
 
 const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { data, isLoading } = useGetCartQuery();
@@ -32,7 +33,12 @@ const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               </IconButton>
             }>
               <ListItemAvatar>
-                <Avatar src={item.product.image} alt={item.product.title} variant="rounded" />
+                <ProductImage
+                  src={item.product.image}
+                  alt={item.product.title}
+                  variant="mini"
+                  sx={{ width: 40, height: 40 }}
+                />
               </ListItemAvatar>
               <ListItemText
                 primary={item.product.title}

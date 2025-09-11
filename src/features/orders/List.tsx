@@ -13,10 +13,11 @@ import {
   Fade,
   Grow,
   Divider,
-  Avatar,
   IconButton,
   Tooltip,
+  Avatar,
 } from '@mui/material';
+import ProductImage from '../../components/ProductImage';
 import {
   ShoppingBag as ShoppingBagIcon,
   Visibility as VisibilityIcon,
@@ -354,9 +355,10 @@ export function OrderList() {
                             borderRadius: 2,
                             bgcolor: theme.palette.grey[50]
                           }}>
-                            <Avatar
+                            <ProductImage
                               src={item.product.image}
                               alt={item.product.title}
+                              variant="mini"
                               sx={{
                                 width: 60,
                                 height: 60,

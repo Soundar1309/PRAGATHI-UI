@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   Card,
-  CardMedia,
   CardContent,
   CardActions,
   Typography,
@@ -18,6 +17,7 @@ import type { SxProps } from '@mui/material';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { useAddToCart } from '../hooks/useAddToCart';
 import WishlistButton from './WishlistButton';
+import ProductImage from './ProductImage';
 
 export interface Product {
   id: number;
@@ -111,17 +111,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       }}
     >
       <Box sx={{ position: 'relative' }}>
-        <CardMedia
-          component="img"
-          image={product.image}
+        <ProductImage
+          src={product.image}
           alt={product.title}
+          variant="card"
           sx={{
-            // Responsive image sizing
-            height: { xs: 160, sm: 180, md: 200 },
-            objectFit: 'cover',
-            borderRadius: { xs: 1, sm: 2 },
-            background: '#F7F7F2',
-            // Ensure images are responsive
             width: '100%',
             maxWidth: '100%',
           }}

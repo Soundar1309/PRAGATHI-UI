@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   CardContent,
-  CardMedia,
   Chip,
   Grid,
   Rating,
@@ -19,6 +18,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useAddItemMutation } from '../cart/api';
 import { useGetProductQuery } from './api';
+import ProductImage from '../../components/ProductImage';
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -51,11 +51,11 @@ export function ProductDetail() {
         <Grid size={{ xs: 12, md: 6 }}>
           <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[3], p: 2 }}>
             <Box sx={{ position: 'relative' }}>
-              <CardMedia
-                component="img"
-                image={product.image}
+              <ProductImage
+                src={product.image}
                 alt={product.title}
-                sx={{ height: 340, objectFit: 'cover', borderRadius: 2, background: theme.palette.background.paper }}
+                variant="detail"
+                sx={{ borderRadius: 2, background: theme.palette.background.paper }}
               />
               <Chip
                 label={product.category?.name || product.category || ''}

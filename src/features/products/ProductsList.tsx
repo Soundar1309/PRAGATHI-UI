@@ -20,8 +20,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Avatar,
 } from '@mui/material';
+import ProductImage from '../../components/ProductImage';
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -188,14 +188,12 @@ export function ProductsList() {
                   products.map((product) => (
                     <TableRow key={product.id} hover>
                       <TableCell>
-                        <Avatar
+                        <ProductImage
                           src={product.image}
                           alt={product.title}
+                          variant="avatar"
                           sx={{ width: 50, height: 50 }}
-                          variant="rounded"
-                        >
-                          {product.title.charAt(0).toUpperCase()}
-                        </Avatar>
+                        />
                       </TableCell>
                       <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, fontWeight: 600 }}>
                         {product.title}

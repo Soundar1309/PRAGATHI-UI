@@ -6,7 +6,6 @@ import {
   Box,
   Card,
   CardContent,
-  CardMedia,
   CardActions,
   Button,
   Chip,
@@ -18,6 +17,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useWishlist } from '../hooks/useWishlist';
 import { useAddToCart } from '../hooks/useAddToCart';
 import type { WishlistItem } from '../api/wishlist';
+import ProductImage from '../components/ProductImage';
 
 const Wishlist: React.FC = () => {
   const theme = useTheme();
@@ -91,13 +91,12 @@ const Wishlist: React.FC = () => {
               }}
             >
               <Box sx={{ position: 'relative' }}>
-                <CardMedia
-                  component="img"
-                  image={item.product.image}
+                <ProductImage
+                  src={item.product.image}
                   alt={item.product.title}
+                  variant="card"
                   sx={{
-                    height: 200,
-                    objectFit: 'cover',
+                    width: '100%',
                   }}
                 />
                 <Chip
