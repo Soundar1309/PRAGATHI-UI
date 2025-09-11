@@ -82,16 +82,47 @@ run_lint() {
 build_app() {
     log "Building application for production..."
     
-    # Clean previous build
-    if [ -d "$DIST_DIR" ]; then
-        rm -rf "$DIST_DIR"
+    # Ensure we're in the correct directory
+    cd "$PROJECT_DIR"
+    
+    # Verify we're in the right directory
+    if [ ! -f "package.json" ] || [ ! -f "tsconfig.json" ]; then
+        error "Not in the correct project directory. Missing package.json or tsconfig.json"
     fi
     
-    # Build with production settings
-    if npm run build:prod; then
-        log "Application built successfully"
+    # Use the robust build script if available
+    if [ -f "./build-robust.sh" ]; then
+        log "Using robust build script..."
+        if ./build-robust.sh; then
+            log "Robust build completed successfully"
+        else
+            error "Robust build failed"
+        fi
     else
-        error "Build failed"
+        # Fallback to manual build process
+        log "Using manual build process..."
+        
+        # Clean previous build
+        if [ -d "$DIST_DIR" ]; then
+            rm -rf "$DIST_DIR"
+        fi
+        
+        # Build with production settings
+        log "Running TypeScript compilation..."
+        if npx tsc -b; then
+            log "TypeScript compilation successful"
+        else
+            error "TypeScript compilation failed"
+        fi
+        
+        log "Running Vite build..."
+        if npx vite build --mode production; then
+            log "Vite build successful"
+        else
+            error "Vite build failed"
+        fi
+        
+        log "Application built successfully"
     fi
 }
 
@@ -111,6 +142,9 @@ deploy_files() {
 # Main function
 main() {
     log "Starting local frontend deployment..."
+    
+    # Ensure we start in the correct directory
+    cd "$PROJECT_DIR"
     
     # Parse command line arguments
     BUILD_ONLY=false
