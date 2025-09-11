@@ -39,19 +39,11 @@ interface ProductCardProps {
   product: Product;
   onAddToCart?: (product: Product) => void;
 }
-
+  
 const ELLIPSIS_SX: SxProps = {
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
-};
-
-const MULTILINE_ELLIPSIS_SX: SxProps = {
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  display: '-webkit-box',
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: 'vertical',
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
@@ -83,13 +75,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        // Responsive height and sizing
-        height: {
-          xs: 'auto', // Auto height on mobile for better content flow
-          sm: 380,    // Fixed height on small tablets and up
-          md: 400,    // Slightly larger on medium screens
-        },
-        minHeight: { xs: 320, sm: 380, md: 400 }, // Ensure minimum height on mobile
+        // Dynamic height - no fixed heights
+        height: 'auto',
+        minHeight: 'auto',
         // Responsive width
         width: '100%',
         maxWidth: { xs: '100%', sm: 280, md: 300, lg: 320 },
@@ -98,8 +86,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         borderRadius: { xs: 2, sm: 3, md: 3 },
         boxShadow: theme.shadows[3],
         background: theme.palette.background.paper,
-        // Responsive padding
-        p: { xs: 2, sm: 2 },
+        // No padding on card - let sections handle their own padding
+        p: 0,
         // Hover effects with smooth transitions
         transition: 'all 0.2s ease-in-out',
         '&:hover': {
@@ -108,18 +96,34 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         },
         // Ensure card doesn't break layout on small screens
         overflowWrap: 'break-word',
+        overflow: 'hidden', // Prevent content from overflowing
       }}
     >
-      <Box sx={{ position: 'relative' }}>
+      {/* Image Section - Square 1:1 ratio */}
+      <Box 
+        sx={{ 
+          position: 'relative',
+          width: '100%',
+          // Ensure the image container maintains 1:1 aspect ratio
+          aspectRatio: '1 / 1',
+          overflow: 'hidden',
+          borderRadius: { xs: 2, sm: 3, md: 3 },
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+        }}
+      >
         <ProductImage
           src={product.image}
           alt={product.title}
           variant="card"
           sx={{
             width: '100%',
-            maxWidth: '100%',
+            height: '100%',
+            borderRadius: 0, // Remove border radius from image since container handles it
           }}
         />
+        
+        {/* Category Chip */}
         <Chip
           label={product.category}
           size="small"
@@ -132,12 +136,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             fontWeight: 600,
             borderRadius: 1,
             boxShadow: theme.shadows[1],
-            // Responsive font size
             fontSize: { xs: '0.7rem', sm: '0.75rem' },
             maxWidth: { xs: 100, sm: 120 },
             ...ELLIPSIS_SX,
           }}
         />
+        
+        {/* Offer Chip */}
         {hasOffer && (
           <Chip
             label={`${Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% OFF`}
@@ -157,22 +162,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             }}
           />
         )}
+        
+        {/* Free Delivery Indicator */}
         {product.freeDelivery && (
           <Tooltip title="Free Delivery">
             <Box sx={{
               position: 'absolute',
-              top: { xs: 8, sm: 12 },
-              right: hasOffer ? { xs: 8, sm: 12 } : { xs: 8, sm: 12 },
-              bottom: hasOffer ? { xs: 'auto', sm: 'auto' } : 'auto',
+              bottom: { xs: 8, sm: 12 },
+              right: { xs: 8, sm: 12 },
               display: 'flex',
               alignItems: 'center',
-              bgcolor: '#fff',
+              bgcolor: 'rgba(255, 255, 255, 0.95)',
               borderRadius: 1,
               px: { xs: 1, sm: 1 },
-              py: 1,
+              py: 0.5,
               boxShadow: theme.shadows[1],
-              gap: 1,
-              transform: hasOffer ? 'translateY(32px)' : 'none',
+              gap: 0.5,
             }}>
               <LocalShippingIcon
                 color="success"
@@ -183,7 +188,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 color="success.main"
                 fontWeight={600}
                 sx={{
-                  display: { xs: 'none', sm: 'block' }, // Hide text on mobile
+                  display: { xs: 'none', sm: 'block' },
                   fontSize: { sm: '0.7rem', md: '0.75rem' }
                 }}
               >
@@ -194,50 +199,75 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         )}
       </Box>
 
+      {/* Content Section - Product Details */}
       <CardContent sx={{
         flexGrow: 1,
-        pb: 0,
-        px: { xs: 2, sm: 2 },
-        pt: { xs: 2, sm: 2 },
+        display: 'flex',
+        flexDirection: 'column',
+        p: { xs: 2, sm: 2 },
+        // Ensure content doesn't overflow
+        minHeight: 0,
+        overflow: 'hidden',
       }}>
+        {/* Product Title */}
         <Typography
           variant="h6"
           fontWeight={700}
-          gutterBottom
           color="text.primary"
           sx={{
-            minHeight: { xs: 'auto', sm: 48 },
             fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
             lineHeight: 1.3,
-            ...MULTILINE_ELLIPSIS_SX,
-            WebkitLineClamp: 2
+            mb: { xs: 1, sm: 1 },
+            // Allow text to wrap naturally
+            wordBreak: 'break-word',
+            overflowWrap: 'break-word',
+            hyphens: 'auto',
+            // Limit to 2 lines with ellipsis
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
           }}
         >
           {product.title}
         </Typography>
 
+        {/* Product Description */}
         {product.description && (
           <Typography
             variant="body2"
             color="text.secondary"
             sx={{
-              minHeight: { xs: 'auto', sm: 36 },
               fontSize: { xs: '0.8rem', sm: '0.875rem' },
               lineHeight: 1.4,
-              mb: { xs: 1, sm: 2 },
-              ...MULTILINE_ELLIPSIS_SX,
-              WebkitLineClamp: { xs: 1, sm: 2 } // Less text on mobile
+              mb: { xs: 1, sm: 1 },
+              // Allow text to wrap naturally
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              hyphens: 'auto',
+              // Limit to 2 lines with ellipsis
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
             }}
           >
             {product.description}
           </Typography>
         )}
 
+        {/* Rating Section */}
         <Stack
           direction="row"
           alignItems="center"
           spacing={{ xs: 1, sm: 1 }}
-          sx={{ mt: { xs: 2, sm: 1 }, mb: { xs: 2, sm: 1 } }}
+          sx={{ 
+            mt: 'auto', // Push rating to bottom of content area
+            mb: { xs: 1, sm: 1 },
+            flexShrink: 0, // Prevent rating from shrinking
+          }}
         >
           <Rating
             value={product.rating || 0}
@@ -263,7 +293,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             color="text.secondary"
             sx={{
               fontSize: { xs: '0.7rem', sm: '0.75rem' },
-              display: { xs: 'none', sm: 'block' } // Hide review count on mobile
+              display: { xs: 'none', sm: 'block' }
             }}
           >
             ({product.reviewCount || 0} reviews)
@@ -271,19 +301,28 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         </Stack>
       </CardContent>
 
+      {/* Actions Section - Price and Buttons */}
       <CardActions sx={{
-        mt: 'auto',
         justifyContent: 'space-between',
         alignItems: 'center',
         px: { xs: 2, sm: 2 },
-        pb: { xs: 2, sm: 2 },
-        pt: { xs: 2, sm: 2 },
-        // Keep horizontal layout on all screen sizes
+        py: { xs: 2, sm: 2 },
         flexDirection: 'row',
-        gap: { xs: 2, sm: 0 },
+        gap: { xs: 2, sm: 1 },
         width: '100%',
+        flexShrink: 0, // Prevent actions from shrinking
+        // Ensure buttons don't wrap
+        flexWrap: 'nowrap',
+        minHeight: 48, // Ensure consistent height for actions
       }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+        {/* Price Section */}
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'flex-start',
+          flexShrink: 0,
+          minWidth: 0, // Allow price to shrink if needed
+        }}>
           {hasOffer ? (
             <>
               <Typography
@@ -292,9 +331,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 fontWeight={700}
                 sx={{
                   fontSize: { xs: '1.1rem', sm: '1.25rem' },
-                  textAlign: 'left',
-                  flexShrink: 0,
-                  mr: { xs: 1, sm: 0 },
+                  lineHeight: 1.2,
+                  // Prevent price from being too long
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '100%',
                 }}
               >
                 ₹{Number(displayPrice).toFixed(2)}
@@ -306,6 +348,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                   textDecoration: 'line-through',
                   fontSize: { xs: '0.8rem', sm: '0.875rem' },
                   opacity: 0.7,
+                  lineHeight: 1.2,
                 }}
               >
                 ₹{Number(originalPrice).toFixed(2)}
@@ -318,9 +361,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               fontWeight={700}
               sx={{
                 fontSize: { xs: '1.1rem', sm: '1.25rem' },
-                textAlign: 'left',
-                flexShrink: 0,
-                mr: { xs: 1, sm: 0 },
+                lineHeight: 1.2,
+                // Prevent price from being too long
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '100%',
               }}
             >
               ₹{Number(displayPrice).toFixed(2)}
@@ -328,12 +374,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           )}
         </Box>
 
+        {/* Buttons Section */}
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-end',
-          gap: { xs: 1.5, sm: 1 },
+          gap: { xs: 1, sm: 1 },
           flexShrink: 0,
+          minWidth: 0, // Allow buttons to shrink if needed
         }}>
           <WishlistButton
             productId={product.id}
@@ -347,18 +395,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               fontWeight: 700,
               borderRadius: { xs: 2, sm: 1 },
               boxShadow: 'none',
-              // Touch-friendly sizing
-              minWidth: { xs: 100, sm: 120 },
-              minHeight: { xs: 40, sm: 40 },
-              fontSize: { xs: '0.9rem', sm: '0.875rem' },
-              py: { xs: 1, sm: 1 },
+              // Responsive sizing
+              minWidth: { xs: 80, sm: 100 },
+              maxWidth: { xs: 120, sm: 140 },
+              minHeight: { xs: 36, sm: 40 },
+              fontSize: { xs: '0.8rem', sm: '0.875rem' },
+              py: { xs: 0.5, sm: 1 },
+              px: { xs: 1, sm: 2 },
               position: 'relative',
               // Enhanced touch feedback
               '&:active': {
                 transform: 'scale(0.98)',
               },
-              // Ensure proper mobile layout
+              // Ensure button doesn't overflow
               flexShrink: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
             onClick={handleAddToCartClick}
             disabled={isLoading}
