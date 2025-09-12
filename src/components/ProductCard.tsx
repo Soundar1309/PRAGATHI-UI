@@ -175,9 +175,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               bgcolor: 'rgba(255, 255, 255, 0.95)',
               borderRadius: 1,
               px: { xs: 1, sm: 1 },
-              py: 0.5,
+              py: 1,
               boxShadow: theme.shadows[1],
-              gap: 0.5,
+              gap: 1,
             }}>
               <LocalShippingIcon
                 color="success"
@@ -400,7 +400,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               maxWidth: { xs: 120, sm: 140 },
               minHeight: { xs: 36, sm: 40 },
               fontSize: { xs: '0.8rem', sm: '0.875rem' },
-              py: { xs: 0.5, sm: 1 },
+              py: { xs: 1, sm: 1 },
               px: { xs: 1, sm: 2 },
               position: 'relative',
               // Enhanced touch feedback

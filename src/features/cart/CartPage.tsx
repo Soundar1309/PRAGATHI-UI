@@ -130,7 +130,7 @@ export function CartPage() {
                             sx={{
                                 mt: 2,
                                 px: 4,
-                                py: 1.5,
+                                py: 2,
                                 borderRadius: 2,
                                 fontWeight: 600,
                                 fontSize: 16,
@@ -317,7 +317,7 @@ export function CartPage() {
                                 onClick={handleCheckout}
                                 sx={{
                                     mb: 2,
-                                    py: 1.5,
+                                    py: 2,
                                     borderRadius: 2,
                                     fontWeight: 600,
                                     fontSize: 16,

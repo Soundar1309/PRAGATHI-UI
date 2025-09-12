@@ -200,7 +200,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   width: '100%',
   '& .MuiInputBase-input': {
-    padding: theme.spacing(0.75, 1, 0.75, 0),
+    padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(3)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -421,14 +421,14 @@ const Header: React.FC = () => {
                 p: 0,
                 minWidth: 0,
                 fontWeight: 700,
-                fontSize: { xs: 16, sm: 18, md: 20, lg: 22 },
+                fontSize: { xs: 18, sm: 20, md: 20, lg: 22 },
                 color: theme.palette.primary.main,
                 textTransform: 'none',
                 letterSpacing: 0.5,
                 fontFamily: 'Playfair Display, serif',
                 display: 'flex',
                 alignItems: 'center',
-                gap: { xs: 0.5, sm: 1, md: 1.5 },
+                gap: { xs: 2, sm: 2, md: 2 },
                 whiteSpace: 'nowrap',
                 '&:hover': {
                   background: 'transparent',
@@ -499,7 +499,7 @@ const Header: React.FC = () => {
                         fontWeight: 600,
                         fontSize: { md: 13, lg: 14 },
                         textTransform: 'none',
-                        px: { md: 1.5, lg: 2 },
+                        px: { md: 2, lg: 2 },
                         py: 1,
                         borderRadius: 1,
                         whiteSpace: 'nowrap',
@@ -841,7 +841,7 @@ const Header: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
-                py: 1.5,
+                py: 2,
                 px: 2,
                 borderRadius: 1,
                 '&:hover': {
@@ -866,7 +866,7 @@ const Header: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
-                py: 1.5,
+                py: 2,
                 px: 2,
                 borderRadius: 1,
                 '&:hover': {
@@ -892,7 +892,7 @@ const Header: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
-                py: 1.5,
+                py: 2,
                 px: 2,
                 borderRadius: 1,
                 '&:hover': {
@@ -906,6 +906,37 @@ const Header: React.FC = () => {
                 <Brightness4Icon sx={{ color: theme.palette.primary.main }} />
               )}
               {theme.palette.mode === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            </Button>
+
+            {/* Profile Section */}
+            <Button
+              onClick={() => {
+                setDrawerOpen(false);
+                // Navigate to profile or show login
+                if (isAuthenticated) {
+                  navigate('/profile');
+                } else {
+                  navigate('/login');
+                }
+              }}
+              sx={{
+                color: theme.palette.text.secondary,
+                fontWeight: 600,
+                justifyContent: 'flex-start',
+                textTransform: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                py: 2,
+                px: 2,
+                borderRadius: 1,
+                '&:hover': {
+                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                },
+              }}
+            >
+              <AccountCircle sx={{ color: theme.palette.primary.main }} />
+              {isAuthenticated ? 'Profile' : 'Login'}
             </Button>
 
             <Divider sx={{ my: 2 }} />
@@ -937,7 +968,7 @@ const Header: React.FC = () => {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 2,
-                      py: 1.5,
+                      py: 2,
                       px: 2,
                       borderRadius: 1,
                       width: '100%',

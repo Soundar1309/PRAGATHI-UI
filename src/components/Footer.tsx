@@ -26,6 +26,11 @@ const Footer: React.FC = () => {
                 // Prevent horizontal scroll
                 width: '100%',
                 overflowX: 'hidden',
+                // Ensure footer is visible
+                position: 'relative',
+                zIndex: 1,
+                // Debug: add border to see if footer is visible
+                // border: '2px solid green', // Uncomment for debugging
             }}
         >
             <Container
@@ -62,7 +67,7 @@ const Footer: React.FC = () => {
                             <Stack
                                 direction="row"
                                 alignItems="flex-start"
-                                spacing={1.5}
+                                spacing={2}
                                 sx={{
                                     mb: 2,
                                     justifyContent: { xs: 'center', md: 'flex-start' },
@@ -98,7 +103,7 @@ const Footer: React.FC = () => {
                             <Stack
                                 direction="row"
                                 alignItems="center"
-                                spacing={1.5}
+                                spacing={2}
                                 sx={{
                                     mb: { xs: 2, sm: 3 },
                                     justifyContent: { xs: 'center', md: 'flex-start' },

@@ -100,9 +100,9 @@ export function ProductDetail() {
                     bgcolor: theme.palette.background.paper,
                     borderRadius: 1,
                     px: 1,
-                    py: 0.5,
+                    py: 1,
                     boxShadow: theme.shadows[1],
-                    gap: 0.5,
+                    gap: 1,
                   }}>
                     <LocalShippingIcon color="success" fontSize="small" />
                     <Typography variant="caption" color="success.main" fontWeight={600}>

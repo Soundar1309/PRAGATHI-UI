@@ -112,7 +112,9 @@ export function ProductList() {
       refetchCategories();
     }, 100); // Small delay to ensure component is fully mounted
     
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [refetchAllProducts, refetchCategories]);
 
   // Debug logging to see loading states
@@ -490,7 +492,7 @@ export function ProductList() {
             left: '50%',
             transform: 'translateX(-50%)',
             display: 'flex',
-            gap: 1.5,
+            gap: 2,
             zIndex: 2,
             backgroundColor: 'rgba(0,0,0,0.3)',
             borderRadius: 3,

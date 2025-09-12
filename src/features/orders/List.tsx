@@ -263,7 +263,7 @@ export function OrderList() {
                   borderRadius: 2,
                   fontWeight: 600,
                   px: 4,
-                  py: 1.5,
+                  py: 2,
                   fontSize: 16,
                 }}
               >

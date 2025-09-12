@@ -33,10 +33,12 @@ import TermsPage from './pages/terms';
 import DeliveryPage from './pages/delivery';
 import Wishlist from './pages/Wishlist';
 import { WishlistProvider } from './contexts/WishlistContext';
+import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
   return (
-    <WishlistProvider>
+    <ErrorBoundary>
+      <WishlistProvider>
       <Router>
         <Box
           sx={{
@@ -61,8 +63,8 @@ export default function App() {
               overflowX: 'hidden',
               // Ensure enough content height for proper layout
               minHeight: '100vh',
-              // Add top margin to account for fixed header height
-              mt: { xs: '96px', sm: '128px', md: '160px', lg: '192px' },
+              // Add top margin to account for fixed header height - reduced for mobile
+              mt: { xs: '80px', sm: '100px', md: '120px', lg: '140px' },
             }}
           >
             <Container
@@ -119,5 +121,6 @@ export default function App() {
         </Box>
       </Router>
     </WishlistProvider>
+    </ErrorBoundary>
   );
 }

@@ -340,7 +340,7 @@ export function FilteredProductList() {
                                 sx={{
                                     borderRadius: 99,
                                     px: { xs: 3, sm: 4 },
-                                    py: { xs: 1.5, sm: 2 },
+                                    py: { xs: 2, sm: 2 },
                                     fontWeight: 600,
                                     fontSize: { xs: 14, sm: 16 },
                                     letterSpacing: 0.5,
