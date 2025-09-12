@@ -29,8 +29,7 @@ export default function AboutPage() {
     <Box sx={{ 
         bgcolor: theme.palette.background.default, 
         pb: 8,
-        // Add top margin to ensure content is below fixed header
-        // mt: { xs: '100px', sm: '100px', md: '180px', lg: '150px' }
+        mt: { xs: '80px', sm: '100px', md: '120px' }
     }}>
       {/* Hero Section */}
       <Box
@@ -74,7 +73,7 @@ export default function AboutPage() {
                   lineHeight: 1.2,
                 }}
               >
-                About Pragathi Nature Farms
+                About Pragathi Natural Farm
               </Typography>
               <Typography
                 variant="h6"
@@ -123,10 +122,29 @@ export default function AboutPage() {
                 <Typography variant="h4" fontWeight={700} color={theme.palette.text.primary} mb={2}>
                   Our Philosophy
                 </Typography>
-                <Typography variant="body1" color={theme.palette.text.primary} mb={2}>
-                  At Pragathi Nature Farms, we believe that the earth is a living entity to be nurtured, not exploited. Our philosophy is rooted in the principles of natural farming, where every action is guided by respect for the land, water, and all living beings. We strive to create a self-sustaining ecosystem that supports biodiversity, soil health, and the well-being of our community.
+                <Typography 
+                  variant="body1" 
+                  color={theme.palette.text.primary} 
+                  mb={3}
+                  sx={{
+                    fontSize: { xs: '1rem', sm: '1.1rem', md: '1.125rem' },
+                    lineHeight: 1.7,
+                    textAlign: 'justify',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  At Pragathi Natural Farm, we believe that the earth is a living entity to be nurtured, not exploited. Our philosophy is rooted in the principles of natural farming, where every action is guided by respect for the land, water, and all living beings. We strive to create a self-sustaining ecosystem that supports biodiversity, soil health, and the well-being of our community.
                 </Typography>
-                <Typography variant="body1" color={theme.palette.text.primary}>
+                <Typography 
+                  variant="body1" 
+                  color={theme.palette.text.primary}
+                  sx={{
+                    fontSize: { xs: '1rem', sm: '1.1rem', md: '1.125rem' },
+                    lineHeight: 1.7,
+                    textAlign: 'justify',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                >
                   We are inspired by the teachings of Masanobu Fukuoka and Subhash Palekar, blending traditional wisdom with modern organic practices to cultivate food that is pure, nutritious, and grown in harmony with nature.
                 </Typography>
               </motion.div>
@@ -348,7 +366,7 @@ export default function AboutPage() {
                 fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
               }}
             >
-              Visit Pragathi Nature Farms
+              Visit Pragathi Natural Farm
             </Typography>
             <Typography
               variant="body1"

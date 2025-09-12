@@ -32,7 +32,7 @@ import {
   Collapse,
   Dialog
 } from '@mui/material';
-import { alpha, keyframes, styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 // import { motion } from 'framer-motion'; // Not used in current implementation
 import React, { useState, useContext } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -135,6 +135,7 @@ const getCategoryIcon = (categoryName: string): React.ComponentType<{ sx?: Recor
 // Static navigation links (non-dynamic)
 const staticNavLinks: NavLink[] = [
   { label: 'Home', to: '/' },
+  { label: 'About', to: '/about' },
   {
     label: 'Engineering Solutions',
     dropdown: [
@@ -154,18 +155,11 @@ const staticNavLinks: NavLink[] = [
       { label: 'Vermi compost', to: '/nursery/vermi-compost' },
     ],
   },
-  { label: 'About', to: '/about' },
   { label: 'Gallery', to: '/gallery' },
   { label: 'Contact', to: '/contact' },
 ];
 
 //-----------------------------------------------------------------------------------------------------------------------------
-
-// Add this before the Header component
-const marquee = keyframes`
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-`;
 
 // Enhanced responsive search bar for desktop
 const Search = styled('div')(({ theme }) => ({
@@ -262,9 +256,9 @@ const Header: React.FC = () => {
   
   // Create dynamic navigation links with categories
   const navLinks: NavLink[] = [
-    ...staticNavLinks.slice(0, 1), // Home
+    ...staticNavLinks.slice(0, 2), // Home, About
     {
-      label: 'Farm store',
+      label: 'Farm Store',
       to: '/products',
       dropdown: categoriesLoading 
         ? [{ label: 'Loading...', to: '/products', icon: LocalGroceryStoreIcon }]
@@ -281,7 +275,7 @@ const Header: React.FC = () => {
                 }))
               ]
     },
-    ...staticNavLinks.slice(1) // Rest of the static links
+    ...staticNavLinks.slice(2) // Rest of the static links
   ];
 
   const handleFarmStoreClick = () => {
@@ -394,35 +388,6 @@ const Header: React.FC = () => {
         isolation: 'isolate',
       }}
     >
-      {/* Flash News Banner */}
-      <Box
-        sx={{
-          width: '100%',
-          background: theme.palette.secondary.main,
-          color: '#ffffff',
-          overflow: 'hidden',
-          height: { xs: 32, sm: 36, md: 40 },
-          display: 'flex',
-          alignItems: 'center',
-          boxShadow: '0 1px 4px rgba(140,198,63,0.06)',
-        }}
-      >
-        <Typography
-          variant="body1"
-          sx={{
-            fontWeight: 700,
-            letterSpacing: 0.5,
-            whiteSpace: 'nowrap',
-            display: 'inline-block',
-            animation: `${marquee} 18s linear infinite`,
-            px: 2,
-            fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
-            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-          }}
-        >
-          🔥 Free Shipping Alert! No delivery charges across India – shop your favorite items today!
-        </Typography>
-      </Box>
 
       {/* Main AppBar */}
       <AppBar
@@ -456,7 +421,7 @@ const Header: React.FC = () => {
                 p: 0,
                 minWidth: 0,
                 fontWeight: 700,
-                fontSize: { xs: 14, sm: 16, md: 18, lg: 20 },
+                fontSize: { xs: 16, sm: 18, md: 20, lg: 22 },
                 color: theme.palette.primary.main,
                 textTransform: 'none',
                 letterSpacing: 0.5,
@@ -490,7 +455,7 @@ const Header: React.FC = () => {
                   overflow: 'visible',
                 }}
               >
-                Pragathi Natural Farms
+                Pragathi Natural Farm
               </Box>
             </Button>
           </Box>
@@ -528,7 +493,7 @@ const Header: React.FC = () => {
                     <Button
                       component={link.to ? NavLink : 'button'}
                       to={link.to}
-                      onClick={link.label === 'Farm store' ? handleFarmStoreClick : undefined}
+                      onClick={link.label === 'Farm Store' ? handleFarmStoreClick : undefined}
                       sx={{
                         color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
                         fontWeight: 600,

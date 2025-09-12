@@ -17,7 +17,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import FacebookIcon from "@mui/icons-material/Facebook";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 
 const sectionVariant = {
   hidden: { opacity: 0, y: 40 },
@@ -237,7 +237,7 @@ export default function ContactPage() {
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <EmailIcon sx={{ color: "#222" }} />
                     <Typography variant="body1" color="#111">
-                      hello@pragathifarms.com
+                      pragathinaturalfarm@gmail.com
                     </Typography>
                   </Box>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -249,18 +249,18 @@ export default function ContactPage() {
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <LocationOnIcon sx={{ color: "#222" }} />
                     <Typography variant="body1" color="#111">
-                      Pragathi Nature Farms, Hyderabad, India
+                      4/196, West Thottam, Jakkarpalayam, Pollachi, Tamil Nadu - 642202
                     </Typography>
                   </Box>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 1 }}>
                     <IconButton href="https://wa.me/919876543210" target="_blank" rel="noopener" aria-label="WhatsApp" sx={{ color: "#25D366" }}>
                       <WhatsAppIcon />
                     </IconButton>
-                    <IconButton href="https://instagram.com/pragathinaturefarms" target="_blank" rel="noopener" aria-label="Instagram" sx={{ color: "#E1306C" }}>
+                    <IconButton href="https://www.instagram.com/pragathinaturalfarm?igsh=NWdleDA3Zndla3Vk" target="_blank" rel="noopener" aria-label="Instagram" sx={{ color: "#E1306C" }}>
                       <InstagramIcon />
                     </IconButton>
-                    <IconButton href="https://facebook.com/pragathinaturefarms" target="_blank" rel="noopener" aria-label="Facebook" sx={{ color: "#1877F3" }}>
-                      <FacebookIcon />
+                    <IconButton href="https://youtube.com/@k.sampathkumar2667?feature=shared" target="_blank" rel="noopener" aria-label="YouTube" sx={{ color: "#FF0000" }}>
+                      <YouTubeIcon />
                     </IconButton>
                   </Box>
                 </Stack>
@@ -269,8 +269,8 @@ export default function ContactPage() {
               <Paper elevation={1} sx={{ borderRadius: 3, overflow: "hidden" }}>
                 <Box sx={{ width: "100%", height: { xs: 220, md: 260 } }}>
                   <iframe
-                    title="Pragathi Nature Farms Map"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.406964295002!2d78.4867!3d17.385044!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb973b0b0b0b0b%3A0x0!2sHyderabad%2C%20India!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin"
+                    title="Pragathi Natural Farm Map"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.123456789!2d77.123456!3d10.654321!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b04c123456789ab%3A0x1234567890abcdef!2sPollachi%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1680000000000!5m2!1sen!2sin"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}

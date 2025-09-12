@@ -125,7 +125,7 @@ const Footer: React.FC = () => {
                                         transition: 'color 0.3s ease-in-out',
                                     }}
                                 >
-                                    hello@pragathifarms.com
+                                    pragathinaturalfarm@gmail.com
                                 </Typography>
                             </Stack>
 
@@ -470,7 +470,7 @@ const Footer: React.FC = () => {
                                 </IconButton>
                                 <IconButton
                                     color="inherit"
-                                    href="https://instagram.com"
+                                    href="https://www.instagram.com/pragathinaturalfarm?igsh=NWdleDA3Zndla3Vk"
                                     target="_blank"
                                     sx={{
                                         minWidth: { xs: 40, sm: 48 },
@@ -488,7 +488,7 @@ const Footer: React.FC = () => {
                                 </IconButton>
                                 <IconButton
                                     color="inherit"
-                                    href="https://youtube.com"
+                                    href="https://youtube.com/@k.sampathkumar2667?feature=shared"
                                     target="_blank"
                                     sx={{
                                         minWidth: { xs: 40, sm: 48 },
