@@ -484,7 +484,7 @@ const Header: React.FC = () => {
                   maxWidth: '100%',
                 }}
               >
-                Pragathi
+                Pragathi Natural Farm
               </Box>
             </Button>
           </Box>
