@@ -29,7 +29,10 @@ export default function AboutPage() {
     <Box sx={{ 
         bgcolor: theme.palette.background.default, 
         pb: 8,
-        mt: { xs: '80px', sm: '100px', md: '120px' }
+        mt: { xs: '80px', sm: '100px', md: '120px' },
+        width: '100%',
+        maxWidth: '100vw',
+        overflowX: 'hidden',
     }}>
       {/* Hero Section */}
       <Box

@@ -381,6 +381,7 @@ const Header: React.FC = () => {
         zIndex: 9999,
         background: theme.palette.background.default,
         width: '100%',
+        maxWidth: '100vw',
         overflow: 'hidden',
         willChange: 'transform',
         backdropFilter: 'blur(8px)',
@@ -409,11 +410,21 @@ const Header: React.FC = () => {
             minHeight: { xs: 56, sm: 64, md: 72 },
             px: { xs: 1, sm: 2, md: 3, lg: 4 },
             justifyContent: 'space-between',
-            gap: 2,
+            gap: { xs: 1, sm: 2 },
+            width: '100%',
+            maxWidth: '100vw',
+            overflow: 'hidden',
+            flexWrap: 'nowrap',
           }}
         >
           {/* Logo - Always visible with no wrapping */}
-          <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            flexShrink: 0,
+            minWidth: 0,
+            maxWidth: { xs: '40%', sm: '45%', md: '50%' },
+          }}>
             <Button
               component={NavLink}
               to="/"
@@ -421,15 +432,18 @@ const Header: React.FC = () => {
                 p: 0,
                 minWidth: 0,
                 fontWeight: 700,
-                fontSize: { xs: 18, sm: 20, md: 20, lg: 22 },
+                fontSize: { xs: 16, sm: 18, md: 20, lg: 22 },
                 color: theme.palette.primary.main,
                 textTransform: 'none',
                 letterSpacing: 0.5,
                 fontFamily: 'Playfair Display, serif',
                 display: 'flex',
                 alignItems: 'center',
-                gap: { xs: 2, sm: 2, md: 2 },
+                gap: { xs: 1, sm: 2, md: 2 },
                 whiteSpace: 'nowrap',
+                width: '100%',
+                maxWidth: '100%',
+                overflow: 'hidden',
                 '&:hover': {
                   background: 'transparent',
                   transform: 'translateY(-1px)',
@@ -441,21 +455,36 @@ const Header: React.FC = () => {
                 src="/logo.jpg"
                 alt="Pragathi Natural Farms"
                 style={{
-                  height: 'clamp(28px, 4vw, 40px)',
-                  width: 'clamp(28px, 4vw, 40px)',
+                  height: 'clamp(24px, 3.5vw, 36px)',
+                  width: 'clamp(24px, 3.5vw, 36px)',
                   borderRadius: 6,
                   background: theme.palette.background.paper,
+                  flexShrink: 0,
                 }}
               />
               <Box
                 component="span"
                 sx={{
-                  display: 'inline',
+                  display: { xs: 'none', sm: 'inline' },
                   whiteSpace: 'nowrap',
-                  overflow: 'visible',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '100%',
                 }}
               >
                 Pragathi Natural Farm
+              </Box>
+              <Box
+                component="span"
+                sx={{
+                  display: { xs: 'inline', sm: 'none' },
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '100%',
+                }}
+              >
+                Pragathi
               </Box>
             </Button>
           </Box>
@@ -466,10 +495,12 @@ const Header: React.FC = () => {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 1,
+                gap: { xs: 0.5, sm: 1, md: 1 },
                 flex: 1,
                 justifyContent: 'center',
-                mx: 2,
+                mx: { xs: 1, sm: 2 },
+                minWidth: 0,
+                overflow: 'hidden',
               }}
             >
               {navLinks.map((link) => {
@@ -497,16 +528,20 @@ const Header: React.FC = () => {
                       sx={{
                         color: isActive ? theme.palette.primary.main : theme.palette.text.primary,
                         fontWeight: 600,
-                        fontSize: { md: 13, lg: 14 },
+                        fontSize: { md: 12, lg: 13 },
                         textTransform: 'none',
-                        px: { md: 2, lg: 2 },
-                        py: 1,
+                        px: { md: 1, lg: 1.5 },
+                        py: 0.5,
                         borderRadius: 1,
                         whiteSpace: 'nowrap',
+                        minWidth: 'auto',
+                        maxWidth: '100%',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
                         '&:hover': {
                           backgroundColor: alpha(theme.palette.primary.main, 0.12),
                           color: theme.palette.primary.main,
-                        },                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+                        },
                         transition: 'all 0.3s ease-in-out',
                       }}
                     >
@@ -581,14 +616,18 @@ const Header: React.FC = () => {
 
           {/* Search Bar - Large and Medium screens */}
           {(isLargeScreen || isMediumScreen) && (
-            <Box sx={{ flex: { md: '0 1 150px', lg: '0 1 200px' }, maxWidth: { md: 150, lg: 200 } }}>
+            <Box sx={{ 
+              flex: { md: '0 1 120px', lg: '0 1 150px' }, 
+              maxWidth: { md: 120, lg: 150 },
+              minWidth: 0,
+            }}>
               <Box component="form" onSubmit={handleSearchSubmit} sx={{ width: '100%' }}>
                 <Search>
                   <SearchIconWrapper>
                     <SearchIcon />
                   </SearchIconWrapper>
                   <StyledInputBase
-                    placeholder="Search products..."
+                    placeholder="Search..."
                     inputProps={{ 'aria-label': 'search' }}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -600,7 +639,13 @@ const Header: React.FC = () => {
           )}
 
           {/* Right Side Icons */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+          <Box sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: { xs: 0.5, sm: 1 }, 
+            flexShrink: 0,
+            minWidth: 0,
+          }}>
             {/* Large Screen Icons - All visible */}
             {isLargeScreen && (
               <>
@@ -795,6 +840,7 @@ const Header: React.FC = () => {
               ? `linear-gradient(135deg, #f0fff0 0%, #e8f5e8 100%)`
               : `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.background.paper} 100%)`,
             borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
+            overflowX: 'hidden',
           },
         }}
       >

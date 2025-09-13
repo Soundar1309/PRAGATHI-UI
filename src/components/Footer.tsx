@@ -25,6 +25,7 @@ const Footer: React.FC = () => {
                 fontFamily: 'Inter, sans-serif',
                 // Prevent horizontal scroll
                 width: '100%',
+                maxWidth: '100vw',
                 overflowX: 'hidden',
                 // Ensure footer is visible
                 position: 'relative',

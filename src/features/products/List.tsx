@@ -298,6 +298,7 @@ export function ProductList() {
       <Box
         sx={{
           width: '100vw',
+          maxWidth: '100vw',
           height: { xs: 200, sm: 300, md: 400, lg: 500, xl: 600 },
           position: 'relative',
           overflow: 'hidden',
@@ -307,7 +308,6 @@ export function ProductList() {
           marginLeft: { xs: '-16px', sm: '-24px', md: '-32px' },
           marginRight: { xs: '-16px', sm: '-24px', md: '-32px' },
           // Ensure proper centering and positioning
-          // Ensure proper positioning for full-width layout
           left: '50%',
           transform: 'translateX(-50%)',
         }}
@@ -634,7 +634,14 @@ export function ProductList() {
       />
       
       {/* Responsive Category Filter */}
-      <Box sx={{ position: 'relative', mb: { xs: 4, sm: 5, md: 6 }, px: { xs: 1, sm: 0 } }}>
+      <Box sx={{ 
+        position: 'relative', 
+        mb: { xs: 4, sm: 5, md: 6 }, 
+        px: { xs: 1, sm: 0 },
+        width: '100%',
+        maxWidth: '100%',
+        overflow: 'hidden',
+      }}>
         {showLeft && (
           <IconButton
             onClick={() => handleScroll('left')}
@@ -670,6 +677,8 @@ export function ProductList() {
             '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar on Chrome
             // Smooth scrolling
             scrollBehavior: 'smooth',
+            width: '100%',
+            maxWidth: '100%',
           }}
         >
           {isLoadingCategories ? (
@@ -1025,6 +1034,9 @@ export function ProductList() {
               mt: { xs: 3, sm: 4, md: 5 },
               px: { xs: 2, sm: 0 },
               justifyContent: { xs: 'center', sm: 'flex-start' },
+              width: '100%',
+              maxWidth: '100%',
+              margin: 0,
             }}
           >
             {displayedProducts.map((product, index) => (

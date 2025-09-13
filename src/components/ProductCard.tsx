@@ -97,6 +97,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         // Ensure card doesn't break layout on small screens
         overflowWrap: 'break-word',
         overflow: 'hidden', // Prevent content from overflowing
+        // Ensure card respects container boundaries
+        boxSizing: 'border-box',
       }}
     >
       {/* Image Section - Square 1:1 ratio */}

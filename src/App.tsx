@@ -49,6 +49,8 @@ export default function App() {
             overflowY: 'auto',
             overflowX: 'hidden',
             width: '100%',
+            maxWidth: '100vw',
+            position: 'relative',
           }}
         >
           <Header />
@@ -59,12 +61,14 @@ export default function App() {
             sx={{
               flex: 1,
               width: '100%',
+              maxWidth: '100vw',
               // Remove any potential horizontal scroll
               overflowX: 'hidden',
               // Ensure enough content height for proper layout
-              minHeight: '100vh',
-              // Add top margin to account for fixed header height - reduced for mobile
+              minHeight: 'calc(100vh - 80px)', // Account for header height
+              // Add top margin to account for fixed header height - responsive
               mt: { xs: '80px', sm: '100px', md: '120px', lg: '140px' },
+              position: 'relative',
             }}
           >
             <Container
@@ -72,9 +76,10 @@ export default function App() {
               sx={{
                 px: { xs: 1, sm: 2, md: 3, lg: 4 },
                 py: { xs: 1, sm: 2 },
-                maxWidth: '1400px',
+                maxWidth: { xs: '100vw', sm: '100vw', md: '1400px' },
                 width: '100%',
                 mx: 'auto',
+                overflowX: 'hidden',
               }}
             >
               <Routes>
