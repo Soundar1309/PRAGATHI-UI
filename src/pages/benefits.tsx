@@ -1,4 +1,4 @@
-import { Box, Container, Typography, Grid, Card, CardContent } from "@mui/material";
+import { Box, Container, Typography, Grid, Card, CardContent, Chip } from "@mui/material";
 import EcoIcon from "@mui/icons-material/FamilyRestroom";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocalDiningIcon from "@mui/icons-material/LocalDining";
@@ -35,17 +35,91 @@ const sectionVariant = {
 
 export default function BenefitsPage() {
   return (
-    <Box sx={{ bgcolor: "#F7F9FB", minHeight: "100vh", pb: 8 }}>
-      <Container maxWidth="md" sx={{ py: { xs: 5, md: 8 } }}>
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={sectionVariant}>
-          <Typography variant="h3" fontWeight={800} color="text.primary" mb={2} textAlign="center">
-            Benefits Of Pragathi Farms
-          </Typography>
-          <Typography variant="h6" color="text.primary" mb={5} textAlign="center">
-            Discover the advantages of choosing organic, sustainable, and healthy living with us.
-          </Typography>
+    <Box sx={{ 
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      minHeight: "100vh", 
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Decorative background elements */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: -50,
+          right: -50,
+          width: 200,
+          height: 200,
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #43b047, #6fdc8c)',
+          opacity: 0.1,
+          zIndex: 0,
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: -100,
+          left: -100,
+          width: 300,
+          height: 300,
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #ff9800, #ffc107)',
+          opacity: 0.08,
+          zIndex: 0,
+        }}
+      />
+
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 }, position: 'relative', zIndex: 1 }}>
+        <motion.div 
+          initial="hidden" 
+          whileInView="visible" 
+          viewport={{ once: true }} 
+          variants={sectionVariant}
+        >
+          <Box sx={{ textAlign: 'center', mb: 8 }}>
+            <Chip 
+              label="🌱 Why Choose Us" 
+              sx={{ 
+                mb: 3, 
+                px: 3, 
+                py: 1, 
+                fontSize: '1rem',
+                fontWeight: 600,
+                background: 'linear-gradient(135deg, #43b047, #6fdc8c)',
+                color: 'white',
+                boxShadow: '0 4px 15px rgba(67, 176, 71, 0.3)'
+              }} 
+            />
+            <Typography 
+              variant="h2" 
+              fontWeight={900} 
+              sx={{ 
+                background: 'linear-gradient(135deg, #2e7d32, #43b047)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                mb: 3,
+                fontSize: { xs: '2.5rem', md: '3.5rem' }
+              }}
+            >
+              Benefits Of Pragathi Farms
+            </Typography>
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                color: 'text.secondary',
+                maxWidth: '600px',
+                mx: 'auto',
+                lineHeight: 1.6,
+                fontSize: { xs: '1.1rem', md: '1.3rem' }
+              }}
+            >
+              Discover the advantages of choosing organic, sustainable, and healthy living with us.
+            </Typography>
+          </Box>
         </motion.div>
-        <Grid container spacing={5} alignItems="center">
+
+        <Grid container spacing={4} alignItems="center">
           {benefits.map((b, i) => (
             <Grid size={{ xs: 12, md: 6 }} key={b.title}>
               <motion.div
@@ -53,25 +127,45 @@ export default function BenefitsPage() {
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
                 variants={sectionVariant}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.1, duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
               >
                 <Card
-                  elevation={3}
+                  elevation={0}
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    p: 2,
-                    borderRadius: 3,
+                    p: 4,
+                    borderRadius: 2,
                     bgcolor: "#fff",
-                    minHeight: 160,
+                    minHeight: { xs: 180, md: 200 },
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                    }
                   }}
                 >
-                  <Box sx={{ mr: 3 }}>{b.icon}</Box>
+                  <Box sx={{ mr: 4, flexShrink: 0 }}>
+                    {b.icon}
+                  </Box>
                   <CardContent sx={{ p: 0 }}>
-                    <Typography variant="h5" fontWeight={700} color="text.primary" mb={1}>
+                    <Typography 
+                      variant="h5" 
+                      fontWeight={700} 
+                      color="text.primary" 
+                      mb={2}
+                      sx={{ fontSize: { xs: '1.3rem', md: '1.4rem' } }}
+                    >
                       {b.title}
                     </Typography>
-                    <Typography variant="body1" color="text.primary">
+                    <Typography 
+                      variant="body1" 
+                      color="text.secondary"
+                      sx={{ 
+                        fontSize: { xs: '1rem', md: '1.1rem' },
+                        lineHeight: 1.6
+                      }}
+                    >
                       {b.desc}
                     </Typography>
                   </CardContent>
