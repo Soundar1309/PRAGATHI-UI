@@ -34,16 +34,13 @@ import {
 } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
 // import { motion } from 'framer-motion'; // Not used in current implementation
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AddIcon from '@mui/icons-material/Add';
 import CategoryIcon from '@mui/icons-material/Category';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import { ColorModeContext } from '../main';
 import { useGetCartQuery } from '../features/cart/api';
 import { useLogoutMutation } from '../features/auth/api';
 import { useUserRole } from '../hooks/useUserRole';
@@ -241,7 +238,6 @@ const Header: React.FC = () => {
   const [moreMenuAnchor, setMoreMenuAnchor] = useState<null | HTMLElement>(null);
   
   // Context and hooks
-  const colorMode = useContext(ColorModeContext);
   const { role } = useUserRole();
   const isAuthenticated = !!localStorage.getItem('jwt');
   const isAdmin = isAuthenticated && role === 'admin';
@@ -365,10 +361,6 @@ const Header: React.FC = () => {
     handleMoreMenuClose();
   };
 
-  const handleThemeToggle = () => {
-    colorMode.toggleColorMode();
-    handleMoreMenuClose();
-  };
 
   return (
     <Box
@@ -687,22 +679,6 @@ const Header: React.FC = () => {
                   </Badge>
                 </IconButton>
 
-                <IconButton
-                  onClick={colorMode.toggleColorMode}
-                  sx={{
-                    color: theme.palette.primary.main,
-                    minWidth: 40,
-                    minHeight: 40,
-                    borderRadius: '50%',
-                    background: alpha(theme.palette.primary.main, 0.08),
-                    '&:hover': {
-                      background: alpha(theme.palette.primary.main, 0.15),
-                      transform: 'scale(1.05)',
-                    },
-                  }}
-                >
-                  {theme.palette.mode === 'dark' ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
-                </IconButton>
 
                 <IconButton
                   onClick={handleAccountMenuOpen}
@@ -818,12 +794,6 @@ const Header: React.FC = () => {
           </ListItemIcon>
           <ListItemText>Wishlist ({wishlistCount})</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleThemeToggle}>
-          <ListItemIcon>
-            {theme.palette.mode === 'dark' ? <Brightness7Icon fontSize="small" /> : <Brightness4Icon fontSize="small" />}
-          </ListItemIcon>
-          <ListItemText>{theme.palette.mode === 'dark' ? 'Light Mode' : 'Dark Mode'}</ListItemText>
-        </MenuItem>
       </Menu>
 
       {/* Mobile Drawer */}
@@ -924,35 +894,6 @@ const Header: React.FC = () => {
               Cart ({cartCount})
             </Button>
 
-            {/* Theme Toggle */}
-            <Button
-              onClick={() => {
-                colorMode.toggleColorMode();
-                setDrawerOpen(false);
-              }}
-              sx={{
-                color: theme.palette.text.secondary,
-                fontWeight: 600,
-                justifyContent: 'flex-start',
-                textTransform: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                py: 2,
-                px: 2,
-                borderRadius: 1,
-                '&:hover': {
-                  backgroundColor: alpha(theme.palette.primary.main, 0.08),
-                },
-              }}
-            >
-              {theme.palette.mode === 'dark' ? (
-                <Brightness7Icon sx={{ color: theme.palette.primary.main }} />
-              ) : (
-                <Brightness4Icon sx={{ color: theme.palette.primary.main }} />
-              )}
-              {theme.palette.mode === 'dark' ? 'Light Mode' : 'Dark Mode'}
-            </Button>
 
             {/* Profile Section */}
             <Button

@@ -65,7 +65,7 @@ const shadows: [
   '0px 4px 24px rgba(67, 176, 71, 0.08)'
 ];
 
-export const getTheme = (mode: 'light' | 'dark' = 'light') =>
+export const getTheme = () =>
   createTheme({
     // Enhanced responsive breakpoints
     breakpoints: {
@@ -78,7 +78,7 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
       },
     },
     palette: {
-      mode,
+      mode: 'light',
       primary: { 
         main: brandColors.green,
         light: brandColors.primaryLight,
@@ -90,12 +90,12 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
         dark: brandColors.accentGreen,
       },
       background: {
-        default: mode === 'light' ? brandColors.lightBeige : brandColors.darkThemeBg,
-        paper: mode === 'light' ? brandColors.warmBeige : brandColors.darkThemePaper,
+        default: brandColors.lightBeige,
+        paper: brandColors.warmBeige,
       },
       text: {
-        primary: mode === 'light' ? '#222' : '#ffffff', // White text for dark mode
-        secondary: mode === 'light' ? brandColors.green : brandColors.lightGreen, // Lighter green for dark mode
+        primary: '#222',
+        secondary: brandColors.green,
       },
       success: { 
         main: brandColors.lightGreen,
@@ -263,7 +263,7 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
               padding: '12px 24px',
             },
             '&:hover': {
-              backgroundColor: mode === 'light' ? brandColors.lightGreen : brandColors.primaryLight,
+              backgroundColor: brandColors.lightGreen,
               color: '#fff', // Keep white text for good contrast
               boxShadow: '0px 4px 16px rgba(67, 176, 71, 0.12)',
               transform: 'translateY(-2px)',
@@ -283,7 +283,7 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
         styleOverrides: {
           root: {
             borderRadius: 16,
-            background: mode === 'light' ? brandColors.warmBeige : brandColors.darkPaper,
+            background: brandColors.warmBeige,
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             '@media (max-width:480px)': {
               borderRadius: 12,
@@ -312,11 +312,9 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
       MuiAppBar: {
         styleOverrides: {
           root: {
-            background: mode === 'light' 
-              ? `linear-gradient(135deg, ${brandColors.headerGradient.start} 0%, ${brandColors.headerGradient.end} 100%)`
-              : `linear-gradient(135deg, ${brandColors.darkThemeBg} 0%, ${brandColors.darkThemePaper} 100%)`,
+            background: `linear-gradient(135deg, ${brandColors.headerGradient.start} 0%, ${brandColors.headerGradient.end} 100%)`,
             boxShadow: 'none',
-            borderBottom: `1.5px solid ${mode === 'light' ? alpha(brandColors.green, 0.15) : alpha(brandColors.green, 0.3)}`,
+            borderBottom: `1.5px solid ${alpha(brandColors.green, 0.15)}`,
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             padding: '0 8px',
             '@media (min-width:480px)': {
@@ -354,7 +352,7 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
               minHeight: 52,
             },
             '&:hover': {
-              background: mode === 'light' ? brandColors.lightGreen : brandColors.green,
+              background: brandColors.lightGreen,
               color: '#fff',
               transform: 'translateX(4px)',
             },
@@ -443,28 +441,28 @@ export const getTheme = (mode: 'light' | 'dark' = 'light') =>
             transition: 'color 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           },
           h1: {
-            color: mode === 'light' ? '#222' : '#ffffff',
+            color: '#222',
           },
           h2: {
-            color: mode === 'light' ? '#222' : '#ffffff',
+            color: '#222',
           },
           h3: {
-            color: mode === 'light' ? '#222' : '#ffffff',
+            color: '#222',
           },
           h4: {
-            color: mode === 'light' ? '#222' : '#ffffff',
+            color: '#222',
           },
           h5: {
-            color: mode === 'light' ? '#222' : '#ffffff',
+            color: '#222',
           },
           h6: {
-            color: mode === 'light' ? '#222' : '#ffffff',
+            color: '#222',
           },
           body1: {
-            color: mode === 'light' ? '#333' : '#e0e0e0',
+            color: '#333',
           },
           body2: {
-            color: mode === 'light' ? '#666' : '#b0b0b0',
+            color: '#666',
           },
         },
       },
