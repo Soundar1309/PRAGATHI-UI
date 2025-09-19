@@ -33,6 +33,7 @@ import TermsPage from './pages/terms';
 import DeliveryPage from './pages/delivery';
 import Wishlist from './pages/Wishlist';
 import NurseryPage from './pages/NurseryPage';
+import CheckoutPage from './pages/CheckoutPage';
 import { WishlistProvider } from './contexts/WishlistContext';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -113,6 +114,7 @@ export default function App() {
                 <Route path="/terms" element={<TermsPage />} />
                 <Route path="/delivery" element={<DeliveryPage />} />
                 <Route path="/nursery" element={<NurseryPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
 
                 {/* Policy Pages */}
                 <Route path="/privacy" element={<PrivacyPolicy />} />

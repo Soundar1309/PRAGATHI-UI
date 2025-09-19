@@ -2,6 +2,7 @@ import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const baseQueryWithAuth = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  credentials: 'include', // Enable sending cookies with requests
   prepareHeaders: (headers) => {
     console.log('prepareHeaders called');
     const token = localStorage.getItem('jwt');
