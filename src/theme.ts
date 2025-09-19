@@ -17,13 +17,20 @@ export const brandColors = {
     end: '#f0fff0',   // soft green end
   },
   footerBg: '#d4f7d4', // match header start color
-  // Enhanced color palette
+  // Enhanced color palette with earthy tones
   primaryLight: '#a8e6a8', // light primary for subtle effects
   secondaryLight: '#c8f5c8', // light secondary
   accentGreen: '#8bc34a', // additional green accent
   warmBeige: '#f5f5dc', // warm beige for backgrounds
   darkGreen: '#2e7d32', // dark green for dark mode
   lightBeige: '#faf8f0', // light beige variant
+  // New earthy colors for modern look
+  earthyGreen: '#4a6741', // deeper green
+  softBrown: '#8d6e63', // soft brown
+  naturalBeige: '#f5f0e1', // natural beige
+  forestGreen: '#2e4a2e', // forest green
+  sageGreen: '#9caf88', // sage green
+  terracotta: '#d4a574', // terracotta accent
   // Dark theme alternatives - darker, nature-inspired
   darkThemeBg: '#1a1a1a', // dark background
   darkThemePaper: '#2d2d2d', // dark paper
@@ -118,12 +125,12 @@ export const getTheme = () =>
         dark: '#00695c',
       },
     },
-    // Enhanced responsive typography
+    // Enhanced responsive typography with modern fonts
     typography: {
-      fontFamily: 'Inter, sans-serif',
+      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
       fontSize: 16, // Base font size
       h1: {
-        fontFamily: 'Playfair Display, Merriweather, serif',
+        fontFamily: '"Playfair Display", "Merriweather", "Georgia", serif',
         fontWeight: 700,
         fontSize: '1.75rem', // 28px base
         lineHeight: 1.2,
@@ -139,7 +146,7 @@ export const getTheme = () =>
         },
       },
       h2: {
-        fontFamily: 'Playfair Display, Merriweather, serif',
+        fontFamily: '"Playfair Display", "Merriweather", "Georgia", serif',
         fontWeight: 600,
         fontSize: '1.5rem', // 24px base
         lineHeight: 1.3,
@@ -155,7 +162,7 @@ export const getTheme = () =>
         },
       },
       h3: {
-        fontFamily: 'Playfair Display, Merriweather, serif',
+        fontFamily: '"Playfair Display", "Merriweather", "Georgia", serif',
         fontWeight: 600,
         fontSize: '1.25rem', // 20px base
         lineHeight: 1.4,
@@ -170,7 +177,7 @@ export const getTheme = () =>
         },
       },
       h4: {
-        fontFamily: 'Playfair Display, Merriweather, serif',
+        fontFamily: '"Playfair Display", "Merriweather", "Georgia", serif',
         fontWeight: 500,
         fontSize: '1.125rem', // 18px base
         lineHeight: 1.4,
@@ -182,7 +189,7 @@ export const getTheme = () =>
         },
       },
       h5: {
-        fontFamily: 'Playfair Display, Merriweather, serif',
+        fontFamily: '"Playfair Display", "Merriweather", "Georgia", serif',
         fontWeight: 500,
         fontSize: '1rem', // 16px base
         lineHeight: 1.5,
@@ -194,7 +201,7 @@ export const getTheme = () =>
         },
       },
       h6: {
-        fontFamily: 'Playfair Display, Merriweather, serif',
+        fontFamily: '"Playfair Display", "Merriweather", "Georgia", serif',
         fontWeight: 500,
         fontSize: '0.875rem', // 14px base
         lineHeight: 1.5,
@@ -206,17 +213,17 @@ export const getTheme = () =>
         },
       },
       body1: {
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
         fontSize: '1rem', // 16px base
         lineHeight: 1.6,
       },
       body2: {
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
         fontSize: '0.875rem', // 14px base
         lineHeight: 1.5,
       },
       button: {
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
         fontSize: '1rem', // 16px base
         fontWeight: 600,
         textTransform: 'none',
@@ -463,6 +470,51 @@ export const getTheme = () =>
           },
           body2: {
             color: '#666',
+          },
+        },
+      },
+      // Enhanced Tabs component for NurseryPage
+      MuiTabs: {
+        styleOverrides: {
+          root: {
+            '& .MuiTabs-indicator': {
+              backgroundColor: brandColors.green,
+              height: 3,
+              borderRadius: '2px',
+              transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            },
+            '& .MuiTabs-flexContainer': {
+              gap: 2,
+            },
+          },
+        },
+      },
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+            fontWeight: 600,
+            fontSize: '1rem',
+            textTransform: 'none',
+            minHeight: 48,
+            padding: '12px 24px',
+            borderRadius: '12px',
+            transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            color: brandColors.earthyGreen,
+            '&:hover': {
+              backgroundColor: alpha(brandColors.sageGreen, 0.1),
+              color: brandColors.forestGreen,
+              transform: 'translateY(-2px)',
+            },
+            '&.Mui-selected': {
+              color: brandColors.green,
+              backgroundColor: alpha(brandColors.primaryLight, 0.2),
+            },
+            '@media (max-width: 768px)': {
+              fontSize: '0.875rem',
+              padding: '8px 16px',
+              minHeight: 44,
+            },
           },
         },
       },

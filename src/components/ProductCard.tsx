@@ -75,15 +75,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        // Dynamic height - no fixed heights
-        height: 'auto',
-        minHeight: 'auto',
+        // Fixed height for equal card sizes
+        height: { xs: 420, sm: 450, md: 480 },
+        minHeight: { xs: 420, sm: 450, md: 480 },
         // Responsive width
         width: '100%',
         maxWidth: { xs: '100%', sm: 280, md: 300, lg: 320 },
         minWidth: { xs: '100%', sm: 260 },
-        // Responsive border radius
-        borderRadius: { xs: 2, sm: 3, md: 3 },
+        // Reduced border radius
+        borderRadius: { xs: 1, sm: 1.5, md: 2 },
         boxShadow: theme.shadows[3],
         background: theme.palette.background.paper,
         // No padding on card - let sections handle their own padding
@@ -109,7 +109,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           // Ensure the image container maintains 1:1 aspect ratio
           aspectRatio: '1 / 1',
           overflow: 'hidden',
-          borderRadius: { xs: 2, sm: 3, md: 3 },
+          borderRadius: { xs: 1, sm: 1.5, md: 2 },
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
         }}
@@ -136,7 +136,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             bgcolor: theme.palette.primary.main,
             color: '#fff',
             fontWeight: 600,
-            borderRadius: 1,
+            borderRadius: 0.5,
             boxShadow: theme.shadows[1],
             fontSize: { xs: '0.7rem', sm: '0.75rem' },
             maxWidth: { xs: 100, sm: 120 },
@@ -156,7 +156,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               bgcolor: theme.palette.error.main,
               color: '#fff',
               fontWeight: 600,
-              borderRadius: 1,
+              borderRadius: 0.5,
               boxShadow: theme.shadows[1],
               fontSize: { xs: '0.65rem', sm: '0.7rem' },
               maxWidth: { xs: 80, sm: 100 },
@@ -207,9 +207,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         display: 'flex',
         flexDirection: 'column',
         p: { xs: 2, sm: 2 },
-        // Ensure content doesn't overflow
+        // Ensure content doesn't overflow and uses available space
         minHeight: 0,
         overflow: 'hidden',
+        // Fixed height for content area to ensure consistency
+        height: { xs: 120, sm: 130, md: 140 },
+        maxHeight: { xs: 120, sm: 130, md: 140 },
       }}>
         {/* Product Title */}
         <Typography
@@ -315,7 +318,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         flexShrink: 0, // Prevent actions from shrinking
         // Ensure buttons don't wrap
         flexWrap: 'nowrap',
-        minHeight: 48, // Ensure consistent height for actions
+        // Fixed height for actions area
+        height: { xs: 60, sm: 65, md: 70 },
+        minHeight: { xs: 60, sm: 65, md: 70 },
+        maxHeight: { xs: 60, sm: 65, md: 70 },
       }}>
         {/* Price Section */}
         <Box sx={{ 
@@ -395,7 +401,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             color="secondary"
             sx={{
               fontWeight: 700,
-              borderRadius: { xs: 2, sm: 1 },
+              borderRadius: { xs: 0.5, sm: 0.5 },
               boxShadow: 'none',
               // Responsive sizing
               minWidth: { xs: 80, sm: 100 },

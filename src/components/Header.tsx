@@ -146,10 +146,12 @@ const staticNavLinks: NavLink[] = [
   },
   {
     label: 'Nursery',
+    to: '/nursery',
     dropdown: [
-      { label: 'Coconut tree', to: '/nursery/coconut-tree' },
-      { label: 'Medicinal plant', to: '/nursery/medicinal-plant' },
-      { label: 'Vermi compost', to: '/nursery/vermi-compost' },
+      { label: 'Coconut Trees', to: '/nursery#coconut' },
+      { label: 'Medicinal Plants', to: '/nursery#medicinal' },
+      { label: 'Vermi Composter', to: '/nursery#vermi' },
+      { label: 'Licences & Certifications', to: '/nursery#licence' },
     ],
   },
   { label: 'Gallery', to: '/gallery' },

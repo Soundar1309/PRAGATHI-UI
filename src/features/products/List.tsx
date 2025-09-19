@@ -441,7 +441,7 @@ export function ProductList() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Auto-play indicator */}
+        {/* Auto-play indicator - only dot, no text */}
         <Box
           sx={{
             position: 'absolute',
@@ -450,11 +450,11 @@ export function ProductList() {
             zIndex: 3,
             display: 'flex',
             alignItems: 'center',
-            gap: 1,
+            justifyContent: 'center',
+            width: 24,
+            height: 24,
             backgroundColor: 'rgba(0,0,0,0.5)',
-            borderRadius: 2,
-            px: 2,
-            py: 1,
+            borderRadius: '50%',
             backdropFilter: 'blur(8px)',
           }}
         >
@@ -472,16 +472,6 @@ export function ProductList() {
               },
             }}
           />
-          <Typography
-            variant="caption"
-            sx={{
-              color: 'white',
-              fontWeight: 600,
-              fontSize: '0.75rem',
-            }}
-          >
-            Auto-play
-          </Typography>
         </Box>
 
         {/* Enhanced Dots Indicator */}

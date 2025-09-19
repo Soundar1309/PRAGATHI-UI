@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconButton, Tooltip, Snackbar, Alert } from '@mui/material';
+import { IconButton, Tooltip, Snackbar, Alert, Portal } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useWishlist } from '../hooks/useWishlist';
@@ -119,20 +119,37 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
         </IconButton>
       </Tooltip>
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert
+      <Portal>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={4000}
           onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          sx={{
+            position: 'fixed !important',
+            bottom: '16px !important',
+            right: '16px !important',
+            zIndex: 9999,
+            '& .MuiSnackbar-root': {
+              position: 'fixed !important',
+              bottom: '16px !important',
+              right: '16px !important',
+            }
+          }}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity={snackbar.severity}
+            sx={{ 
+              width: '100%',
+              minWidth: 300,
+              maxWidth: 400,
+            }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      </Portal>
     </>
   );
 };
