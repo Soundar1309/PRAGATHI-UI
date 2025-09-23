@@ -16,38 +16,74 @@ import { motion, AnimatePresence } from 'framer-motion';
 const carouselSlides = [
   {
     id: 1,
-    image: '/assets/banner_img.png', // Keep existing image for now
-    title: 'Fresh from Our Farms',
-    subtitle: 'Organic produce grown with care',
-    ctaText: 'Shop Now',
-    ctaLink: '/products',
+    image: '/assets/img8.png',
+    title: 'Rain Harvesting Initiative',
+    subtitle: 'Sustainable water management for our community',
+    ctaText: 'Learn More',
+    ctaLink: '/about',
     overlayColor: 'rgba(34, 139, 34, 0.7)',
   },
   {
     id: 2,
-    image: '/assets/banner_img.png', // You can replace with actual images
-    title: 'Explore Our Nursery',
-    subtitle: 'Beautiful plants for your garden',
-    ctaText: 'Visit Nursery',
-    ctaLink: '/nursery',
+    image: '/assets/img11.png',
+    title: 'Land Donation Recognition',
+    subtitle: 'Supporting housing for the underprivileged',
+    ctaText: 'Our Mission',
+    ctaLink: '/about',
     overlayColor: 'rgba(85, 107, 47, 0.7)',
   },
   {
     id: 3,
-    image: '/assets/banner_img.png', // You can replace with actual images
-    title: 'Engineering Solutions',
-    subtitle: 'Sustainable farming technology',
-    ctaText: 'Learn More',
-    ctaLink: '/engineering',
+    image: '/assets/img15.png',
+    title: 'Educational Programs',
+    subtitle: 'Teaching sustainable farming practices',
+    ctaText: 'Join Us',
+    ctaLink: '/contact',
     overlayColor: 'rgba(46, 139, 87, 0.7)',
   },
   {
     id: 4,
-    image: '/assets/banner_img.png', // You can replace with actual images
-    title: 'Natural & Pure',
-    subtitle: '100% organic, no chemicals',
-    ctaText: 'Discover Benefits',
+    image: '/assets/img16.png',
+    title: 'Organic Farming Excellence',
+    subtitle: 'Award-winning sustainable agriculture',
+    ctaText: 'Shop Products',
+    ctaLink: '/products',
+    overlayColor: 'rgba(60, 179, 113, 0.7)',
+  },
+  {
+    id: 5,
+    image: '/assets/img20.png',
+    title: 'Community Outreach',
+    subtitle: 'Engaging with local communities',
+    ctaText: 'Get Involved',
+    ctaLink: '/contact',
+    overlayColor: 'rgba(34, 139, 34, 0.7)',
+  },
+  {
+    id: 6,
+    image: '/assets/img22.png',
+    title: 'Composting Education',
+    subtitle: 'Teaching organic waste management',
+    ctaText: 'Learn More',
+    ctaLink: '/nursery',
+    overlayColor: 'rgba(85, 107, 47, 0.7)',
+  },
+  {
+    id: 7,
+    image: '/assets/img25.png',
+    title: 'Field Research',
+    subtitle: 'Advancing agricultural knowledge',
+    ctaText: 'Discover',
     ctaLink: '/benefits',
+    overlayColor: 'rgba(46, 139, 87, 0.7)',
+  },
+  {
+    id: 8,
+    image: '/assets/img30.png',
+    title: 'Natural Farming Practices',
+    subtitle: 'Hands-on learning in organic agriculture',
+    ctaText: 'Explore',
+    ctaLink: '/products',
     overlayColor: 'rgba(60, 179, 113, 0.7)',
   },
 ];
@@ -61,7 +97,6 @@ export function ProductList() {
   
   // Carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   const { data: allProducts, isLoading: isLoadingAll, isError: isErrorAll, refetch: refetchAllProducts } = useGetProductsQuery();
   const { data: categoriesData, isLoading: isLoadingCategories, refetch: refetchCategories } = useGetCategoriesQuery();
@@ -193,29 +228,16 @@ export function ProductList() {
 
   // Carousel auto-play effect
   useEffect(() => {
-    if (!isAutoPlaying) return;
-    
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
     }, 4000); // 4 seconds per slide
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying]);
+  }, []);
 
-  // Pause auto-play on hover
-  const handleCarouselHover = () => setIsAutoPlaying(false);
-  const handleCarouselLeave = () => setIsAutoPlaying(true);
+  // Pure auto-play - no manual controls
 
-  // Navigate to specific slide
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    setIsAutoPlaying(false);
-    // Resume auto-play after 3 seconds
-    setTimeout(() => setIsAutoPlaying(true), 3000);
-  };
-
-  // Note: goToNext and goToPrev functions removed as arrows are no longer used
-  // Carousel now uses auto-play and dot navigation only
+  // Note: Carousel now uses pure auto-play only - no manual controls
 
   // Responsive product display counts
   const getInitialProductCount = () => {
@@ -311,8 +333,6 @@ export function ProductList() {
           left: '50%',
           transform: 'translateX(-50%)',
         }}
-        onMouseEnter={handleCarouselHover}
-        onMouseLeave={handleCarouselLeave}
       >
         {/* Carousel Slides */}
         <AnimatePresence mode="wait">
@@ -441,78 +461,7 @@ export function ProductList() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Auto-play indicator - only dot, no text */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: { xs: 16, sm: 20, md: 24 },
-            right: { xs: 16, sm: 20, md: 24 },
-            zIndex: 3,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 24,
-            height: 24,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            borderRadius: '50%',
-            backdropFilter: 'blur(8px)',
-          }}
-        >
-          <Box
-            sx={{
-              width: 8,
-              height: 8,
-              borderRadius: '50%',
-              backgroundColor: isAutoPlaying ? theme.palette.primary.main : theme.palette.grey[400],
-              animation: isAutoPlaying ? 'pulse 2s infinite' : 'none',
-              '@keyframes pulse': {
-                '0%': { opacity: 1 },
-                '50%': { opacity: 0.5 },
-                '100%': { opacity: 1 },
-              },
-            }}
-          />
-        </Box>
 
-        {/* Enhanced Dots Indicator */}
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: { xs: 16, sm: 24, md: 32 },
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex',
-            gap: 2,
-            zIndex: 2,
-            backgroundColor: 'rgba(0,0,0,0.3)',
-            borderRadius: 3,
-            px: 2,
-            py: 1,
-            backdropFilter: 'blur(8px)',
-          }}
-        >
-          {carouselSlides.map((_, index) => (
-            <Box
-              key={index}
-              onClick={() => goToSlide(index)}
-              sx={{
-                width: { xs: 10, sm: 12, md: 14 },
-                height: { xs: 10, sm: 12, md: 14 },
-                borderRadius: '50%',
-                backgroundColor: index === currentSlide ? theme.palette.primary.main : 'rgba(255,255,255,0.4)',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease-in-out',
-                border: index === currentSlide ? `2px solid white` : '2px solid transparent',
-                boxShadow: index === currentSlide ? '0 2px 8px rgba(0,0,0,0.3)' : 'none',
-                '&:hover': {
-                  backgroundColor: index === currentSlide ? theme.palette.primary.main : 'rgba(255,255,255,0.7)',
-                  transform: 'scale(1.3)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
-                },
-              }}
-            />
-          ))}
-        </Box>
       </Box>
       
       {/* Content Container with proper padding */}

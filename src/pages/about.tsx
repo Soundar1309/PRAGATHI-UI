@@ -42,7 +42,7 @@ export default function AboutPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: `linear-gradient(135deg, rgba(67, 176, 71, 0.9), rgba(46, 125, 50, 0.8)), url('/assets/banner.jpeg') center/cover no-repeat`,
+          background: `linear-gradient(135deg, rgba(67, 176, 71, 0.9), rgba(46, 125, 50, 0.8)), url('/assets/img16.png') center/cover no-repeat`,
           overflow: 'hidden',
         }}
       >
