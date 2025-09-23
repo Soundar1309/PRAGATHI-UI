@@ -6,6 +6,7 @@ export interface Product {
   description: string;
   price: number;
   stock: number;
+  unit: string;
   image?: string;
   category: {
     id: number;
@@ -28,6 +29,7 @@ export interface CreateProductData {
   description: string;
   price: number;
   stock: number;
+  unit: string;
   category_id: number;
   image?: File;
 }

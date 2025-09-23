@@ -27,6 +27,8 @@ export interface Product {
   price: number;
   original_price?: number;
   offer_price?: number;
+  stock?: number;
+  unit?: string;
   category: string;
   rating?: number;
   reviewCount?: number;
@@ -235,7 +237,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             textOverflow: 'ellipsis',
           }}
         >
-          {product.title}
+          {product.title}{product.unit && ` - ${product.unit}`}
         </Typography>
 
         {/* Product Description */}

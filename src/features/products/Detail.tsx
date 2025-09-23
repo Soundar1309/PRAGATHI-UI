@@ -118,7 +118,7 @@ export function ProductDetail() {
           <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[3], p: 3, height: '100%' }}>
             <CardContent>
               <Typography variant="h4" fontWeight={700} gutterBottom color="primary" sx={{ fontFamily: 'Playfair Display, serif' }}>
-                {product.title}
+                {product.title}{product.unit && ` - ${product.unit}`}
               </Typography>
               <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
                 <Rating value={product.rating || 0} precision={0.1} size="medium" readOnly sx={{ color: theme.palette.primary.main }} />

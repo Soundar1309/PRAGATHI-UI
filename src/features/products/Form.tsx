@@ -34,6 +34,7 @@ export function ProductForm({ productId }: ProductFormProps) {
     price: '',
     original_price: '',
     stock: '',
+    unit: '1 kg',
     category_id: '',
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -58,6 +59,7 @@ export function ProductForm({ productId }: ProductFormProps) {
         price: product.price?.toString() || '',
         original_price: product.original_price?.toString() || '',
         stock: product.stock?.toString() || '',
+        unit: product.unit || '1 kg',
         category_id: product.category_id?.toString() || '',
       });
       // Set image preview if product has an image
@@ -134,6 +136,7 @@ export function ProductForm({ productId }: ProductFormProps) {
       formData.append('description', form.description);
       formData.append('price', form.price);
       formData.append('stock', form.stock);
+      formData.append('unit', form.unit);
       formData.append('category_id', form.category_id);
       
       // Add original_price if provided
@@ -307,6 +310,29 @@ export function ProductForm({ productId }: ProductFormProps) {
                 }}
               />
             </Box>
+
+            <TextField
+              label="Unit"
+              name="unit"
+              value={form.unit}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+              variant="outlined"
+              disabled={isLoading}
+              placeholder="e.g., 1 kg, 500 ml, 10 nos"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  fontFamily: 'Inter, sans-serif',
+                },
+              }}
+              inputProps={{
+                maxLength: 50,
+              }}
+              helperText="Product unit (e.g., '1 kg', '500 ml', '10 nos')"
+            />
 
             {/* Original Price Field */}
             <Typography variant="h6" sx={{ mt: 3, mb: 2, fontFamily: 'Inter, sans-serif', color: theme.palette.primary.main }}>
