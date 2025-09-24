@@ -349,7 +349,7 @@ export function ProductForm({ productId }: ProductFormProps) {
               margin="normal"
               variant="outlined"
               disabled={isLoading}
-              placeholder="10000"
+              placeholder="Leave empty to use product price"
               InputProps={{
                 startAdornment: <InputAdornment position="start">₹</InputAdornment>,
               }}
@@ -363,7 +363,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                 min: 0,
                 step: 0.01,
               }}
-              helperText="Default: ₹10000 (leave empty to use default). This will be shown with strikethrough when price is lower."
+              helperText="Leave empty to automatically use the product price. This will be shown with strikethrough when price is lower."
             />
 
             {priceError && (

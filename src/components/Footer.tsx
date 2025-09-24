@@ -218,20 +218,6 @@ const Footer: React.FC = () => {
                                             Benefits Of Pragathi Farms
                                         </Link>
                                         <Link
-                                            href="/testimonials"
-                                            color="inherit"
-                                            underline="hover"
-                                            sx={{
-                                                fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                                                transition: 'color 0.2s ease-in-out',
-                                                '&:hover': {
-                                                    color: theme.palette.primary.main,
-                                                },
-                                            }}
-                                        >
-                                            Testimonials
-                                        </Link>
-                                        <Link
                                             href="/blog"
                                             color="inherit"
                                             underline="hover"

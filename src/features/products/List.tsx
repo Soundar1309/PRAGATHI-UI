@@ -12,79 +12,39 @@ import { FeatureHighlightsRow } from './FeatureHighlightsRow';
 import { useAddToCart } from '../../hooks/useAddToCart';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Carousel data with nature-themed content
+// Carousel data with clean images
 const carouselSlides = [
   {
     id: 1,
     image: '/assets/img8.png',
-    title: 'Rain Harvesting Initiative',
-    subtitle: 'Sustainable water management for our community',
-    ctaText: 'Learn More',
-    ctaLink: '/about',
-    overlayColor: 'rgba(34, 139, 34, 0.7)',
   },
   {
     id: 2,
     image: '/assets/img11.png',
-    title: 'Land Donation Recognition',
-    subtitle: 'Supporting housing for the underprivileged',
-    ctaText: 'Our Mission',
-    ctaLink: '/about',
-    overlayColor: 'rgba(85, 107, 47, 0.7)',
   },
   {
     id: 3,
     image: '/assets/img15.png',
-    title: 'Educational Programs',
-    subtitle: 'Teaching sustainable farming practices',
-    ctaText: 'Join Us',
-    ctaLink: '/contact',
-    overlayColor: 'rgba(46, 139, 87, 0.7)',
   },
   {
     id: 4,
     image: '/assets/img16.png',
-    title: 'Organic Farming Excellence',
-    subtitle: 'Award-winning sustainable agriculture',
-    ctaText: 'Shop Products',
-    ctaLink: '/products',
-    overlayColor: 'rgba(60, 179, 113, 0.7)',
   },
   {
     id: 5,
     image: '/assets/img20.png',
-    title: 'Community Outreach',
-    subtitle: 'Engaging with local communities',
-    ctaText: 'Get Involved',
-    ctaLink: '/contact',
-    overlayColor: 'rgba(34, 139, 34, 0.7)',
   },
   {
     id: 6,
     image: '/assets/img22.png',
-    title: 'Composting Education',
-    subtitle: 'Teaching organic waste management',
-    ctaText: 'Learn More',
-    ctaLink: '/nursery',
-    overlayColor: 'rgba(85, 107, 47, 0.7)',
   },
   {
     id: 7,
     image: '/assets/img25.png',
-    title: 'Field Research',
-    subtitle: 'Advancing agricultural knowledge',
-    ctaText: 'Discover',
-    ctaLink: '/benefits',
-    overlayColor: 'rgba(46, 139, 87, 0.7)',
   },
   {
     id: 8,
     image: '/assets/img30.png',
-    title: 'Natural Farming Practices',
-    subtitle: 'Hands-on learning in organic agriculture',
-    ctaText: 'Explore',
-    ctaLink: '/products',
-    overlayColor: 'rgba(60, 179, 113, 0.7)',
   },
 ];
 
@@ -202,12 +162,16 @@ export function ProductList() {
     description: p.description,
     image: p.image,
     price: p.price,
+    original_price: p.original_price,
+    offer_price: p.offer_price,
     stock: p.stock,
     unit: p.unit,
     category: p.category?.name || p.category || '',
     rating: p.rating,
     reviewCount: p.review_count,
     freeDelivery: p.free_delivery,
+    has_offer: p.has_offer,
+    discount_percentage: p.discount_percentage,
   }));
 
   // Map recently added products
@@ -217,11 +181,15 @@ export function ProductList() {
     description: p.description,
     image: p.image,
     price: p.price,
+    original_price: p.original_price,
+    offer_price: p.offer_price,
     unit: p.unit,
     category: p.category?.name || p.category || '',
     rating: p.rating,
     reviewCount: p.review_count,
     freeDelivery: p.free_delivery,
+    has_offer: p.has_offer,
+    discount_percentage: p.discount_percentage,
   }));
 
   // Reset showAllProducts when category changes
@@ -372,95 +340,7 @@ export function ProductList() {
                 backgroundOrigin: 'center',
                 backgroundClip: 'border-box',
               }}
-            >
-              {/* Overlay */}
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: carouselSlides[currentSlide].overlayColor,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  px: { xs: 2, sm: 4, md: 6 },
-                }}
-              >
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                >
-                  <Typography
-                    variant="h2"
-                    sx={{
-                      color: 'white',
-                      fontWeight: 700,
-                      fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem', lg: '3.5rem' },
-                      mb: { xs: 1, sm: 2 },
-                      textShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                      fontFamily: `'Playfair Display', 'Merriweather', serif`,
-                    }}
-                  >
-                    {carouselSlides[currentSlide].title}
-                  </Typography>
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.6 }}
-                >
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      color: 'white',
-                      fontWeight: 400,
-                      fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
-                      mb: { xs: 2, sm: 3, md: 4 },
-                      textShadow: '0 1px 4px rgba(0,0,0,0.3)',
-                      opacity: 0.9,
-                    }}
-                  >
-                    {carouselSlides[currentSlide].subtitle}
-                  </Typography>
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7, duration: 0.6 }}
-                >
-                  <Button
-                    variant="contained"
-                    size="large"
-                    onClick={() => navigate(carouselSlides[currentSlide].ctaLink)}
-                    sx={{
-                      background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                      color: 'white',
-                      fontWeight: 600,
-                      fontSize: { xs: '1rem', sm: '1.125rem', md: '1.25rem' },
-                      px: { xs: 3, sm: 4, md: 5 },
-                      py: { xs: 2, sm: 2, md: 3 },
-                      borderRadius: '50px',
-                      textTransform: 'none',
-                      boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
-                      '&:hover': {
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 12px 32px rgba(0,0,0,0.3)',
-                      },
-                      transition: 'all 0.3s ease-in-out',
-                    }}
-                  >
-                    {carouselSlides[currentSlide].ctaText}
-                  </Button>
-                </motion.div>
-              </Box>
-            </Box>
+            />
           </motion.div>
         </AnimatePresence>
 

@@ -58,10 +58,14 @@ export function FilteredProductList() {
         description: p.description,
         image: p.image,
         price: p.price,
+        original_price: p.original_price,
+        offer_price: p.offer_price,
         category: p.category?.name || p.category || '',
         rating: p.rating,
         reviewCount: p.review_count,
         freeDelivery: p.free_delivery,
+        has_offer: p.has_offer,
+        discount_percentage: p.discount_percentage,
     }));
 
     // Reset showAllProducts when category changes

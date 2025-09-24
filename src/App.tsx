@@ -27,7 +27,8 @@ import GalleryPage from './pages/gallery';
 import ContactPage from './pages/contact';
 import BenefitsPage from './pages/benefits';
 import TestimonialsPage from './pages/testimonials';
-import BlogPage from './pages/blog';
+import BlogPage from './pages/BlogPage';
+import BlogDetailPage from './pages/BlogDetailPage';
 import JourneyPage from './pages/journey';
 import TermsPage from './pages/terms';
 import DeliveryPage from './pages/delivery';
@@ -110,6 +111,7 @@ export default function App() {
                 <Route path="/benefits" element={<BenefitsPage />} />
                 <Route path="/testimonials" element={<TestimonialsPage />} />
                 <Route path="/blog" element={<BlogPage />} />
+                <Route path="/blog/:slug" element={<BlogDetailPage />} />
                 <Route path="/journey" element={<JourneyPage />} />
                 <Route path="/terms" element={<TermsPage />} />
                 <Route path="/delivery" element={<DeliveryPage />} />

@@ -68,9 +68,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   };
 
   // Determine which price to display
-  const displayPrice = product.price; // Always show the price field
-  const originalPrice = product.original_price || 10000; // Use original_price or default
-  const hasOffer = originalPrice > displayPrice; // Show offer if original price is higher than current price
+  const displayPrice = Number(product.price); // Always show the price field
+  const originalPrice = product.original_price ? Number(product.original_price) : null; // Get the actual original_price (could be null/undefined)
+  const hasOffer = originalPrice && originalPrice > displayPrice; // Show offer if original price exists and is higher than current price
+  const showOriginalPrice = originalPrice && originalPrice !== displayPrice; // Only show original price if it exists and is different from current price
 
   return (
     <Card
@@ -333,7 +334,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           flexShrink: 0,
           minWidth: 0, // Allow price to shrink if needed
         }}>
-          {hasOffer ? (
+          {showOriginalPrice ? (
             <>
               <Typography
                 variant="h6"

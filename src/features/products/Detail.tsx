@@ -41,9 +41,10 @@ export function ProductDetail() {
   };
 
   // Determine pricing display
-  const displayPrice = product.price; // Always show the price field
-  const originalPrice = product.original_price || 10000; // Use original_price or default
-  const hasOffer = originalPrice > displayPrice; // Show offer if original price is higher than current price
+  const displayPrice = Number(product.price); // Always show the price field
+  const originalPrice = product.original_price ? Number(product.original_price) : null; // Get the actual original_price (could be null/undefined)
+  const hasOffer = originalPrice && originalPrice > displayPrice; // Show offer if original price exists and is higher than current price
+  const showOriginalPrice = originalPrice && originalPrice !== displayPrice; // Only show original price if it exists and is different from current price
 
   return (
     <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 1, sm: 2, md: 4 }, py: 4 }}>
@@ -132,7 +133,7 @@ export function ProductDetail() {
               
               {/* Pricing Display */}
               <Box sx={{ mb: 2 }}>
-                {hasOffer ? (
+                {showOriginalPrice ? (
                   <Stack direction="row" alignItems="center" spacing={2}>
                     <Typography 
                       variant="h4" 
