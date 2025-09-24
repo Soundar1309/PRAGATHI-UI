@@ -54,7 +54,7 @@ const Footer: React.FC = () => {
                             textAlign: { xs: 'center', md: 'left' },
                         }}>
                             <img
-                                src="/logo.jpg"
+                                src="/logo.webp"
                                 alt="Pragathi Natural Farms"
                                 style={{
                                     height: 'clamp(48px, 6vw, 58px)',

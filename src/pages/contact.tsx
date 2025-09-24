@@ -84,7 +84,7 @@ export default function ContactPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: `linear-gradient(135deg, rgba(67, 176, 71, 0.9), rgba(46, 125, 50, 0.8)), url('/assets/img20.png') center/cover no-repeat`,
+          background: `linear-gradient(135deg, rgba(67, 176, 71, 0.9), rgba(46, 125, 50, 0.8)), url('/assets/img20.webp') center/cover no-repeat`,
           overflow: 'hidden',
         }}
       >

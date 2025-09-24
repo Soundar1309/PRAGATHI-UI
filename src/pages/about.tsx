@@ -42,7 +42,7 @@ export default function AboutPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: `linear-gradient(135deg, rgba(67, 176, 71, 0.9), rgba(46, 125, 50, 0.8)), url('/assets/img16.png') center/cover no-repeat`,
+          background: `linear-gradient(135deg, rgba(67, 176, 71, 0.9), rgba(46, 125, 50, 0.8)), url('/assets/img16.webp') center/cover no-repeat`,
           overflow: 'hidden',
         }}
       >
@@ -227,7 +227,7 @@ export default function AboutPage() {
               >
                 <Box sx={{ position: 'relative' }}>
                   <motion.img
-                    src="/assets/img25.png"
+                    src="/assets/img25.webp"
                     alt="Farm Philosophy"
                     style={{
                       ...imageStyle,
@@ -379,7 +379,7 @@ export default function AboutPage() {
             >
               <Box sx={{ position: 'relative' }}>
                 <motion.img
-                  src="/assets/img21.png"
+                  src="/assets/img21.webp"
                   alt="Organic Practices"
                   style={{
                     ...imageStyle,
@@ -462,7 +462,7 @@ export default function AboutPage() {
               >
                 <Box sx={{ position: 'relative' }}>
                   <motion.img
-                    src="/assets/img33.png"
+                    src="/assets/img33.webp"
                     alt="Farm Location"
                     style={{
                       ...imageStyle,
@@ -594,7 +594,7 @@ export default function AboutPage() {
             >
               <Box sx={{ position: 'relative' }}>
                 <motion.img
-                  src="/assets/img45.png"
+                  src="/assets/img45.webp"
                   alt="Founders Vision"
                   style={{
                     ...imageStyle,
@@ -677,7 +677,7 @@ export default function AboutPage() {
               >
                 <Box sx={{ position: 'relative' }}>
                   <motion.img
-                    src="/assets/img51.png"
+                    src="/assets/img51.webp"
                     alt="Community and Education"
                     style={{
                       ...imageStyle,
@@ -826,12 +826,12 @@ export default function AboutPage() {
             
             <Grid container spacing={4} justifyContent="center">
               {[
-                { src: "/assets/img1.png", title: "Early morning at the farm", desc: "The golden hour brings life to our fields" },
-                { src: "/assets/img8.png", title: "Diverse crops thriving together", desc: "Companion planting in perfect harmony" },
-                { src: "/assets/img17.png", title: "Natural composting in action", desc: "Turning waste into valuable nutrients" },
-                { src: "/assets/img23.png", title: "Children learning about nature", desc: "Education through hands-on experience" },
-                { src: "/assets/img34.png", title: "Harvest time joy", desc: "Celebrating the fruits of our labor" },
-                { src: "/assets/img69.png", title: "A haven for birds and butterflies", desc: "Biodiversity at its finest" },
+                { src: "/assets/img1.webp", title: "Early morning at the farm", desc: "The golden hour brings life to our fields" },
+                { src: "/assets/img8.webp", title: "Diverse crops thriving together", desc: "Companion planting in perfect harmony" },
+                { src: "/assets/img17.webp", title: "Natural composting in action", desc: "Turning waste into valuable nutrients" },
+                { src: "/assets/img23.webp", title: "Children learning about nature", desc: "Education through hands-on experience" },
+                { src: "/assets/img34.webp", title: "Harvest time joy", desc: "Celebrating the fruits of our labor" },
+                { src: "/assets/img69.webp", title: "A haven for birds and butterflies", desc: "Biodiversity at its finest" },
               ].map((item, idx) => (
                 <Grid size={{ xs: 12, sm: 6, md: 4 }} key={item.src}>
                   <motion.div

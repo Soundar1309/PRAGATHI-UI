@@ -65,7 +65,7 @@ body {
   min-height: 100vh;
   max-width: 100vw; /* Prevent body from exceeding viewport */
   background-color: var(--brand-beige);
-  background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+  background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.webp');
   background-blend-mode: lighten;
   color: var(--brand-dark);
   /* Prevent horizontal overflow */
@@ -380,7 +380,7 @@ input:focus, textarea:focus, select:focus {
   
   body {
     background-color: #222;
-    background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+    background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.webp');
     color: #f5f0e1;
   }
   

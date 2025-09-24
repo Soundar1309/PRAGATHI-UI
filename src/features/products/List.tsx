@@ -16,23 +16,23 @@ import { motion, AnimatePresence } from 'framer-motion';
 const carouselSlides = [
   {
     id: 1,
-    image: '/assets/img52.png',
+    image: '/assets/img52.webp',
   },
   {
     id: 2,
-    image: '/assets/img16.png',
+    image: '/assets/img16.webp',
   },
   {
     id: 3,
-    image: '/assets/img28.png',
+    image: '/assets/img28.webp',
   },
   {
     id: 4,
-    image: '/assets/img6.png',
+    image: '/assets/img6.webp',
   },
   {
     id: 5,
-    image: '/assets/img22.png',
+    image: '/assets/img22.webp',
   },
 ];
 

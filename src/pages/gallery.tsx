@@ -23,9 +23,9 @@ const imageVariant = {
 const getImagePath = (imgNum: number): string => {
   // Handle special cases for misnamed images
   if (imgNum === 60) {
-    return '/assets/imag60.png'; // Fix typo: imag60 instead of img60
+    return '/assets/imag60.webp'; // Fix typo: imag60 instead of img60
   }
-  return `/assets/img${imgNum}.png`;
+  return `/assets/img${imgNum}.webp`;
 };
 
 export default function GalleryPage() {

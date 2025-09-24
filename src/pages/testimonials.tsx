@@ -60,28 +60,28 @@ export default function TestimonialsPage() {
           setReviews([
             {
               author_name: "Amit Sharma",
-              profile_photo_url: "/assets/avatar1.png",
+              profile_photo_url: "/assets/avatar1.webp",
               rating: 5,
               relative_time_description: "2 weeks ago",
               text: "The freshest, healthiest produce I've ever tasted. Pragathi Farms has changed the way my family eats!"
             },
             {
               author_name: "Priya Menon",
-              profile_photo_url: "/assets/avatar2.png",
+              profile_photo_url: "/assets/avatar2.webp",
               rating: 4,
               relative_time_description: "1 month ago",
               text: "I love knowing my food is grown sustainably. The team is so friendly and helpful."
             },
             {
               author_name: "Rahul Verma",
-              profile_photo_url: "/assets/avatar3.png",
+              profile_photo_url: "/assets/avatar3.webp",
               rating: 5,
               relative_time_description: "3 weeks ago",
               text: "Fast delivery, great quality, and I feel good supporting local farmers."
             },
             {
               author_name: "Sahana Rao",
-              profile_photo_url: "/assets/avatar4.png",
+              profile_photo_url: "/assets/avatar4.webp",
               rating: 5,
               relative_time_description: "1 week ago",
               text: "The farm tours are amazing! My kids learned so much about nature and healthy eating."
@@ -98,28 +98,28 @@ export default function TestimonialsPage() {
         setReviews([
           {
             author_name: "Amit Sharma",
-            profile_photo_url: "/assets/avatar1.png",
+            profile_photo_url: "/assets/avatar1.webp",
             rating: 5,
             relative_time_description: "2 weeks ago",
             text: "The freshest, healthiest produce I've ever tasted. Pragathi Farms has changed the way my family eats!"
           },
           {
             author_name: "Priya Menon",
-            profile_photo_url: "/assets/avatar2.png",
+            profile_photo_url: "/assets/avatar2.webp",
             rating: 4,
             relative_time_description: "1 month ago",
             text: "I love knowing my food is grown sustainably. The team is so friendly and helpful."
           },
           {
             author_name: "Rahul Verma",
-            profile_photo_url: "/assets/avatar3.png",
+            profile_photo_url: "/assets/avatar3.webp",
             rating: 5,
             relative_time_description: "3 weeks ago",
             text: "Fast delivery, great quality, and I feel good supporting local farmers."
           },
           {
             author_name: "Sahana Rao",
-            profile_photo_url: "/assets/avatar4.png",
+            profile_photo_url: "/assets/avatar4.webp",
             rating: 5,
             relative_time_description: "1 week ago",
             text: "The farm tours are amazing! My kids learned so much about nature and healthy eating."
@@ -270,7 +270,7 @@ export default function TestimonialsPage() {
                   >
                     <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
                       <Avatar 
-                        src={review.profile_photo_url || "/assets/default-avatar.png"} 
+                        src={review.profile_photo_url || "/assets/default-avatar.webp"} 
                         alt={review.author_name} 
                         sx={{ 
                           width: { xs: 60, md: 70 }, 
