@@ -16,7 +16,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const carouselSlides = [
   {
     id: 1,
-    image: '/assets/stalin.jpg',
+    image: '/assets/img52.png',
   },
   {
     id: 2,
