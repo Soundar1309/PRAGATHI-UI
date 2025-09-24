@@ -446,7 +446,7 @@ const Header: React.FC = () => {
               }}
             >
               <img
-                src="/logo.webp"
+                src="/logo.jpg"
                 alt="Pragathi Natural Farms"
                 style={{
                   height: 'clamp(24px, 3.5vw, 36px)',
