@@ -12,39 +12,27 @@ import { FeatureHighlightsRow } from './FeatureHighlightsRow';
 import { useAddToCart } from '../../hooks/useAddToCart';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Carousel data with clean images
+// Clean carousel data with just images
 const carouselSlides = [
   {
     id: 1,
-    image: '/assets/img8.png',
+    image: '/assets/stalin.jpg',
   },
   {
     id: 2,
-    image: '/assets/img11.png',
-  },
-  {
-    id: 3,
-    image: '/assets/img15.png',
-  },
-  {
-    id: 4,
     image: '/assets/img16.png',
   },
   {
+    id: 3,
+    image: '/assets/img28.png',
+  },
+  {
+    id: 4,
+    image: '/assets/img6.png',
+  },
+  {
     id: 5,
-    image: '/assets/img20.png',
-  },
-  {
-    id: 6,
     image: '/assets/img22.png',
-  },
-  {
-    id: 7,
-    image: '/assets/img25.png',
-  },
-  {
-    id: 8,
-    image: '/assets/img30.png',
   },
 ];
 
@@ -220,14 +208,16 @@ export function ProductList() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
-    }, 4000); // 4 seconds per slide
+    }, 5000); // 5 seconds per slide
 
     return () => clearInterval(interval);
   }, []);
 
-  // Pure auto-play - no manual controls
+  // Navigation function for dots
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
 
-  // Note: Carousel now uses pure auto-play only - no manual controls
 
   // Responsive product display counts
   const getInitialProductCount = () => {
@@ -306,16 +296,17 @@ export function ProductList() {
         // Add top margin to ensure content is below fixed header
       }}
     >
-      {/* Modern Carousel Banner */}
+      {/* Clean Auto-Sliding Carousel Banner */}
       <Box
         sx={{
           width: '100vw',
           maxWidth: '100vw',
-          height: { xs: 200, sm: 300, md: 400, lg: 500, xl: 600 },
+          height: { xs: 250, sm: 350, md: 450, lg: 550, xl: 650 },
           position: 'relative',
           overflow: 'hidden',
           mb: { xs: 3, sm: 4, md: 5 },
-          boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.15), 0 8px 32px rgba(0,0,0,0.1)',
+          borderRadius: { xs: 0, sm: 2, md: 3 },
           // Remove curved edges and make full width
           marginLeft: { xs: '-16px', sm: '-24px', md: '-32px' },
           marginRight: { xs: '-16px', sm: '-24px', md: '-32px' },
@@ -331,17 +322,16 @@ export function ProductList() {
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.8, ease: 'easeInOut' }}
+            transition={{ 
+              duration: 1.0, 
+              ease: [0.25, 0.46, 0.45, 0.94]
+            }}
             style={{
               position: 'absolute',
               top: 0,
               left: 0,
               width: '100%',
               height: '100%',
-              // Ensure proper centering
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
             }}
           >
             <Box
@@ -349,21 +339,75 @@ export function ProductList() {
                 width: '100%',
                 height: '100%',
                 backgroundImage: `url(${carouselSlides[currentSlide].image})`,
-                backgroundSize: 'cover',
+                backgroundSize: 'contain',
                 backgroundPosition: 'center center',
                 backgroundRepeat: 'no-repeat',
                 position: 'relative',
-                // Ensure image is properly centered and covers the full area
                 overflow: 'hidden',
-                // Force image to be perfectly centered
-                backgroundOrigin: 'center',
-                backgroundClip: 'border-box',
+                backgroundColor: '#f5f5f5', // Add background color for any empty space
               }}
             />
           </motion.div>
         </AnimatePresence>
 
+        {/* Dots Indicator */}
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: { xs: 16, sm: 20, md: 24 },
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 3,
+            display: 'flex',
+            gap: 1,
+          }}
+        >
+          {carouselSlides.map((_, index) => (
+            <Box
+              key={index}
+              onClick={() => goToSlide(index)}
+              sx={{
+                width: { xs: 8, sm: 10, md: 12 },
+                height: { xs: 8, sm: 10, md: 12 },
+                borderRadius: '50%',
+                backgroundColor: index === currentSlide 
+                  ? 'rgba(255,255,255,0.9)' 
+                  : 'rgba(255,255,255,0.4)',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease-in-out',
+                '&:hover': {
+                  backgroundColor: 'rgba(255,255,255,0.8)',
+                  transform: 'scale(1.2)',
+                },
+                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+              }}
+            />
+          ))}
+        </Box>
 
+        {/* Progress Bar */}
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 4,
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            zIndex: 3,
+          }}
+        >
+          <motion.div
+            key={currentSlide}
+            initial={{ width: '0%' }}
+            animate={{ width: '100%' }}
+            transition={{ duration: 5, ease: 'linear' }}
+            style={{
+              height: '100%',
+              backgroundColor: 'rgba(255,255,255,0.8)',
+            }}
+          />
+        </Box>
       </Box>
       
       {/* Content Container with proper padding */}
