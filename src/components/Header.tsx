@@ -473,9 +473,8 @@ const Header: React.FC = () => {
                 sx={{
                   display: { xs: 'inline', sm: 'none' },
                   whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  maxWidth: '100%',
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  fontWeight: 600,
                 }}
               >
                 Pragathi Natural Farm

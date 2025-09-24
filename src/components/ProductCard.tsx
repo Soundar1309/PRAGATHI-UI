@@ -213,9 +213,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         // Ensure content doesn't overflow and uses available space
         minHeight: 0,
         overflow: 'hidden',
-        // Fixed height for content area to ensure consistency
-        height: { xs: 120, sm: 130, md: 140 },
-        maxHeight: { xs: 120, sm: 130, md: 140 },
+        // Reduced height since description is removed
+        height: { xs: 100, sm: 110, md: 120 },
+        maxHeight: { xs: 100, sm: 110, md: 120 },
       }}>
         {/* Product Title */}
         <Typography
@@ -241,30 +241,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           {product.title}{product.unit && ` - ${product.unit}`}
         </Typography>
 
-        {/* Product Description */}
-        {product.description && (
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              fontSize: { xs: '0.8rem', sm: '0.875rem' },
-              lineHeight: 1.4,
-              mb: { xs: 1, sm: 1 },
-              // Allow text to wrap naturally
-              wordBreak: 'break-word',
-              overflowWrap: 'break-word',
-              hyphens: 'auto',
-              // Limit to 2 lines with ellipsis
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {product.description}
-          </Typography>
-        )}
 
         {/* Rating Section */}
         <Stack
