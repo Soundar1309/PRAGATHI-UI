@@ -51,8 +51,18 @@ export function FilteredProductList() {
     const isLoading = selectedCategory.id ? isLoadingCategory : isLoadingAll;
     const isError = selectedCategory.id ? isErrorCategory : isErrorAll;
 
+    // Filter out nursery categories from farm store
+    const nurseryCategories = ['coconut tree', 'vermi composter', 'medicinal plants'];
+    const filteredProducts = (products || []).filter((product: any) => {
+        const categoryName = product.category?.name || product.category || '';
+        const categoryString = typeof categoryName === 'string' ? categoryName : String(categoryName);
+        return !nurseryCategories.some(nurseryCategory => 
+            categoryString.toLowerCase().includes(nurseryCategory.toLowerCase())
+        );
+    });
+
     // Map backend data to ProductCard props (if needed)
-    const mappedProducts: Product[] = (products || []).map((p: any) => ({
+    const mappedProducts: Product[] = filteredProducts.map((p: any) => ({
         id: p.id,
         title: p.title,
         description: p.description,

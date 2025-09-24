@@ -155,8 +155,18 @@ export function ProductList() {
   // Check if we're in a network error state
   const hasNetworkError = isErrorAll || isErrorCategory;
 
+  // Filter out nursery categories from farm store
+  const nurseryCategories = ['coconut tree', 'vermi composter', 'medicinal plants'];
+  const filteredProducts = (products || []).filter((product: any) => {
+    const categoryName = product.category?.name || product.category || '';
+    const categoryString = typeof categoryName === 'string' ? categoryName : String(categoryName);
+    return !nurseryCategories.some(nurseryCategory => 
+      categoryString.toLowerCase().includes(nurseryCategory.toLowerCase())
+    );
+  });
+
   // Map backend data to ProductCard props (if needed)
-  const mappedProducts: Product[] = (products || []).map((p: any) => ({
+  const mappedProducts: Product[] = filteredProducts.map((p: any) => ({
     id: p.id,
     title: p.title,
     description: p.description,
@@ -174,8 +184,17 @@ export function ProductList() {
     discount_percentage: p.discount_percentage,
   }));
 
+  // Filter recently added products to exclude nursery categories
+  const filteredRecentlyAddedProducts = (recentlyAddedProducts || []).filter((product: any) => {
+    const categoryName = product.category?.name || product.category || '';
+    const categoryString = typeof categoryName === 'string' ? categoryName : String(categoryName);
+    return !nurseryCategories.some(nurseryCategory => 
+      categoryString.toLowerCase().includes(nurseryCategory.toLowerCase())
+    );
+  });
+
   // Map recently added products
-  const mappedRecentlyAddedProducts: Product[] = (recentlyAddedProducts || []).map((p: any) => ({
+  const mappedRecentlyAddedProducts: Product[] = filteredRecentlyAddedProducts.map((p: any) => ({
     id: p.id,
     title: p.title,
     description: p.description,

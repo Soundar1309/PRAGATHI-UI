@@ -5,9 +5,6 @@ import {
   Typography,
   Tabs,
   Tab,
-  Card,
-  CardContent,
-  CardMedia,
   useTheme,
   useMediaQuery,
   Chip,
@@ -24,6 +21,10 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
+  Grid,
+  CircularProgress,
+  Alert,
+  Fade,
 } from '@mui/material';
 import {
   LocalFlorist,
@@ -31,10 +32,6 @@ import {
   Verified,
   CheckCircle,
   Star,
-  WaterDrop,
-  WbSunny,
-  Spa,
-  Agriculture,
   Park,
   Download,
   Visibility,
@@ -42,6 +39,10 @@ import {
   PictureAsPdf,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { useGetProductsQuery } from '../features/products/api';
+import { useAddToCart } from '../hooks/useAddToCart';
+import ProductCard, { type Product } from '../components/ProductCard';
 
 // Tab panel component for smooth transitions
 interface TabPanelProps {
@@ -80,42 +81,64 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-// Image hover component with animation
-const AnimatedImage = ({ src, alt, sx, ...props }: any) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <motion.div
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      animate={{
-        scale: isHovered ? 1.05 : 1,
-        boxShadow: isHovered 
-          ? '0 8px 32px rgba(67, 176, 71, 0.2)' 
-          : '0 4px 16px rgba(67, 176, 71, 0.1)',
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-    >
-      <CardMedia
-        component="img"
-        image={src}
-        alt={alt}
-        sx={{
-          borderRadius: 2,
-          transition: 'all 0.3s ease-in-out',
-          ...sx,
-        }}
-        {...props}
-      />
-    </motion.div>
-  );
-};
 
 const NurseryPage: React.FC = () => {
   const [value, setValue] = useState(0);
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
+  const [showAllProducts, setShowAllProducts] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const navigate = useNavigate();
+  const { handleAddToCart } = useAddToCart();
+
+  // Fetch all products and categories
+  const { data: allProducts, isLoading: isLoadingAll, isError: isErrorAll } = useGetProductsQuery();
+
+  // Filter products for nursery categories
+  const nurseryCategories = ['coconut tree', 'vermi composter', 'medicinal plants'];
+  const nurseryProducts = (allProducts || []).filter((product: any) => {
+    const categoryName = product.category?.name || product.category || '';
+    const categoryString = typeof categoryName === 'string' ? categoryName : String(categoryName);
+    return nurseryCategories.some(category => 
+      categoryString.toLowerCase().includes(category.toLowerCase())
+    );
+  });
+
+  // Group products by category
+  const vermiProducts = nurseryProducts.filter((product: any) => {
+    const categoryName = product.category?.name || product.category || '';
+    const categoryString = typeof categoryName === 'string' ? categoryName : String(categoryName);
+    return categoryString.toLowerCase().includes('vermi');
+  });
+  
+  const coconutProducts = nurseryProducts.filter((product: any) => {
+    const categoryName = product.category?.name || product.category || '';
+    const categoryString = typeof categoryName === 'string' ? categoryName : String(categoryName);
+    return categoryString.toLowerCase().includes('coconut');
+  });
+  
+  const medicinalProducts = nurseryProducts.filter((product: any) => {
+    const categoryName = product.category?.name || product.category || '';
+    const categoryString = typeof categoryName === 'string' ? categoryName : String(categoryName);
+    return categoryString.toLowerCase().includes('medicinal');
+  });
+
+  // Map backend data to ProductCard props
+  const mapProduct = (p: any): Product => ({
+    id: p.id,
+    title: p.title,
+    description: p.description,
+    image: p.image,
+    price: p.price,
+    original_price: p.original_price,
+    offer_price: p.offer_price,
+    category: p.category?.name || p.category || '',
+    rating: p.rating,
+    reviewCount: p.review_count,
+    freeDelivery: p.free_delivery,
+    has_offer: p.has_offer,
+    discount_percentage: p.discount_percentage,
+  });
 
   useEffect(() => {
     document.title = 'Nursery - Pragathi Natural Farm';
@@ -124,13 +147,13 @@ const NurseryPage: React.FC = () => {
     const handleHashChange = () => {
       const hash = window.location.hash;
       switch (hash) {
-        case '#coconut':
+        case '#vermi':
           setValue(0);
           break;
-        case '#medicinal':
+        case '#coconut':
           setValue(1);
           break;
-        case '#vermi':
+        case '#medicinal':
           setValue(2);
           break;
         case '#licence':
@@ -154,202 +177,167 @@ const NurseryPage: React.FC = () => {
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    setShowAllProducts(false); // Reset show all when switching tabs
     
     // Update URL hash
-    const hashMap = ['#coconut', '#medicinal', '#vermi', '#licence'];
+    const hashMap = ['#vermi', '#coconut', '#medicinal', '#licence'];
     window.history.replaceState(null, '', `/nursery${hashMap[newValue]}`);
   };
 
+  const handleAddToCartClick = async (product: Product) => {
+    await handleAddToCart({
+      productId: product.id,
+      quantity: 1,
+      productTitle: product.title,
+    });
+  };
+
+  const handleProductClick = (productId: number) => {
+    navigate(`/products/${productId}`);
+  };
+
+  const handleToggleProducts = () => {
+    setShowAllProducts(!showAllProducts);
+  };
+
+  // Product display component
+  const ProductDisplay = ({ products, title, description, icon }: { 
+    products: any[], 
+    title: string, 
+    description: string, 
+    icon: React.ReactNode 
+  }) => {
+    const mappedProducts = products.map(mapProduct);
+    const displayedProducts = showAllProducts ? mappedProducts : mappedProducts.slice(0, 8);
+    const hasMoreProducts = mappedProducts.length > 8;
+
+    if (isLoadingAll) {
+      return (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+          <CircularProgress size={60} />
+        </Box>
+      );
+    }
+
+    if (isErrorAll) {
+      return (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          Failed to load products. Please try again later.
+        </Alert>
+      );
+    }
+
+    return (
+      <Box>
+        <Box textAlign="center" mb={4}>
+          <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+            {icon}
+            <Typography variant="h4" component="h2" color="primary" sx={{ ml: 2 }}>
+              {title}
+            </Typography>
+          </Box>
+          <Typography variant="body1" paragraph sx={{ maxWidth: 800, mx: 'auto' }}>
+            {description}
+          </Typography>
+        </Box>
+
+        {mappedProducts.length === 0 ? (
+          <Alert severity="info" sx={{ mt: 2 }}>
+            No products available in this category yet.
+          </Alert>
+        ) : (
+          <>
+            <Grid 
+              container 
+              spacing={{ xs: 2, sm: 3, md: 4 }} 
+              sx={{ 
+                mt: 2,
+                px: { xs: 2, sm: 0 },
+                justifyContent: { xs: 'center', sm: 'flex-start' },
+              }}
+            >
+              {displayedProducts.map((product, index) => (
+                <Grid 
+                  key={product.id}
+                  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'stretch',
+                  }}
+                >
+                  <Fade in timeout={300 + (index * 100)}>
+                    <Box 
+                      onClick={() => handleProductClick(product.id)} 
+                      sx={{ 
+                        cursor: 'pointer', 
+                        height: '100%',
+                        width: '100%',
+                        maxWidth: { xs: '100%', sm: 350, md: 320 },
+                        transition: 'transform 0.2s ease-in-out',
+                        '&:hover': {
+                          transform: { xs: 'none', sm: 'scale(1.02)' },
+                        },
+                      }}
+                    >
+                      <ProductCard
+                        product={product}
+                        onAddToCart={() => handleAddToCartClick(product)}
+                      />
+                    </Box>
+                  </Fade>
+                </Grid>
+              ))}
+            </Grid>
+
+            {hasMoreProducts && (
+              <Box textAlign="center" mt={4}>
+                <Button
+                  variant="outlined"
+                  onClick={handleToggleProducts}
+                  size="large"
+                  sx={{ minWidth: 200 }}
+                >
+                  {showAllProducts ? 'Show Less' : `Show All ${mappedProducts.length} Products`}
+                </Button>
+              </Box>
+            )}
+          </>
+        )}
+      </Box>
+    );
+  };
+
+  // Vermi Composter content
+  const VermiComposterContent = () => (
+    <ProductDisplay
+      products={vermiProducts}
+      title="Vermi Composter Products"
+      description="Discover our range of vermicomposting products and systems for sustainable organic waste management."
+      icon={<BugReport sx={{ fontSize: 40, color: 'primary.main' }} />}
+    />
+  );
+
   // Coconut Tree content
   const CoconutTreeContent = () => (
-    <Box>
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} alignItems="center">
-        <Box sx={{ flex: 1 }}>
-          <AnimatedImage
-            src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-            alt="Coconut Trees at Pragathi Natural Farm"
-            sx={{ height: 400, objectFit: 'cover' }}
-          />
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="h4" gutterBottom color="primary">
-            Premium Coconut Trees
-          </Typography>
-          <Typography variant="body1" paragraph>
-            Our coconut trees are grown using traditional organic farming methods, ensuring 
-            the highest quality and nutritional value. Each tree is carefully nurtured to 
-            produce the finest coconuts for your family.
-          </Typography>
-          <List>
-            <ListItem>
-              <ListItemIcon>
-                <CheckCircle color="success" />
-              </ListItemIcon>
-              <ListItemText primary="100% Organic cultivation methods" />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <CheckCircle color="success" />
-              </ListItemIcon>
-              <ListItemText primary="Premium quality coconut varieties" />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <CheckCircle color="success" />
-              </ListItemIcon>
-              <ListItemText primary="Sustainable farming practices" />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <CheckCircle color="success" />
-              </ListItemIcon>
-              <ListItemText primary="Rich in nutrients and minerals" />
-            </ListItem>
-          </List>
-          <Box sx={{ mt: 2 }}>
-            <Chip icon={<WaterDrop />} label="Regular Watering" color="primary" sx={{ mr: 1, mb: 1 }} />
-            <Chip icon={<WbSunny />} label="Full Sun Exposure" color="primary" sx={{ mr: 1, mb: 1 }} />
-            <Chip icon={<Park />} label="Organic Certified" color="success" sx={{ mr: 1, mb: 1 }} />
-          </Box>
-        </Box>
-      </Stack>
-    </Box>
+    <ProductDisplay
+      products={coconutProducts}
+      title="Coconut Tree Products"
+      description="Explore our premium coconut tree varieties and related products, grown using traditional organic farming methods."
+      icon={<Park sx={{ fontSize: 40, color: 'primary.main' }} />}
+    />
   );
 
   // Medical Plants content
   const MedicalPlantsContent = () => (
-    <Box>
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h4" gutterBottom color="primary">
-          Medicinal Plants Collection
-        </Typography>
-        <Typography variant="body1" paragraph sx={{ maxWidth: 800, mx: 'auto' }}>
-          Discover our extensive collection of medicinal plants, each carefully selected for their 
-          therapeutic properties and grown using natural farming techniques.
-        </Typography>
-      </Box>
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
-        <Box sx={{ flex: 1 }}>
-          <Card sx={{ height: '100%', transition: 'all 0.3s ease-in-out' }}>
-            <AnimatedImage
-              src="https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-              alt="Tulsi (Holy Basil)"
-              sx={{ height: 200, objectFit: 'cover' }}
-            />
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Tulsi (Holy Basil)
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Known for its immune-boosting properties and stress relief benefits. 
-                Perfect for daily wellness routines.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <Card sx={{ height: '100%', transition: 'all 0.3s ease-in-out' }}>
-            <AnimatedImage
-              src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-              alt="Aloe Vera"
-              sx={{ height: 200, objectFit: 'cover' }}
-            />
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Aloe Vera
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Excellent for skin care and digestive health. 
-                Easy to grow and maintain in home gardens.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <Card sx={{ height: '100%', transition: 'all 0.3s ease-in-out' }}>
-            <AnimatedImage
-              src="https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-              alt="Neem Tree"
-              sx={{ height: 200, objectFit: 'cover' }}
-            />
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Neem Tree
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Natural pesticide and medicinal properties. 
-                Essential for organic pest control and health benefits.
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-      </Stack>
-    </Box>
+    <ProductDisplay
+      products={medicinalProducts}
+      title="Medicinal Plants Collection"
+      description="Discover our extensive collection of medicinal plants, each carefully selected for their therapeutic properties and grown using natural farming techniques."
+      icon={<LocalFlorist sx={{ fontSize: 40, color: 'primary.main' }} />}
+    />
   );
 
-  // Vermi Composter content
-  const VermiComposterContent = () => (
-    <Box>
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} alignItems="center">
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="h4" gutterBottom color="primary">
-            Vermicomposting System
-          </Typography>
-          <Typography variant="body1" paragraph>
-            Our advanced vermicomposting system efficiently converts organic waste into 
-            nutrient-rich compost, promoting sustainable agriculture and soil health.
-          </Typography>
-          <List>
-            <ListItem>
-              <ListItemIcon>
-                <BugReport color="primary" />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Red Wiggler Worms" 
-                secondary="Efficient decomposers for organic waste"
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Spa color="success" />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Nutrient-Rich Compost" 
-                secondary="High-quality organic fertilizer"
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Agriculture color="primary" />
-              </ListItemIcon>
-              <ListItemText 
-                primary="Sustainable Process" 
-                secondary="Zero waste, eco-friendly solution"
-              />
-            </ListItem>
-          </List>
-          <Box sx={{ mt: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              Benefits of Vermicomposting:
-            </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              <Chip icon={<CheckCircle />} label="Improves Soil Structure" color="success" />
-              <Chip icon={<CheckCircle />} label="Reduces Waste" color="success" />
-              <Chip icon={<CheckCircle />} label="Natural Fertilizer" color="success" />
-              <Chip icon={<CheckCircle />} label="Cost Effective" color="success" />
-            </Stack>
-          </Box>
-        </Box>
-        <Box sx={{ flex: 1 }}>
-          <AnimatedImage
-            src="https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
-            alt="Vermicomposting Unit"
-            sx={{ height: 400, objectFit: 'cover' }}
-          />
-        </Box>
-      </Stack>
-    </Box>
-  );
 
   // Licence content
   const LicenceContent = () => (
@@ -534,6 +522,12 @@ const NurseryPage: React.FC = () => {
             }}
           >
             <Tab 
+              label="Vermi Composter" 
+              icon={<BugReport />} 
+              iconPosition="start"
+              sx={{ minHeight: 64 }}
+            />
+            <Tab 
               label="Coconut Tree" 
               icon={<Park />} 
               iconPosition="start"
@@ -542,12 +536,6 @@ const NurseryPage: React.FC = () => {
             <Tab 
               label="Medical Plants" 
               icon={<LocalFlorist />} 
-              iconPosition="start"
-              sx={{ minHeight: 64 }}
-            />
-            <Tab 
-              label="Vermi Composter" 
-              icon={<BugReport />} 
               iconPosition="start"
               sx={{ minHeight: 64 }}
             />
@@ -561,13 +549,13 @@ const NurseryPage: React.FC = () => {
         </Box>
 
         <TabPanel value={value} index={0}>
-          <CoconutTreeContent />
+          <VermiComposterContent />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <MedicalPlantsContent />
+          <CoconutTreeContent />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <VermiComposterContent />
+          <MedicalPlantsContent />
         </TabPanel>
         <TabPanel value={value} index={3}>
           <LicenceContent />
