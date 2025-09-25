@@ -386,7 +386,7 @@ export function ProductList() {
         </Box>
 
         {/* Progress Bar */}
-        <Box
+        {/* <Box
           sx={{
             position: 'absolute',
             bottom: 0,
@@ -407,7 +407,7 @@ export function ProductList() {
               backgroundColor: 'rgba(255,255,255,0.8)',
             }}
           />
-        </Box>
+        </Box> */}
       </Box>
       
       {/* Content Container with proper padding */}
@@ -415,66 +415,6 @@ export function ProductList() {
         <FeatureHighlightsRow />
       </Box>
       
-      {/* Initial Loading State - Shows immediately when page loads */}
-      {(showInitialLoading || isInitialLoading || isLoadingAll || (!allProducts && !isErrorAll) || !hasInitiallyLoaded) && !selectedCategory.id && (
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            flexDirection: 'column',
-            alignItems: 'center',
-            py: { xs: 4, sm: 6, md: 8 },
-            px: 2,
-            mb: { xs: 3, sm: 4, md: 5 },
-          }}
-        >
-          <Typography 
-            variant="h5" 
-            color="primary" 
-            textAlign="center" 
-            sx={{ 
-              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
-              fontSize: { xs: '1.25rem', sm: '1.5rem', md: '1.75rem' },
-              fontWeight: 600,
-              mb: 3,
-            }}
-          >
-            Loading Your Products...
-          </Typography>
-          
-          {/* Animated Progress Bar */}
-          <Box sx={{ width: '100%', maxWidth: 500, mb: 4 }}>
-            <LinearProgress 
-              sx={{
-                height: 12,
-                borderRadius: 6,
-                backgroundColor: alpha(theme.palette.primary.main, 0.15),
-                '& .MuiLinearProgress-bar': {
-                  borderRadius: 6,
-                  background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 50%, ${theme.palette.primary.main} 100%)`,
-                  backgroundSize: '200% 100%',
-                  animation: 'loading-shimmer 2s ease-in-out infinite',
-                },
-                '@keyframes loading-shimmer': {
-                  '0%': { backgroundPosition: '200% 0' },
-                  '100%': { backgroundPosition: '-200% 0' },
-                },
-              }}
-            />
-          </Box>
-          
-          {/* Loading Spinner */}
-          <CircularProgress 
-            size={50}
-            thickness={5}
-            sx={{
-              color: theme.palette.primary.main,
-              '& .MuiCircularProgress-circle': {
-                strokeLinecap: 'round',
-              },
-            }}
-          />
-        </Box>
-      )}
       
       <Typography 
         variant="h4" 

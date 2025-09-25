@@ -410,31 +410,6 @@ const BlogDetail: React.FC = () => {
             </Box>
           )}
 
-          {/* Author Info */}
-          <Card sx={{ mb: 4 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                About the Author
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                <Avatar sx={{ width: 48, height: 48 }}>
-                  <Person />
-                </Avatar>
-                <Box>
-                  <Typography variant="subtitle1" fontWeight={600}>
-                    {blog.author.username}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Blog Author
-                  </Typography>
-                </Box>
-              </Box>
-              <Typography variant="body2" color="text.secondary">
-                Passionate about organic farming and sustainable living. Sharing knowledge and experiences
-                to help others on their journey towards a healthier, more sustainable lifestyle.
-              </Typography>
-            </CardContent>
-          </Card>
         </Grid>
       </Grid>
 
