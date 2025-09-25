@@ -249,21 +249,30 @@ const NurseryPage: React.FC = () => {
           <>
             <Grid 
               container 
-              spacing={{ xs: 2, sm: 3, md: 4 }} 
+              spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
               sx={{ 
-                mt: 2,
+                mt: { xs: 3, sm: 4, md: 5 },
                 px: { xs: 2, sm: 0 },
                 justifyContent: { xs: 'center', sm: 'flex-start' },
+                alignItems: 'stretch',
+                width: '100%',
+                maxWidth: '100%',
+                margin: 0,
               }}
             >
               {displayedProducts.map((product, index) => (
                 <Grid 
                   key={product.id}
-                  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                  size={{ xs: 12, sm: 6, md: 6, lg: 6, xl: 6 }}
                   sx={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'stretch',
+                    width: '100%',
+                    maxWidth: '100%',
+                    minWidth: 0,
+                    flexShrink: 0,
+                    overflow: 'hidden',
                   }}
                 >
                   <Fade in timeout={300 + (index * 100)}>
@@ -273,7 +282,10 @@ const NurseryPage: React.FC = () => {
                         cursor: 'pointer', 
                         height: '100%',
                         width: '100%',
-                        maxWidth: { xs: '100%', sm: 350, md: 320 },
+                        maxWidth: { xs: '100%', sm: 350, md: 350, lg: 380 },
+                        minWidth: { xs: '100%', sm: 300, md: 320, lg: 350 },
+                        overflow: 'hidden',
+                        boxSizing: 'border-box',
                         transition: 'transform 0.2s ease-in-out',
                         '&:hover': {
                           transform: { xs: 'none', sm: 'scale(1.02)' },

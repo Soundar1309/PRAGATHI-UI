@@ -76,13 +76,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        // Fixed height for equal card sizes - reduced for more compact design
-        height: { xs: 400, sm: 430, md: 460 },
-        minHeight: { xs: 400, sm: 430, md: 460 },
-        // Responsive width
+        // Fixed height for equal card sizes - adjusted for proper content display
+        height: { xs: 420, sm: 450, md: 480 },
+        minHeight: { xs: 420, sm: 450, md: 480 },
+        // Responsive width with proper constraints
         width: '100%',
-        maxWidth: { xs: '100%', sm: 280, md: 300, lg: 320 },
-        minWidth: { xs: '100%', sm: 260 },
+        maxWidth: { xs: '100%', sm: 300, md: 320, lg: 350 },
+        minWidth: { xs: '100%', sm: 280, md: 300, lg: 320 },
         // Enhanced border radius
         // borderRadius: { xs: 1.5, sm: 2, md: 2.5 },
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
@@ -100,6 +100,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         overflow: 'hidden', // Prevent content from overflowing
         // Ensure card respects container boundaries
         boxSizing: 'border-box',
+        // Force consistent sizing regardless of content
+        flexShrink: 0,
+        // Prevent content from expanding the card
+        position: 'relative',
       }}
     >
       {/* Image Section - Square 1:1 ratio */}
@@ -107,12 +111,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         sx={{ 
           position: 'relative',
           width: '100%',
+          maxWidth: '100%',
           // Ensure the image container maintains 1:1 aspect ratio
           aspectRatio: '1 / 1',
           overflow: 'hidden',
           // borderRadius: { xs: 1, sm: 1.5, md: 2 },
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
+          boxSizing: 'border-box',
         }}
       >
         <ProductImage
@@ -219,9 +225,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         // Ensure content doesn't overflow and uses available space
         minHeight: 0,
         overflow: 'hidden',
-        // Reduced height for more compact design
-        height: { xs: 60, sm: 65, md: 70 },
-        maxHeight: { xs: 60, sm: 65, md: 70 },
+        // Adjusted height for proper content display
+        height: { xs: 80, sm: 85, md: 90 },
+        maxHeight: { xs: 80, sm: 85, md: 90 },
         // Add subtle background gradient for visual appeal
         background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%)',
         position: 'relative',
@@ -317,10 +323,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         flexShrink: 0, // Prevent actions from shrinking
         // Ensure buttons don't wrap
         flexWrap: 'nowrap',
-        // Reduced height for actions area - more compact design
-        height: { xs: 60, sm: 65, md: 70 },
-        minHeight: { xs: 60, sm: 65, md: 70 },
-        maxHeight: { xs: 60, sm: 65, md: 70 },
+        // Adjusted height for actions area - proper content display
+        height: { xs: 80, sm: 85, md: 90 },
+        minHeight: { xs: 80, sm: 85, md: 90 },
+        maxHeight: { xs: 80, sm: 85, md: 90 },
         // Add subtle border and background
         borderTop: '1px solid',
         borderColor: 'divider',
