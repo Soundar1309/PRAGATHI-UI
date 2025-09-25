@@ -387,7 +387,7 @@ const CheckoutPage: React.FC = () => {
               </Card>
 
               {/* Shipping Method Section */}
-              <Card elevation={2}>
+              {/* <Card elevation={2}>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} mb={3}>
                     Shipping method
@@ -401,7 +401,7 @@ const CheckoutPage: React.FC = () => {
                     sx={{ bgcolor: 'grey.100' }}
                   />
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Payment Section */}
               <Card elevation={2}>

@@ -538,7 +538,7 @@ export function ProductList() {
                   flexShrink: 0, // Prevent shrinking
                   boxShadow: selectedCategory.id === cat.id ? 4 : 2,
                   bgcolor: selectedCategory.id === cat.id 
-                    ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
+                    ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`
                     : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
                   color: selectedCategory.id === cat.id ? 'common.white' : 'primary.dark',
                   border: selectedCategory.id === cat.id ? '2px solid' : '1px solid',

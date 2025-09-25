@@ -8,8 +8,6 @@ import {
   Chip,
   Box,
   useTheme,
-  Rating,
-  Stack,
   Tooltip,
   CircularProgress,
 } from '@mui/material';
@@ -78,24 +76,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        // Fixed height for equal card sizes
-        height: { xs: 420, sm: 450, md: 480 },
-        minHeight: { xs: 420, sm: 450, md: 480 },
+        // Fixed height for equal card sizes - reduced for more compact design
+        height: { xs: 400, sm: 430, md: 460 },
+        minHeight: { xs: 400, sm: 430, md: 460 },
         // Responsive width
         width: '100%',
         maxWidth: { xs: '100%', sm: 280, md: 300, lg: 320 },
         minWidth: { xs: '100%', sm: 260 },
-        // Reduced border radius
-        borderRadius: { xs: 1, sm: 1.5, md: 2 },
-        boxShadow: theme.shadows[3],
+        // Enhanced border radius
+        // borderRadius: { xs: 1.5, sm: 2, md: 2.5 },
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
         background: theme.palette.background.paper,
         // No padding on card - let sections handle their own padding
         p: 0,
-        // Hover effects with smooth transitions
-        transition: 'all 0.2s ease-in-out',
+        // Enhanced hover effects with smooth transitions
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         '&:hover': {
-          transform: { xs: 'none', sm: 'translateY(-4px)' }, // No hover transform on mobile
-          boxShadow: { xs: theme.shadows[3], sm: theme.shadows[8] },
+          transform: { xs: 'none', sm: 'translateY(-6px)' }, // No hover transform on mobile
+          boxShadow: { xs: '0 4px 20px rgba(0, 0, 0, 0.08)', sm: '0 12px 40px rgba(0, 0, 0, 0.15)' },
         },
         // Ensure card doesn't break layout on small screens
         overflowWrap: 'break-word',
@@ -112,7 +110,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           // Ensure the image container maintains 1:1 aspect ratio
           aspectRatio: '1 / 1',
           overflow: 'hidden',
-          borderRadius: { xs: 1, sm: 1.5, md: 2 },
+          // borderRadius: { xs: 1, sm: 1.5, md: 2 },
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
         }}
@@ -136,13 +134,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             position: 'absolute',
             top: { xs: 8, sm: 12 },
             left: { xs: 8, sm: 12 },
-            bgcolor: theme.palette.primary.main,
+            bgcolor: theme.palette.primary.dark,
             color: '#fff',
-            fontWeight: 600,
-            borderRadius: 0.5,
-            boxShadow: theme.shadows[1],
+            fontWeight: 700,
+            borderRadius: 1,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
             fontSize: { xs: '0.7rem', sm: '0.75rem' },
             maxWidth: { xs: 100, sm: 120 },
+            // Add text shadow for better readability
+            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+            // Add border for better definition
+            border: '1px solid rgba(255,255,255,0.2)',
             ...ELLIPSIS_SX,
           }}
         />
@@ -156,13 +158,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               position: 'absolute',
               top: { xs: 8, sm: 12 },
               right: { xs: 8, sm: 12 },
-              bgcolor: theme.palette.error.main,
+              bgcolor: theme.palette.error.dark,
               color: '#fff',
-              fontWeight: 600,
-              borderRadius: 0.5,
-              boxShadow: theme.shadows[1],
+              fontWeight: 700,
+              borderRadius: 1,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
               fontSize: { xs: '0.65rem', sm: '0.7rem' },
               maxWidth: { xs: 80, sm: 100 },
+              // Add text shadow for better readability
+              textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+              // Add border for better definition
+              border: '1px solid rgba(255,255,255,0.2)',
               ...ELLIPSIS_SX,
             }}
           />
@@ -209,13 +215,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         flexGrow: 1,
         display: 'flex',
         flexDirection: 'column',
-        p: { xs: 2, sm: 2 },
+        p: { xs: 1.5, sm: 2 },
         // Ensure content doesn't overflow and uses available space
         minHeight: 0,
         overflow: 'hidden',
-        // Reduced height since description is removed
-        height: { xs: 100, sm: 110, md: 120 },
-        maxHeight: { xs: 100, sm: 110, md: 120 },
+        // Reduced height for more compact design
+        height: { xs: 60, sm: 65, md: 70 },
+        maxHeight: { xs: 60, sm: 65, md: 70 },
+        // Add subtle background gradient for visual appeal
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%)',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.1) 50%, transparent 100%)',
+        }
       }}>
         {/* Product Title */}
         <Typography
@@ -223,9 +241,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           fontWeight={700}
           color="text.primary"
           sx={{
-            fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-            lineHeight: 1.3,
-            mb: { xs: 1, sm: 1 },
+            fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.3rem' },
+            // lineHeight: 1.4,
+            // mb: { xs: 2, sm: 2.5, md: 3 }, // Increased margin bottom for more space
             // Allow text to wrap naturally
             wordBreak: 'break-word',
             overflowWrap: 'break-word',
@@ -236,6 +254,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            // Add subtle text shadow for better readability
+            textShadow: '0 1px 2px rgba(0,0,0,0.1)',
           }}
         >
           {product.title}{product.unit && ` - ${product.unit}`}
@@ -243,7 +263,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
 
 
         {/* Rating Section */}
-        <Stack
+        {/* <Stack
           direction="row"
           alignItems="center"
           spacing={{ xs: 1, sm: 1 }}
@@ -282,25 +302,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           >
             ({product.reviewCount || 0} reviews)
           </Typography>
-        </Stack>
+        </Stack> */}
       </CardContent>
 
       {/* Actions Section - Price and Buttons */}
       <CardActions sx={{
         justifyContent: 'space-between',
         alignItems: 'center',
-        px: { xs: 2, sm: 2 },
-        py: { xs: 2, sm: 2 },
+        px: { xs: 2.5, sm: 3 },
+        py: { xs: 2.5, sm: 3 },
         flexDirection: 'row',
-        gap: { xs: 2, sm: 1 },
+        gap: { xs: 2, sm: 2.5 },
         width: '100%',
         flexShrink: 0, // Prevent actions from shrinking
         // Ensure buttons don't wrap
         flexWrap: 'nowrap',
-        // Fixed height for actions area
+        // Reduced height for actions area - more compact design
         height: { xs: 60, sm: 65, md: 70 },
         minHeight: { xs: 60, sm: 65, md: 70 },
         maxHeight: { xs: 60, sm: 65, md: 70 },
+        // Add subtle border and background
+        borderTop: '1px solid',
+        borderColor: 'divider',
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.98) 100%)',
+        position: 'relative',
+        // Add subtle shadow for depth
+        boxShadow: '0 -2px 8px rgba(0,0,0,0.05)',
       }}>
         {/* Price Section */}
         <Box sx={{ 
@@ -309,6 +336,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           alignItems: 'flex-start',
           flexShrink: 0,
           minWidth: 0, // Allow price to shrink if needed
+          gap: { xs: 0.5, sm: 0.75 }, // Add gap between prices
         }}>
           {showOriginalPrice ? (
             <>
@@ -317,13 +345,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 color="primary"
                 fontWeight={700}
                 sx={{
-                  fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                  fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' },
                   lineHeight: 1.2,
                   // Prevent price from being too long
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
                   maxWidth: '100%',
+                  // Add subtle text shadow
+                  textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                  // Add subtle background highlight
+                  background: 'linear-gradient(135deg, rgba(25, 118, 210, 0.1) 0%, rgba(25, 118, 210, 0.05) 100%)',
+                  borderRadius: 1,
+                  px: 1,
+                  py: 0.5,
                 }}
               >
                 ₹{Number(displayPrice).toFixed(2)}
@@ -333,9 +368,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 color="text.secondary"
                 sx={{
                   textDecoration: 'line-through',
-                  fontSize: { xs: '0.8rem', sm: '0.875rem' },
-                  opacity: 0.7,
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
+                  opacity: 0.6,
                   lineHeight: 1.2,
+                  fontWeight: 500,
                 }}
               >
                 ₹{Number(originalPrice).toFixed(2)}
@@ -347,13 +383,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               color="primary"
               fontWeight={700}
               sx={{
-                fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' },
                 lineHeight: 1.2,
                 // Prevent price from being too long
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 maxWidth: '100%',
+                // Add subtle text shadow
+                textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                // Add subtle background highlight
+                background: 'linear-gradient(135deg, rgba(25, 118, 210, 0.1) 0%, rgba(25, 118, 210, 0.05) 100%)',
+                borderRadius: 1,
+                px: 1,
+                py: 0.5,
               }}
             >
               ₹{Number(displayPrice).toFixed(2)}
@@ -380,25 +423,36 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             color="secondary"
             sx={{
               fontWeight: 700,
-              borderRadius: { xs: 0.5, sm: 0.5 },
-              boxShadow: 'none',
+              borderRadius: { xs: 1, sm: 1.5 },
+              // Enhanced shadow and gradient - changed to green theme
+              background: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
+              boxShadow: '0 4px 12px rgba(76, 175, 80, 0.3)',
               // Responsive sizing
-              minWidth: { xs: 80, sm: 100 },
-              maxWidth: { xs: 120, sm: 140 },
-              minHeight: { xs: 36, sm: 40 },
-              fontSize: { xs: '0.8rem', sm: '0.875rem' },
-              py: { xs: 1, sm: 1 },
-              px: { xs: 1, sm: 2 },
+              minWidth: { xs: 90, sm: 110, md: 120 },
+              maxWidth: { xs: 130, sm: 150, md: 160 },
+              minHeight: { xs: 40, sm: 44, md: 48 },
+              fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
+              py: { xs: 1.25, sm: 1.5 },
+              px: { xs: 1.5, sm: 2, md: 2.5 },
               position: 'relative',
-              // Enhanced touch feedback
+              // Enhanced hover and active states
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #388e3c 0%, #2e7d32 100%)',
+                boxShadow: '0 6px 16px rgba(76, 175, 80, 0.4)',
+                transform: 'translateY(-2px)',
+              },
               '&:active': {
-                transform: 'scale(0.98)',
+                transform: 'translateY(0) scale(0.98)',
+                boxShadow: '0 2px 8px rgba(76, 175, 80, 0.3)',
               },
               // Ensure button doesn't overflow
               flexShrink: 0,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
+              // Add subtle border
+              border: '1px solid rgba(255, 255, 255, 0.2)',
             }}
             onClick={handleAddToCartClick}
             disabled={isLoading}

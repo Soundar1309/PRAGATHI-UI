@@ -199,7 +199,7 @@ export function FilteredProductList() {
                                 minWidth: { xs: 100, sm: 120 },
                                 whiteSpace: 'nowrap',
                                 boxShadow: selectedCategory.id === cat.id ? 3 : 0,
-                                bgcolor: selectedCategory.id === cat.id ? 'primary.main' : 'grey.100',
+                                bgcolor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.100',
                                 color: selectedCategory.id === cat.id ? 'common.white' : 'primary.dark',
                                 border: selectedCategory.id === cat.id ? '2px solid' : '1px solid',
                                 borderColor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.300',
