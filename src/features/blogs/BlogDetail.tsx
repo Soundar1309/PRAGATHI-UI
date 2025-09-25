@@ -5,6 +5,7 @@ import {
   Grid,
   Chip,
   Button,
+  IconButton,
   Avatar,
   Divider,
   Card,
@@ -246,42 +247,70 @@ const BlogDetail: React.FC = () => {
 
           {/* Share Buttons */}
           <Box sx={{ mb: 4 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Share this article:
             </Typography>
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button
-                size="small"
-                startIcon={<Facebook />}
+              <IconButton
                 onClick={() => handleShare('facebook')}
-                sx={{ minWidth: 'auto', px: 2 }}
+                sx={{
+                  bgcolor: 'rgba(24, 119, 242, 0.1)',
+                  color: '#1877F2',
+                  '&:hover': {
+                    bgcolor: 'rgba(24, 119, 242, 0.2)',
+                    transform: 'scale(1.1)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+                aria-label="Share on Facebook"
               >
-                Facebook
-              </Button>
-              <Button
-                size="small"
-                startIcon={<Twitter />}
+                <Facebook />
+              </IconButton>
+              <IconButton                                                                                                         
                 onClick={() => handleShare('twitter')}
-                sx={{ minWidth: 'auto', px: 2 }}
+                sx={{
+                  bgcolor: 'rgba(29, 161, 242, 0.1)',
+                  color: '#1DA1F2',
+                  '&:hover': {
+                    bgcolor: 'rgba(29, 161, 242, 0.2)',
+                    transform: 'scale(1.1)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+                aria-label="Share on Twitter"
               >
-                Twitter
-              </Button>
-              <Button
-                size="small"
-                startIcon={<LinkedIn />}
+                <Twitter />
+              </IconButton>
+              <IconButton
                 onClick={() => handleShare('linkedin')}
-                sx={{ minWidth: 'auto', px: 2 }}
+                sx={{
+                  bgcolor: 'rgba(0, 119, 181, 0.1)',
+                  color: '#0077B5',
+                  '&:hover': {
+                    bgcolor: 'rgba(0, 119, 181, 0.2)',
+                    transform: 'scale(1.1)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+                aria-label="Share on LinkedIn"
               >
-                LinkedIn
-              </Button>
-              <Button
-                size="small"
-                startIcon={<WhatsApp />}
+                <LinkedIn />
+              </IconButton>
+              <IconButton
                 onClick={() => handleShare('whatsapp')}
-                sx={{ minWidth: 'auto', px: 2 }}
+                sx={{
+                  bgcolor: 'rgba(37, 211, 102, 0.1)',
+                  color: '#25D366',
+                  '&:hover': {
+                    bgcolor: 'rgba(37, 211, 102, 0.2)',
+                    transform: 'scale(1.1)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+                aria-label="Share on WhatsApp"
               >
-                WhatsApp
-              </Button>
+                <WhatsApp />
+              </IconButton>
             </Box>
           </Box>
 

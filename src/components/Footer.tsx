@@ -87,7 +87,7 @@ const Footer: React.FC = () => {
                                     variant="body2"
                                     sx={{
                                         fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                                        lineHeight: 1.6,    
+                                        lineHeight: 1.6,
                                         wordBreak: 'break-word',
                                         color: theme.palette.text.primary,
                                         fontWeight: 400,
@@ -430,7 +430,7 @@ const Footer: React.FC = () => {
                                     color: theme.palette.primary.main,
                                 }}
                             >
-                                Follow us on
+                                Follow us
                             </Typography>
 
                             <Stack
