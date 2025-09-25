@@ -34,8 +34,10 @@ import {
 import { motion } from 'framer-motion';
 import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGetProfileQuery } from '../features/auth/userApi';
 import { useGetCartQuery } from '../features/cart/api';
+import { useRazorpay } from '../hooks/useRazorpay';
 
 // Indian states list
 const INDIAN_STATES = [
@@ -80,10 +82,26 @@ interface CheckoutFormData {
 
 const CheckoutPage: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   
   // API hooks
   const { data: cart, isLoading: cartLoading } = useGetCartQuery();
   const { data: userProfile, isLoading: profileLoading } = useGetProfileQuery();
+  
+  // Razorpay hook
+  const { openRazorpay, isLoading: isPaymentLoading } = useRazorpay({
+    onSuccess: (response) => {
+      console.log('Payment successful:', response);
+      // Redirect to success page or show success message
+      navigate('/order-success', { state: { paymentId: response.razorpay_payment_id } });
+    },
+    onError: (error) => {
+      console.error('Payment failed:', error);
+    },
+    onDismiss: () => {
+      console.log('Payment cancelled by user');
+    },
+  });
   
   // Form state
   const [formData, setFormData] = useState<CheckoutFormData>({
@@ -161,8 +179,26 @@ const CheckoutPage: React.FC = () => {
   };
 
   const handlePayNow = () => {
-    enqueueSnackbar('Redirecting to payment...', { variant: 'info' });
-    // Here you would integrate with Razorpay or your payment gateway
+    // Validate form data
+    if (!formData.email || !formData.fullName || !formData.address || !formData.city || !formData.pinCode || !formData.phone) {
+      enqueueSnackbar('Please fill in all required fields', { variant: 'error' });
+      return;
+    }
+
+    const totalAmount = calculateTotal();
+    
+    // Open Razorpay payment
+    openRazorpay(
+      {
+        amount: totalAmount,
+        currency: 'INR',
+      },
+      {
+        name: formData.fullName,
+        email: formData.email,
+        contact: formData.phone,
+      }
+    );
   };
 
   if (cartLoading || profileLoading) {
@@ -510,6 +546,7 @@ const CheckoutPage: React.FC = () => {
                 size="large"
                 fullWidth
                 onClick={handlePayNow}
+                disabled={isPaymentLoading}
                 sx={{
                   py: 2,
                   fontSize: 16,
@@ -517,7 +554,14 @@ const CheckoutPage: React.FC = () => {
                   borderRadius: 2,
                 }}
               >
-                Pay now
+                {isPaymentLoading ? (
+                  <>
+                    <CircularProgress size={20} sx={{ mr: 1 }} />
+                    Processing...
+                  </>
+                ) : (
+                  'Pay now'
+                )}
               </Button>
             </Stack>
           </Grid>
