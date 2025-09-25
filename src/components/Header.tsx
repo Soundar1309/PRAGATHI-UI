@@ -252,6 +252,15 @@ const Header: React.FC = () => {
   // Fetch categories from API
   const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useGetCategoriesQuery();
   
+  // Filter out nursery categories from header dropdown
+  const nurseryCategories = ['coconut tree', 'vermi composter', 'medicinal plants'];
+  const filteredCategories = categories.filter((category: any) => {
+    const categoryName = category.name || '';
+    return !nurseryCategories.some(nurseryCategory => 
+      categoryName.toLowerCase().includes(nurseryCategory.toLowerCase())
+    );
+  });
+  
   // Create dynamic navigation links with categories
   const navLinks: NavLink[] = [
     ...staticNavLinks.slice(0, 2), // Home, About
@@ -262,11 +271,11 @@ const Header: React.FC = () => {
         ? [{ label: 'Loading...', to: '/products', icon: LocalGroceryStoreIcon }]
         : categoriesError 
           ? [{ label: 'Error loading categories', to: '/products', icon: LocalGroceryStoreIcon }]
-          : categories.length === 0
+          : filteredCategories.length === 0
             ? [{ label: 'No categories available', to: '/products', icon: LocalGroceryStoreIcon }]
             : [
                 { label: 'All', to: '/products', icon: LocalGroceryStoreIcon },
-                ...categories.map(cat => ({
+                ...filteredCategories.map(cat => ({
                   label: cat.name,
                   to: `/products?category=${cat.id}`,
                   icon: getCategoryIcon(cat.name)

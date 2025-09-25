@@ -232,10 +232,18 @@ export function ProductList() {
   const displayedProducts = showAllProducts ? mappedProducts : mappedProducts.slice(0, initialProductCount);
   const hasMoreProducts = mappedProducts.length > initialProductCount;
 
+  // Filter out nursery categories from category list
+  const filteredCategories = (categoriesData || []).filter((category: any) => {
+    const categoryName = category.name || '';
+    return !nurseryCategories.some(nurseryCategory => 
+      categoryName.toLowerCase().includes(nurseryCategory.toLowerCase())
+    );
+  });
+
   // Map backend categories to names, add 'All'
   const categories = [
     { id: null, name: 'All' },
-    ...(categoriesData || [])
+    ...filteredCategories
   ];
 
   const handleCategoryClick = (category: { id: number | null; name: string }) => {
