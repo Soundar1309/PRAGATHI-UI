@@ -936,6 +936,121 @@ const Header: React.FC = () => {
               {isAuthenticated ? 'Profile' : 'Login'}
             </Button>
 
+            {/* Product Management Section - Only for logged-in users */}
+            {isAuthenticated && (
+              <Box>
+                <Button
+                  onClick={() => {
+                    setMobileDropdownOpen(prev => ({
+                      ...prev,
+                      'productManagement': !prev['productManagement']
+                    }));
+                  }}
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    fontWeight: 600,
+                    justifyContent: 'flex-start',
+                    textTransform: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    py: 2,
+                    px: 2,
+                    borderRadius: 1,
+                    width: '100%',
+                    '&:hover': {
+                      backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                    },
+                  }}
+                >
+                  <LocalGroceryStoreIcon sx={{ color: theme.palette.primary.main }} />
+                  Create & Manage Products
+                  <Box sx={{ ml: 'auto' }}>
+                    {mobileDropdownOpen['productManagement'] ? '−' : '+'}
+                  </Box>
+                </Button>
+
+                <Collapse in={mobileDropdownOpen['productManagement']}>
+                  <Box sx={{ pl: 4, pb: 1 }}>
+                    <Button
+                      component={NavLink}
+                      to="/admin/products"
+                      onClick={() => setDrawerOpen(false)}
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        fontWeight: 500,
+                        justifyContent: 'flex-start',
+                        textTransform: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        py: 1.5,
+                        px: 2,
+                        borderRadius: 1,
+                        width: '100%',
+                        '&:hover': {
+                          backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                        },
+                      }}
+                    >
+                      <AddIcon sx={{ color: theme.palette.primary.main, fontSize: 20 }} />
+                      Add New Product
+                    </Button>
+
+                    <Button
+                      component={NavLink}
+                      to="/admin/products/list"
+                      onClick={() => setDrawerOpen(false)}
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        fontWeight: 500,
+                        justifyContent: 'flex-start',
+                        textTransform: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        py: 1.5,
+                        px: 2,
+                        borderRadius: 1,
+                        width: '100%',
+                        '&:hover': {
+                          backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                        },
+                      }}
+                    >
+                      <ListAltIcon sx={{ color: theme.palette.primary.main, fontSize: 20 }} />
+                      Manage Products
+                    </Button>
+
+                    <Button
+                      component={NavLink}
+                      to="/admin/categories"
+                      onClick={() => setDrawerOpen(false)}
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        fontWeight: 500,
+                        justifyContent: 'flex-start',
+                        textTransform: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        py: 1.5,
+                        px: 2,
+                        borderRadius: 1,
+                        width: '100%',
+                        '&:hover': {
+                          backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                        },
+                      }}
+                    >
+                      <CategoryIcon sx={{ color: theme.palette.primary.main, fontSize: 20 }} />
+                      Manage Categories
+                    </Button>
+                  </Box>
+                </Collapse>
+              </Box>
+            )}
+
             <Divider sx={{ my: 2 }} />
 
             {/* Navigation Links */}
