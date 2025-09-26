@@ -166,17 +166,14 @@ const CheckoutPage: React.FC = () => {
     return cart.cart_items.reduce((total, item) => total + (Number(item.product?.price) || 0) * item.quantity, 0);
   };
 
-  const calculateTax = () => {
-    return calculateSubtotal() * 0.11; // 11% tax
-  };
+  // const calculateTax = () => {
+  //   return calculateSubtotal() * 0.11; // 11% tax
+  // };
 
   const calculateTotal = () => {
-    return calculateSubtotal() + calculateTax();
+    return calculateSubtotal();
   };
 
-  const handleApplyDiscount = () => {
-    enqueueSnackbar('Discount code applied!', { variant: 'success' });
-  };
 
   const handlePayNow = () => {
     // Validate form data
@@ -374,7 +371,7 @@ const CheckoutPage: React.FC = () => {
                     }}
                   />
 
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     control={
                       <Checkbox
                         checked={formData.saveInfo}
@@ -382,7 +379,7 @@ const CheckoutPage: React.FC = () => {
                       />
                     }
                     label="Save this information for next time"
-                  />
+                  /> */}
                 </CardContent>
               </Card>
 
@@ -404,7 +401,7 @@ const CheckoutPage: React.FC = () => {
               </Card> */}
 
               {/* Payment Section */}
-              <Card elevation={2}>
+              {/* <Card elevation={2}>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} mb={1}>
                     Payment
@@ -447,10 +444,10 @@ const CheckoutPage: React.FC = () => {
                     </Typography>
                   </Paper>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Billing Address Section */}
-              <Card elevation={2}>
+              {/* <Card elevation={2}>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} mb={3}>
                     Billing address
@@ -538,7 +535,7 @@ const CheckoutPage: React.FC = () => {
                     </Box>
                   )}
                 </CardContent>
-              </Card>
+              </Card> */}
 
               {/* Pay Now Button */}
               <Button
@@ -633,7 +630,7 @@ const CheckoutPage: React.FC = () => {
                 <Divider sx={{ my: 2 }} />
 
                 {/* Discount Code */}
-                <Box mb={2}>
+                {/* <Box mb={2}>
                   <TextField
                     fullWidth
                     label="Discount code"
@@ -650,7 +647,7 @@ const CheckoutPage: React.FC = () => {
                       ),
                     }}
                   />
-                </Box>
+                </Box> */}
 
                 <Divider sx={{ my: 2 }} />
 
@@ -679,9 +676,6 @@ const CheckoutPage: React.FC = () => {
                       INR ₹{calculateTotal().toFixed(2)}
                     </Typography>
                   </Box>
-                  <Typography variant="caption" color="text.secondary">
-                    Including ₹{calculateTax().toFixed(2)} in taxes
-                  </Typography>
                 </Stack>
               </CardContent>
             </Card>
