@@ -616,30 +616,6 @@ const Header: React.FC = () => {
             </Box>
           )}
 
-          {/* Search Bar - Large and Medium screens */}
-          {(isLargeScreen || isMediumScreen) && (
-            <Box sx={{ 
-              flex: { md: '0 1 120px', lg: '0 1 150px' }, 
-              maxWidth: { md: 120, lg: 150 },
-              minWidth: 0,
-            }}>
-              <Box component="form" onSubmit={handleSearchSubmit} sx={{ width: '100%' }}>
-                <Search>
-                  <SearchIconWrapper>
-                    <SearchIcon />
-                  </SearchIconWrapper>
-                  <StyledInputBase
-                    placeholder="Search..."
-                    inputProps={{ 'aria-label': 'search' }}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyPress={handleSearchKeyPress}
-                  />
-                </Search>
-              </Box>
-            </Box>
-          )}
-
           {/* Right Side Icons */}
           <Box sx={{ 
             display: 'flex', 
