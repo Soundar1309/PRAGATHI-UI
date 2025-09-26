@@ -1,9 +1,6 @@
 import {
-  ArrowForward,
   HelpOutline,
-  Lock,
-  Search,
-  Security
+  Search
 } from '@mui/icons-material';
 import {
   Alert,
@@ -23,13 +20,10 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
-  Paper,
-  Radio,
-  RadioGroup,
   Select,
   Stack,
-  TextField,  
-  Typography,
+  TextField,
+  Typography
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useSnackbar } from 'notistack';
@@ -146,20 +140,20 @@ const CheckoutPage: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleBillingSameAsShipping = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const isSame = event.target.checked;
-    setFormData(prev => ({
-      ...prev,
-      billingSameAsShipping: isSame,
-      billingFullName: isSame ? prev.fullName : '',
-      billingAddress: isSame ? prev.address : '',
-      billingApartment: isSame ? prev.apartment : '',
-      billingCity: isSame ? prev.city : '',
-      billingState: isSame ? prev.state : '',
-      billingPinCode: isSame ? prev.pinCode : '',
-      billingPhone: isSame ? prev.phone : '',
-    }));
-  };
+  // const handleBillingSameAsShipping = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const isSame = event.target.checked;
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     billingSameAsShipping: isSame,
+  //     billingFullName: isSame ? prev.fullName : '',
+  //     billingAddress: isSame ? prev.address : '',
+  //     billingApartment: isSame ? prev.apartment : '',
+  //     billingCity: isSame ? prev.city : '',
+  //     billingState: isSame ? prev.state : '',
+  //     billingPinCode: isSame ? prev.pinCode : '',
+  //     billingPhone: isSame ? prev.phone : '',
+  //   }));
+  // };
 
   const calculateSubtotal = () => {
     if (!cart?.cart_items) return 0;
