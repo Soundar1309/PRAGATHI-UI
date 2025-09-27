@@ -39,7 +39,7 @@ import {
   PictureAsPdf,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useGetProductsQuery } from '../features/products/api';
 import { useAddToCart } from '../hooks/useAddToCart';
 import ProductCard, { type Product } from '../components/ProductCard';
@@ -89,6 +89,7 @@ const NurseryPage: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
+  const location = useLocation();
   const { handleAddToCart } = useAddToCart();
 
   // Fetch all products and categories
@@ -140,34 +141,52 @@ const NurseryPage: React.FC = () => {
     discount_percentage: p.discount_percentage,
   });
 
+  // Function to handle hash navigation
+  const handleHashNavigation = (hash: string) => {
+    console.log('Hash detected:', hash); // Debug log
+    
+    switch (hash) {
+      case '#vermi':
+        setValue(0);
+        console.log('Switching to Vermi Composter tab');
+        break;
+      case '#coconut':
+        setValue(1);
+        console.log('Switching to Coconut Tree tab');
+        break;
+      case '#medicinal':
+        setValue(2);
+        console.log('Switching to Medical Plants tab');
+        break;
+      case '#licence':
+        setValue(3);
+        console.log('Switching to Licence tab');
+        break;
+      default:
+        // Only set to 0 if no hash is present
+        if (!hash) {
+          setValue(0);
+          console.log('No hash, defaulting to first tab');
+        }
+    }
+  };
+
+  // Handle initial hash and location changes
   useEffect(() => {
     document.title = 'Nursery - Pragathi Natural Farm';
     
-    // Handle URL hash navigation
+    // Check initial hash
+    const hash = location.hash;
+    handleHashNavigation(hash);
+  }, [location.hash]);
+
+  // Handle hash changes via window events (for external navigation)
+  useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash;
-      switch (hash) {
-        case '#vermi':
-          setValue(0);
-          break;
-        case '#coconut':
-          setValue(1);
-          break;
-        case '#medicinal':
-          setValue(2);
-          break;
-        case '#licence':
-          setValue(3);
-          break;
-        default:
-          setValue(0);
-      }
+      handleHashNavigation(hash);
     };
 
-    // Check initial hash
-    handleHashChange();
-
-    // Listen for hash changes
     window.addEventListener('hashchange', handleHashChange);
     
     return () => {

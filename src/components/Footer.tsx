@@ -557,6 +557,25 @@ const Footer: React.FC = () => {
                             }}
                         >
                             thinkbyai.in
+                        </Link>{' '}
+                        and{' '}
+                        <Link
+                            href="https://linkspiretech.vercel.app/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            sx={{
+                        
+                                fontWeight: 700,
+                                color: theme.palette.primary.main,
+                                textDecoration: 'none',
+                                transition: 'color 0.2s ease-in-out',
+                                '&:hover': {
+                                    color: theme.palette.secondary.main,
+                                    textDecoration: 'underline',
+                                },
+                            }}
+                        >
+                            linkspiretech
                         </Link>
                     </Typography>
                 </Box>

@@ -6,7 +6,6 @@ import {
   CardContent,
   Chip,
   Grid,
-  Rating,
   Snackbar,
   Stack,
   TextField,
@@ -122,7 +121,7 @@ export function ProductDetail() {
                 {product.title}{product.unit && ` - ${product.unit}`}
               </Typography>
               <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                <Rating value={product.rating || 0} precision={0.1} size="medium" readOnly sx={{ color: theme.palette.primary.main }} />
+                {/* <Rating value={product.rating || 0} precision={0.1} size="medium" readOnly sx={{ color: theme.palette.primary.main }} /> */}
                 <Typography variant="h6" color="text.secondary" sx={{ fontFamily: 'Inter, sans-serif' }}>
                   {product.rating?.toFixed(1) || '0.0'}
                 </Typography>

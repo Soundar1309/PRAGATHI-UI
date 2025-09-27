@@ -911,6 +911,33 @@ const Header: React.FC = () => {
               {isAuthenticated ? 'Profile' : 'Login'}
             </Button>
 
+            {/* Admin Dashboard - Only for admin users */}
+            {isAdmin && (
+              <Button
+                component={NavLink}
+                to="/admin"
+                onClick={() => setDrawerOpen(false)}
+                sx={{
+                  color: location.pathname === '/admin' ? theme.palette.primary.main : theme.palette.text.secondary,
+                  fontWeight: 600,
+                  justifyContent: 'flex-start',
+                  textTransform: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  py: 2,
+                  px: 2,
+                  borderRadius: 1,
+                  '&:hover': {
+                    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+                  },
+                }}
+              >
+                <ListAltIcon sx={{ color: theme.palette.primary.main }} />
+                Admin Dashboard
+              </Button>
+            )}
+
             {/* Product Management Section - Only for logged-in users */}
             {isAuthenticated && (
               <Box>
@@ -1165,6 +1192,12 @@ const Header: React.FC = () => {
         {isAdmin && (
           <>
             <Divider />
+            <MenuItem onClick={() => { handleAccountMenuClose(); navigate('/admin'); }}>
+              <ListItemIcon>
+                <ListAltIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Admin Dashboard</ListItemText>
+            </MenuItem>
             <MenuItem onClick={handleCreateProduct}>
               <ListItemIcon>
                 <AddIcon fontSize="small" />
