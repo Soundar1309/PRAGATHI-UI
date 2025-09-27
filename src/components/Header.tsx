@@ -425,7 +425,7 @@ const Header: React.FC = () => {
             alignItems: 'center', 
             flexShrink: 0,
             minWidth: 0,
-            maxWidth: { xs: '40%', sm: '45%', md: '50%' },
+            maxWidth: { xs: '60%', sm: '45%', md: '50%' },
           }}>
             <Button
               component={NavLink}
@@ -441,11 +441,11 @@ const Header: React.FC = () => {
                 fontFamily: 'Playfair Display, serif',
                 display: 'flex',
                 alignItems: 'center',
-                gap: { xs: 1, sm: 2, md: 2 },
+                gap: { xs: 0.5, sm: 2, md: 2 },
                 whiteSpace: 'nowrap',
                 width: '100%',
                 maxWidth: '100%',
-                overflow: 'hidden',
+                overflow: 'visible',
                 '&:hover': {
                   background: 'transparent',
                   transform: 'translateY(-1px)',
@@ -481,8 +481,11 @@ const Header: React.FC = () => {
                 sx={{
                   display: { xs: 'inline', sm: 'none' },
                   whiteSpace: 'nowrap',
-                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  fontSize: { xs: '0.7rem', sm: '0.875rem' },
                   fontWeight: 600,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '100%',
                 }}
               >
                 Pragathi Natural Farm
