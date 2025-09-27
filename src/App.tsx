@@ -37,13 +37,16 @@ import NurseryPage from './pages/NurseryPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccess from './pages/OrderSuccess';
 import { WishlistProvider } from './contexts/WishlistContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { AuthTest } from './components/AuthTest';
 import ErrorBoundary from './components/ErrorBoundary';
 
 export default function App() {
   return (
     <ErrorBoundary>
-      <WishlistProvider>
-      <Router>
+      <AuthProvider>
+        <WishlistProvider>
+        <Router>
         <Box
           sx={{
             minHeight: '100vh',
@@ -87,7 +90,7 @@ export default function App() {
               }}
             >
               <Routes>
-                <Route path="/" element={<ProductList />} />
+                <Route path="/" element={<><ProductList /><AuthTest /></>} />
                 <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
                 <Route path="/products" element={<FilteredProductList />} />
                 <Route path="/search" element={<SearchResults />} />
@@ -132,8 +135,9 @@ export default function App() {
           
           <Footer />
         </Box>
-      </Router>
-    </WishlistProvider>
+        </Router>
+        </WishlistProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

@@ -42,7 +42,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CategoryIcon from '@mui/icons-material/Category';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useGetCartQuery } from '../features/cart/api';
-import { useLogoutMutation } from '../features/auth/api';
+import { useAuth } from '../contexts/AuthContext';
 import { useUserRole } from '../hooks/useUserRole';
 import { useWishlist } from '../hooks/useWishlist';
 import { useGetCategoriesQuery } from '../features/products/api';
@@ -241,13 +241,13 @@ const Header: React.FC = () => {
   
   // Context and hooks
   const { role } = useUserRole();
-  const isAuthenticated = !!localStorage.getItem('jwt');
+  const { isAuthenticated } = useAuth();
   const isAdmin = isAuthenticated && role === 'admin';
   const { data: cartData } = useGetCartQuery();
   const cartCount = cartData?.item_count || 0;
   const { wishlist } = useWishlist();
   const wishlistCount = wishlist.length;
-  const [logout] = useLogoutMutation();
+  const { logout } = useAuth();
   
   // Fetch categories from API
   const { data: categories = [], isLoading: categoriesLoading, error: categoriesError } = useGetCategoriesQuery();
@@ -329,12 +329,11 @@ const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logout().unwrap();
-      localStorage.removeItem('jwt');
+      await logout();
       handleAccountMenuClose();
       navigate('/');
-    } catch {
-      // Handle logout error
+    } catch (error) {
+      console.error('Logout error:', error);
     }
   };
 

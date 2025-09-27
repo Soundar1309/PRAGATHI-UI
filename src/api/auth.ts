@@ -22,10 +22,13 @@ export interface RegisterData {
 
 export async function register(data: RegisterData): Promise<LoginResponse> {
   const response = await api.post('/users/register/', data);
-  const { access } = response.data;
+  const { access, refresh } = response.data;
   
   if (access) {
     localStorage.setItem('jwt', access);
+  }
+  if (refresh) {
+    localStorage.setItem('refreshToken', refresh);
   }
   
   return response.data;
@@ -33,10 +36,13 @@ export async function register(data: RegisterData): Promise<LoginResponse> {
 
 export async function login(email: string, password: string): Promise<LoginResponse> {
   const response = await api.post('/users/login/', { email, password });
-  const { access } = response.data;
+  const { access, refresh } = response.data;
   
   if (access) {
     localStorage.setItem('jwt', access);
+  }
+  if (refresh) {
+    localStorage.setItem('refreshToken', refresh);
   }
   
   return response.data;
@@ -48,7 +54,8 @@ export async function logout(): Promise<void> {
   } catch (error) {
     console.error('Logout error:', error);
   } finally {
-  localStorage.removeItem('jwt');
+    localStorage.removeItem('jwt');
+    localStorage.removeItem('refreshToken');
   }
 }
 

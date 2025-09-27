@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { useLoginMutation } from './api';
-import { register } from '../../api/auth';
+import { useAuth } from '../../contexts/AuthContext';
 import { Box, Button, TextField, Typography, Tabs, Tab } from '@mui/material';
 
 
 export function LoginRegister() {
   const [tab, setTab] = useState(0);
-  const [login, { isLoading: isLoggingIn, error: loginError }] = useLoginMutation();
+  const { login, register: registerUser, isLoading: isAuthLoading } = useAuth();
+  const [loginError, setLoginError] = useState<string | null>(null);
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
 
 
@@ -24,12 +25,21 @@ export function LoginRegister() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoginError(null);
+    setIsLoggingIn(true);
+    
     try {
-      await login(loginForm).unwrap();
+      await login(loginForm.email, loginForm.password);
       // Redirect to home after successful login
       window.location.href = '/';
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
+      setLoginError(
+        error?.response?.data?.non_field_errors?.[0] || 
+        'Login failed. Please check your credentials.'
+      );
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -39,13 +49,9 @@ export function LoginRegister() {
     setIsRegistering(true);
     
     try {
-      // Use the proper register function from auth.ts
-      const response = await register(registerForm);
-      console.log('Registration successful:', response);
+      await registerUser(registerForm);
       // Auto-login after successful registration
       setTab(0);
-      // Optionally auto-login with the new credentials
-      await login({ email: registerForm.email, password: registerForm.password }).unwrap();
       // Redirect to home after successful registration and login
       window.location.href = '/';
     } catch (err: any) {
@@ -96,7 +102,7 @@ export function LoginRegister() {
             >
               Login
             </Button>
-            {loginError && <Typography color="error">Login failed</Typography>}
+            {loginError && <Typography color="error">{loginError}</Typography>}
           </form>
         )}
         {tab === 1 && (
