@@ -692,7 +692,7 @@ export function ProductList() {
           {/* Skeleton Loading Grid */}
           <Grid 
             container 
-            spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
+            spacing={4} 
             sx={{ 
               px: { xs: 2, sm: 0 },
               justifyContent: { xs: 'center', sm: 'flex-start' },
@@ -862,9 +862,9 @@ export function ProductList() {
           {/* Initial Products - Responsive Grid */}
           <Grid 
             container 
-            spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
+            spacing={4} 
             sx={{ 
-              mt: { xs: 3, sm: 4, md: 5 },
+              mt: 4,
               px: { xs: 2, sm: 0 },
               justifyContent: { xs: 'center', sm: 'flex-start' },
               width: '100%',
@@ -889,7 +889,7 @@ export function ProductList() {
                       cursor: 'pointer', 
                       height: '100%',
                       width: '100%',
-                      maxWidth: { xs: '100%', sm: 350, md: 320 },
+                      maxWidth: '100%',
                       transition: 'transform 0.2s ease-in-out',
                       '&:hover': {
                         transform: { xs: 'none', sm: 'scale(1.02)' }, // No hover effect on mobile
@@ -911,7 +911,7 @@ export function ProductList() {
             <Collapse in={showAllProducts} timeout={400} easing="ease-in-out">
                           <Grid 
               container 
-              spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
+              spacing={4} 
               sx={{ 
                 mt: { xs: 3, sm: 4, md: 5 },
                 px: { xs: 2, sm: 0 },
@@ -1129,7 +1129,7 @@ export function ProductList() {
               {/* Skeleton Loading Grid */}
               <Grid 
                 container 
-                spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
+                spacing={4} 
                 sx={{ 
                   px: { xs: 2, sm: 0 },
                   justifyContent: { xs: 'center', sm: 'flex-start' },
@@ -1247,7 +1247,7 @@ export function ProductList() {
             // Recently Added Products Grid
             <Grid 
               container 
-              spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
+              spacing={4} 
               sx={{ 
                 px: { xs: 2, sm: 0 },
                 justifyContent: { xs: 'center', sm: 'flex-start' },

@@ -267,7 +267,7 @@ export function FilteredProductList() {
                     {/* Initial 4 Products */}
                     <Grid 
                         container 
-                        spacing={{ xs: 2, sm: 3, md: 4 }} 
+                        spacing={4} 
                         sx={{ 
                             mt: 2,
                             justifyContent: { xs: 'center', sm: 'flex-start' },
@@ -290,7 +290,7 @@ export function FilteredProductList() {
                                             cursor: 'pointer', 
                                             height: '100%',
                                             width: '100%',
-                                            maxWidth: { xs: '100%', sm: 350, md: 320 },
+                                            maxWidth: '100%',
                                         }}
                                     >
                                         <ProductCard
@@ -308,7 +308,7 @@ export function FilteredProductList() {
                         <Collapse in={showAllProducts} timeout={400} easing="ease-in-out">
                             <Grid 
                                 container 
-                                spacing={{ xs: 2, sm: 3, md: 4 }} 
+                                spacing={4} 
                                 sx={{ 
                                     mt: 2,
                                     justifyContent: { xs: 'center', sm: 'flex-start' },

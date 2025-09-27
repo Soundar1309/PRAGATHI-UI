@@ -76,15 +76,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        // Fixed height for equal card sizes - adjusted for proper content display
-        height: { xs: 420, sm: 450, md: 480 },
-        minHeight: { xs: 420, sm: 450, md: 480 },
-        // Responsive width with proper constraints
+        // Remove fixed heights - let content determine height naturally
         width: '100%',
-        maxWidth: { xs: '100%', sm: 300, md: 320, lg: 350 },
-        minWidth: { xs: '100%', sm: 280, md: 300, lg: 320 },
-        // Enhanced border radius
-        // borderRadius: { xs: 1.5, sm: 2, md: 2.5 },
+        maxWidth: '100%',
+        minWidth: 0,
+        // Use consistent border radius
+        borderRadius: 2,
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
         background: theme.palette.background.paper,
         // No padding on card - let sections handle their own padding
@@ -100,8 +97,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         overflow: 'hidden', // Prevent content from overflowing
         // Ensure card respects container boundaries
         boxSizing: 'border-box',
-        // Force consistent sizing regardless of content
-        flexShrink: 0,
+        // Allow card to grow/shrink naturally
+        flex: '0 0 auto',
         // Prevent content from expanding the card
         position: 'relative',
       }}
@@ -138,15 +135,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           size="small"
           sx={{
             position: 'absolute',
-            top: { xs: 8, sm: 12 },
-            left: { xs: 8, sm: 12 },
+            top: 12,
+            left: 12,
             bgcolor: theme.palette.primary.dark,
             color: '#fff',
             fontWeight: 700,
             borderRadius: 1,
             boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-            fontSize: { xs: '0.7rem', sm: '0.75rem' },
-            maxWidth: { xs: 100, sm: 120 },
+            fontSize: '0.75rem',
+            maxWidth: 120,
             // Add text shadow for better readability
             textShadow: '0 1px 2px rgba(0,0,0,0.3)',
             // Add border for better definition
@@ -162,15 +159,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             size="small"
             sx={{
               position: 'absolute',
-              top: { xs: 8, sm: 12 },
-              right: { xs: 8, sm: 12 },
+              top: 12,
+              right: 12,
               bgcolor: theme.palette.error.dark,
               color: '#fff',
               fontWeight: 700,
               borderRadius: 1,
               boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-              fontSize: { xs: '0.65rem', sm: '0.7rem' },
-              maxWidth: { xs: 80, sm: 100 },
+              fontSize: '0.7rem',
+              maxWidth: 100,
               // Add text shadow for better readability
               textShadow: '0 1px 2px rgba(0,0,0,0.3)',
               // Add border for better definition
@@ -185,20 +182,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           <Tooltip title="Free Delivery">
             <Box sx={{
               position: 'absolute',
-              bottom: { xs: 8, sm: 12 },
-              right: { xs: 8, sm: 12 },
+              bottom: 12,
+              right: 12,
               display: 'flex',
               alignItems: 'center',
               bgcolor: 'rgba(255, 255, 255, 0.95)',
               borderRadius: 1,
-              px: { xs: 1, sm: 1 },
+              px: 1,
               py: 1,
               boxShadow: theme.shadows[1],
               gap: 1,
             }}>
               <LocalShippingIcon
                 color="success"
-                sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }}
+                sx={{ fontSize: '1.2rem' }}
               />
               <Typography
                 variant="caption"
@@ -206,7 +203,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 fontWeight={600}
                 sx={{
                   display: { xs: 'none', sm: 'block' },
-                  fontSize: { sm: '0.7rem', md: '0.75rem' }
+                  fontSize: '0.75rem'
                 }}
               >
                 Free Delivery
@@ -222,12 +219,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         display: 'flex',
         flexDirection: 'column',
         p: { xs: 1.5, sm: 2 },
-        // Ensure content doesn't overflow and uses available space
+        // Remove fixed heights - let content determine height
         minHeight: 0,
         overflow: 'hidden',
-        // Adjusted height for proper content display
-        height: { xs: 80, sm: 85, md: 90 },
-        maxHeight: { xs: 80, sm: 85, md: 90 },
         // Add subtle background gradient for visual appeal
         background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.9) 100%)',
         position: 'relative',
@@ -247,9 +241,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           fontWeight={700}
           color="text.primary"
           sx={{
-            fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.3rem' },
-            // lineHeight: 1.4,
-            // mb: { xs: 2, sm: 2.5, md: 3 }, // Increased margin bottom for more space
+            fontSize: '1.2rem',
             // Allow text to wrap naturally
             wordBreak: 'break-word',
             overflowWrap: 'break-word',
@@ -272,7 +264,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         {/* <Stack
           direction="row"
           alignItems="center"
-          spacing={{ xs: 1, sm: 1 }}
+          spacing={1}
           sx={{ 
             mt: 'auto', // Push rating to bottom of content area
             mb: { xs: 1, sm: 1 },
@@ -315,18 +307,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
       <CardActions sx={{
         justifyContent: 'space-between',
         alignItems: 'center',
-        px: { xs: 2.5, sm: 3 },
-        py: { xs: 2.5, sm: 3 },
+        px: { xs: 2, sm: 3 },
+        py: { xs: 1.5, sm: 2 },
         flexDirection: 'row',
-        gap: { xs: 2, sm: 2.5 },
+        gap: { xs: 1, sm: 2 },
         width: '100%',
         flexShrink: 0, // Prevent actions from shrinking
         // Ensure buttons don't wrap
         flexWrap: 'nowrap',
-        // Adjusted height for actions area - proper content display
-        height: { xs: 80, sm: 85, md: 90 },
-        minHeight: { xs: 80, sm: 85, md: 90 },
-        maxHeight: { xs: 80, sm: 85, md: 90 },
+        // Remove fixed heights - let content determine height
+        minHeight: 'auto',
         // Add subtle border and background
         borderTop: '1px solid',
         borderColor: 'divider',
@@ -342,7 +332,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           alignItems: 'flex-start',
           flexShrink: 0,
           minWidth: 0, // Allow price to shrink if needed
-          gap: { xs: 0.5, sm: 0.75 }, // Add gap between prices
+          gap: 0.5, // Add gap between prices
         }}>
           {showOriginalPrice ? (
             <>
@@ -351,7 +341,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 color="primary"
                 fontWeight={700}
                 sx={{
-                  fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' },
+                  fontSize: '1.4rem',
                   lineHeight: 1.2,
                   // Prevent price from being too long
                   overflow: 'hidden',
@@ -374,7 +364,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 color="text.secondary"
                 sx={{
                   textDecoration: 'line-through',
-                  fontSize: { xs: '0.9rem', sm: '1rem' },
+                  fontSize: '1rem',
                   opacity: 0.6,
                   lineHeight: 1.2,
                   fontWeight: 500,
@@ -389,7 +379,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
               color="primary"
               fontWeight={700}
               sx={{
-                fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.5rem' },
+                fontSize: '1.4rem',
                 lineHeight: 1.2,
                 // Prevent price from being too long
                 overflow: 'hidden',
@@ -415,7 +405,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-end',
-          gap: { xs: 1, sm: 1 },
+          gap: 1,
           flexShrink: 0,
           minWidth: 0, // Allow buttons to shrink if needed
         }}>
@@ -429,17 +419,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             color="secondary"
             sx={{
               fontWeight: 700,
-              borderRadius: { xs: 1, sm: 1.5 },
+              borderRadius: 1.5,
               // Enhanced shadow and gradient - changed to green theme
               background: 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
               boxShadow: '0 4px 12px rgba(76, 175, 80, 0.3)',
-              // Responsive sizing
-              minWidth: { xs: 90, sm: 110, md: 120 },
-              maxWidth: { xs: 130, sm: 150, md: 160 },
-              minHeight: { xs: 40, sm: 44, md: 48 },
-              fontSize: { xs: '0.85rem', sm: '0.9rem', md: '0.95rem' },
-              py: { xs: 1.25, sm: 1.5 },
-              px: { xs: 1.5, sm: 2, md: 2.5 },
+              // Responsive sizing for better fit
+              minWidth: { xs: 80, sm: 100, md: 110 },
+              maxWidth: { xs: 120, sm: 140, md: 150 },
+              minHeight: { xs: 36, sm: 40, md: 44 },
+              fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.9rem' },
+              py: { xs: 1, sm: 1.25, md: 1.5 },
+              px: { xs: 1.5, sm: 1.75, md: 2 },
               position: 'relative',
               // Enhanced hover and active states
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -469,24 +459,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                   size={16}
                   sx={{ mr: 1, color: 'white' }}
                 />
-                <span style={{ fontSize: 'inherit' }}>
-                  {/* Shorter text on mobile */}
-                  <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
-                    Adding...
-                  </Box>
-                  <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
-                    Adding...
-                  </Box>
-                </span>
+                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                  Adding...
+                </Box>
+                <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                  ...
+                </Box>
               </>
             ) : (
               <>
-                {/* Responsive button text */}
-                <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
-                  Add to Cart
-                </Box>
                 <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
                   Add to Cart
+                </Box>
+                <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                  Add
                 </Box>
               </>
             )}

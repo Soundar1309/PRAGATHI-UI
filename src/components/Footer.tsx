@@ -42,8 +42,8 @@ const Footer: React.FC = () => {
             >
                 <Grid
                     container
-                    spacing={{ xs: 3, sm: 4, md: 6 }}
-                    sx={{ mb: { xs: 3, sm: 4 } }}
+                    spacing={4}
+                    sx={{ mb: 4 }}
                 >
                     {/* Left Column: Logo, Address, Contact */}
                     <Grid size={{ xs: 12, sm: 12, md: 4, lg: 4 }}>
@@ -170,7 +170,7 @@ const Footer: React.FC = () => {
 
                     {/* Center Columns: Quick Links & Policy */}
                     <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
-                        <Grid container spacing={{ xs: 2, sm: 3 }}>
+                        <Grid container spacing={3}>
                             {/* Quick Links */}
                             <Grid size={{ xs: 12, sm: 12, md: 6 }}>
                                 <Box sx={{
@@ -188,7 +188,7 @@ const Footer: React.FC = () => {
                                     >
                                         Quick Links
                                     </Typography>
-                                    <Stack spacing={{ xs: 2, sm: 2 }}>
+                                    <Stack spacing={2}>
                                         <Link
                                             href="/about"
                                             color="inherit"
@@ -307,7 +307,7 @@ const Footer: React.FC = () => {
                                     >
                                         Our Policy
                                     </Typography>
-                                    <Stack spacing={{ xs: 2, sm: 2 }} sx={{ mb: { xs: 3, sm: 4 } }}>
+                                    <Stack spacing={2} sx={{ mb: 4 }}>
                                         <Link
                                             href="/privacy"
                                             color="inherit"
@@ -378,7 +378,7 @@ const Footer: React.FC = () => {
                                     >
                                         My Account
                                     </Typography>
-                                    <Stack spacing={{ xs: 2, sm: 2 }}>
+                                    <Stack spacing={2}>
                                         <Link
                                             href="/profile"
                                             color="inherit"
@@ -435,7 +435,7 @@ const Footer: React.FC = () => {
 
                             <Stack
                                 direction="row"
-                                spacing={{ xs: 1, sm: 2 }}
+                                spacing={2}
                                 sx={{
                                     mb: { xs: 3, sm: 4 },
                                     justifyContent: { xs: 'center', md: 'flex-start' },

@@ -268,9 +268,9 @@ const NurseryPage: React.FC = () => {
           <>
             <Grid 
               container 
-              spacing={{ xs: 2, sm: 3, md: 4, lg: 5 }} 
+              spacing={4} 
               sx={{ 
-                mt: { xs: 3, sm: 4, md: 5 },
+                mt: 4,
                 px: { xs: 2, sm: 0 },
                 justifyContent: { xs: 'center', sm: 'flex-start' },
                 alignItems: 'stretch',
@@ -301,8 +301,8 @@ const NurseryPage: React.FC = () => {
                         cursor: 'pointer', 
                         height: '100%',
                         width: '100%',
-                        maxWidth: { xs: '100%', sm: 350, md: 350, lg: 380 },
-                        minWidth: { xs: '100%', sm: 300, md: 320, lg: 350 },
+                        maxWidth: '100%',
+                        minWidth: 0,
                         overflow: 'hidden',
                         boxSizing: 'border-box',
                         transition: 'transform 0.2s ease-in-out',
