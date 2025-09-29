@@ -327,6 +327,11 @@ const Header: React.FC = () => {
     navigate('/profile');
   };
 
+  const handleOrderHistoryClick = () => {
+    handleAccountMenuClose();
+    navigate('/order-history');
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -1190,6 +1195,13 @@ const Header: React.FC = () => {
             <PersonIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
+        </MenuItem>
+
+        <MenuItem onClick={handleOrderHistoryClick}>
+          <ListItemIcon>
+            <ShoppingCartIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Order History</ListItemText>
         </MenuItem>
 
         {isAdmin && (

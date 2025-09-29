@@ -40,6 +40,8 @@ import { WishlistProvider } from './contexts/WishlistContext';
 import { AuthProvider } from './contexts/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import { AdminDashboard } from './features/admin/Dashboard';
+import OrderHistoryPage from './pages/OrderHistoryPage';
+import OrderHistoryTestPage from './pages/OrderHistoryTestPage';
 
 export default function App() {
   return (
@@ -103,6 +105,8 @@ export default function App() {
                 <Route path="/admin/categories/new" element={<RequireAdmin><CategoryFormWrapper /></RequireAdmin>} />
                 <Route path="/admin/categories/:categoryId/edit" element={<RequireAdmin><CategoryFormWrapper /></RequireAdmin>} />
                 <Route path="/orders" element={<RequireAuth><OrderList /></RequireAuth>} />
+                <Route path="/order-history" element={<RequireAuth><OrderHistoryPage /></RequireAuth>} />
+                <Route path="/order-history-test" element={<RequireAuth><OrderHistoryTestPage /></RequireAuth>} />
                 <Route path="/orders/new" element={<OrderCreate />} />
                 <Route path="/orders/:id" element={<RequireAuth><OrderDetail /></RequireAuth>} />
                 <Route path="/cart" element={<CartPage />} />

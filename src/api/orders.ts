@@ -1,15 +1,22 @@
-import api from './axios';
+const API_BASE_URL = 'http://localhost:8000/api';
 
 export interface OrderItem {
   id: number;
   product: {
     id: number;
     title: string;
-    price: number;
-    image?: string;
+    description: string;
+    price: string;
+    image: string;
+    category: {
+      id: number;
+      name: string;
+    };
   };
   quantity: number;
-  price: number;
+  price: string;
+  subtotal: string;
+  created_at: string;
 }
 
 export interface Order {
@@ -21,71 +28,68 @@ export interface Order {
   };
   address: {
     id: number;
-    street_address: string;
+    street: string;
     city: string;
     state: string;
     postal_code: string;
     country: string;
   };
-  delivery?: {
+  delivery: {
     id: number;
     email: string;
     name: string;
-  };
-  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  total: number;
+  } | null;
+  status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+  total: string;
   order_items: OrderItem[];
   created_at: string;
   updated_at: string;
 }
 
-export interface CreateOrderData {
-  address_id: number;
-}
+export const fetchOrders = async (): Promise<Order[]> => {
+  const token = localStorage.getItem('jwt');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
 
-export interface UpdateOrderData {
-  status?: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  delivery_id?: number;
-}
+  const response = await fetch(`${API_BASE_URL}/orders/`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
 
-// Orders API
-export const ordersApi = {
-  // Get all orders (filtered by user role)
-  getAll: async (params?: {
-    page?: number;
-    status?: string;
-  }) => {
-    const response = await api.get('/orders/', { params });
-    return response.data;
-  },
+  if (!response.ok) {
+    throw new Error('Failed to fetch orders');
+  }
 
-  // Get single order
-  getById: async (id: number) => {
-    const response = await api.get(`/orders/${id}/`);
-    return response.data;
-  },
+  const data = await response.json();
+  
+  // Handle paginated response
+  if (data.results) {
+    return data.results;
+  }
+  
+  // Handle direct array response
+  return Array.isArray(data) ? data : [];
+};
 
-  // Create order from cart
-  create: async (data: CreateOrderData) => {
-    const response = await api.post('/orders/', data);
-    return response.data;
-  },
+export const fetchOrderById = async (id: number): Promise<Order> => {
+  const token = localStorage.getItem('jwt');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
 
-  // Update order status (admin/delivery only)
-  update: async (id: number, data: UpdateOrderData) => {
-    const response = await api.patch(`/orders/${id}/`, data);
-    return response.data;
-  },
+  const response = await fetch(`${API_BASE_URL}/orders/${id}/`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
 
-  // Get orders by status
-  getByStatus: async (status: string) => {
-    const response = await api.get('/orders/', { params: { status } });
-    return response.data;
-  },
+  if (!response.ok) {
+    throw new Error('Failed to fetch order');
+  }
 
-  // Get user's orders
-  getMyOrders: async () => {
-    const response = await api.get('/orders/');
-    return response.data;
-  },
-}; 
+  return response.json();
+};
