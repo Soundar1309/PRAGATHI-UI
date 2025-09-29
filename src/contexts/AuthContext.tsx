@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { useLoginMutation, useLogoutMutation } from '../features/auth/api';
 import { register, getProfile } from '../api/auth';
 

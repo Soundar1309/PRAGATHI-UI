@@ -5,7 +5,7 @@ import { Box, Button, TextField, Typography, Tabs, Tab } from '@mui/material';
 
 export function LoginRegister() {
   const [tab, setTab] = useState(0);
-  const { login, register: registerUser, isLoading: isAuthLoading } = useAuth();
+  const { login, register: registerUser } = useAuth();
   const [loginError, setLoginError] = useState<string | null>(null);
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);

@@ -485,8 +485,8 @@ export const AdminDashboard: React.FC = () => {
                         borderRadius: 8,
                         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
                       }}
-                      labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                      formatter={(value) => [value, 'Orders']}
+                      labelFormatter={(value: string) => new Date(value).toLocaleDateString()}
+                      formatter={(value: number) => [value, 'Orders']}
                     />
                     <Area
                       type="monotone"
@@ -558,7 +558,7 @@ export const AdminDashboard: React.FC = () => {
                         borderRadius: 8,
                         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
                       }}
-                      formatter={(value) => [`₹${value.toLocaleString()}`, 'Revenue']}
+                      formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -624,7 +624,7 @@ export const AdminDashboard: React.FC = () => {
                     borderRadius: 8,
                     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
                   }}
-                  formatter={(value) => [`₹${value.toLocaleString()}`, 'Revenue']}
+                  formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
                 />
                 <Line
                   type="monotone"
