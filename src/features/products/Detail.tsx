@@ -16,12 +16,13 @@ import {
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useAddItemMutation } from '../cart/api';
-import { useGetProductQuery } from './api';
+import { useGetProductWithVariationsQuery } from './api';
 import ProductImage from '../../components/ProductImage';
+import { ProductVariationsDisplay } from './ProductVariationsDisplay';
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
-  const { data: product, isLoading } = useGetProductQuery(Number(id));
+  const { data: product, isLoading } = useGetProductWithVariationsQuery(Number(id));
   const theme = useTheme();
   const [addItem, { isLoading: isAdding }] = useAddItemMutation();
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
@@ -120,15 +121,6 @@ export function ProductDetail() {
               <Typography variant="h4" fontWeight={700} gutterBottom color="primary" sx={{ fontFamily: 'Playfair Display, serif' }}>
                 {product.title}{product.unit && ` - ${product.unit}`}
               </Typography>
-              <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                {/* <Rating value={product.rating || 0} precision={0.1} size="medium" readOnly sx={{ color: theme.palette.primary.main }} /> */}
-                <Typography variant="h6" color="text.secondary" sx={{ fontFamily: 'Inter, sans-serif' }}>
-                  {product.rating?.toFixed(1) || '0.0'}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'Inter, sans-serif' }}>
-                  ({product.review_count || 0} reviews)
-                </Typography>
-              </Stack>
               
               {/* Pricing Display */}
               <Box sx={{ mb: 2 }}>
@@ -204,6 +196,17 @@ export function ProductDetail() {
           </Card>
         </Grid>
       </Grid>
+      
+      {/* Product Variations Section */}
+      {product?.variations && product.variations.length > 0 && (
+        <Box sx={{ mt: 4 }}>
+          <ProductVariationsDisplay
+            variations={product.variations}
+            productTitle={product.title}
+          />
+        </Box>
+      )}
+      
       <div className="tamil-motif" style={{ margin: '2rem auto 0 auto' }} />
       <Snackbar
         open={snackbarOpen}

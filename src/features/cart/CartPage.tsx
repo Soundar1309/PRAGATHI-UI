@@ -169,16 +169,16 @@ export function CartPage() {
                                     boxShadow: theme.shadows[3],
                                     borderRadius: 2,
                                 }}>
-                                    {/* Product Image */}
+                                    {/* Product Image */}                                                                                                                                                                                                           
                                     <ProductImage
-                                        src={item.product.image}
-                                        alt={item.product.title}
+                                        src={item.item_image || item.product?.image || ''}
+                                        alt={item.item_name}
                                         variant="list"
                                         sx={{
                                             width: { xs: '100%', sm: 200 },
                                             cursor: 'pointer',
                                         }}
-                                        onClick={() => navigate(`/products/${item.product.id}`)}
+                                        onClick={() => navigate(`/products/${item.product?.id || item.product_variation?.product}`)}                                     
                                     />
 
                                     {/* Product Details */}
@@ -198,9 +198,9 @@ export function CartPage() {
                                                     '&:hover': { color: 'primary.main' },
                                                     fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`
                                                 }}
-                                                onClick={() => navigate(`/products/${item.product.id}`)}
+                                                onClick={() => navigate(`/products/${item.product?.id || item.product_variation?.product}`)}
                                             >
-                                                {item.product.title}
+                                                {item.item_name}
                                             </Typography>
                                             <Typography
                                                 variant="body2"
@@ -211,7 +211,7 @@ export function CartPage() {
                                                     fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`
                                                 }}
                                             >
-                                                {item.product.description}
+                                                {item.product?.description || item.product_variation?.display_name}
                                             </Typography>
                                         </Box>
 

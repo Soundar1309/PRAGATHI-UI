@@ -82,6 +82,41 @@ export const productsApi = createApi({
         method: 'DELETE',
       }),
     }),
+    
+    // Product Variations endpoints
+    getProductVariations: builder.query<any[], { product_id?: number; unit?: string; is_active?: boolean }>({
+      query: (params) => ({
+        url: '/products/variations/',
+        params,
+      }),
+      transformResponse: (response: { results: any[] }) => response.results || [],
+    }),
+    getProductVariation: builder.query<any, number>({
+      query: (id) => `/products/variations/${id}/`,
+    }),
+    createProductVariation: builder.mutation<any, Partial<any>>({
+      query: (body) => ({
+        url: '/products/variations/',
+        method: 'POST',
+        body,
+      }),
+    }),
+    updateProductVariation: builder.mutation<any, { id: number; data: Partial<any> }>({
+      query: ({ id, data }) => ({
+        url: `/products/variations/${id}/`,
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
+    deleteProductVariation: builder.mutation<any, number>({
+      query: (id) => ({
+        url: `/products/variations/${id}/`,
+        method: 'DELETE',
+      }),
+    }),
+    getProductWithVariations: builder.query<any, number>({
+      query: (id) => `/products/products/${id}/with-variations/`,
+    }),
   }),
 });
 
@@ -99,4 +134,10 @@ export const {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useGetProductVariationsQuery,
+  useGetProductVariationQuery,
+  useCreateProductVariationMutation,
+  useUpdateProductVariationMutation,
+  useDeleteProductVariationMutation,
+  useGetProductWithVariationsQuery,
 } = productsApi;

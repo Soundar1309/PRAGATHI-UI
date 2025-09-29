@@ -14,7 +14,7 @@ const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     await removeItem(id);
   };
 
-  const total = data?.cart_items?.reduce((sum: number, item: { product: { price: string }; quantity: number }) => sum + parseFloat(item.product.price) * item.quantity, 0) || 0;
+  const total = data?.cart_items?.reduce((sum: number, item: { item_price: number; quantity: number }) => sum + item.item_price * item.quantity, 0) || 0;
 
   return (
     <Box sx={{ width: { xs: 320, sm: 400 }, p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -26,7 +26,7 @@ const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <Typography sx={{ mt: 2 }}>Your cart is empty.</Typography>
       ) : (
         <List sx={{ flexGrow: 1 }}>
-          {data.cart_items.map((item: { id: number; product: { title: string; price: string; image: string }; quantity: number }) => (
+          {data.cart_items.map((item: { id: number; item_name: string; item_price: number; item_image?: string; quantity: number }) => (
             <ListItem key={item.id} secondaryAction={
               <IconButton edge="end" onClick={() => handleRemove(item.id)}>
                 <DeleteIcon />
@@ -34,18 +34,18 @@ const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             }>
               <ListItemAvatar>
                 <ProductImage
-                  src={item.product.image}
-                  alt={item.product.title}
+                  src={item.item_image || ''}
+                  alt={item.item_name}
                   variant="mini"
                   sx={{ width: 40, height: 40 }}
                 />
               </ListItemAvatar>
               <ListItemText
-                primary={item.product.title}
+                primary={item.item_name}
                 secondary={<>
                   <Stack direction="row" spacing={1} alignItems="center">
                     <Typography variant="body2">Qty: {item.quantity}</Typography>
-                    <Typography variant="body2">₹{parseFloat(item.product.price).toFixed(2)}</Typography>
+                    <Typography variant="body2">₹{item.item_price.toFixed(2)}</Typography>
                   </Stack>
                 </>}
               />

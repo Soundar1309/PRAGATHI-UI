@@ -3,7 +3,7 @@ import { baseQueryWithReauth } from '../../api/baseQueryWithAuth';
 
 export interface CartItem {
   id: number;
-  product: {
+  product?: {
     id: number;
     title: string;
     description: string;
@@ -20,8 +20,29 @@ export interface CartItem {
     created_at: string;
     updated_at: string;
   };
+  product_variation?: {
+    id: number;
+    product: number;
+    product_title: string;
+    quantity: number;
+    unit: string;
+    price: number;
+    original_price?: number;
+    stock: number;
+    image?: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    available: boolean;
+    has_offer: boolean;
+    discount_percentage: number;
+    display_name: string;
+  };
   quantity: number;
   subtotal: number;
+  item_name: string;
+  item_price: number;
+  item_image?: string;
   created_at: string;
   updated_at: string;
 }
@@ -47,7 +68,7 @@ export const cartApi = createApi({
       },
       providesTags: ['Cart'],
     }),
-    addItem: builder.mutation<any, { product_id: number; quantity: number }>({
+    addItem: builder.mutation<any, { product_id?: number; product_variation_id?: number; quantity: number }>({
       query: (body) => {
         console.log('addItem mutation called with:', body);
         return {

@@ -18,6 +18,7 @@ import {
 import { Add as AddIcon, Edit as EditIcon, CloudUpload as CloudUploadIcon } from '@mui/icons-material';
 import { useCreateProductMutation, useUpdateProductMutation, useGetProductQuery, useGetCategoriesQuery } from './api';
 import { useSnackbar } from 'notistack';
+import { ProductVariationsForm } from './ProductVariationsForm';
 
 interface ProductFormProps {
   productId?: number;
@@ -450,6 +451,13 @@ export function ProductForm({ productId }: ProductFormProps) {
                 )}
               </Box>
             </Box>
+
+            {/* Product Variations Section - Only show for existing products */}
+            {productId && (
+              <ProductVariationsForm
+                productId={productId}
+              />
+            )}
 
             <Box
               sx={{

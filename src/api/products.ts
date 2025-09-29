@@ -34,6 +34,36 @@ export interface CreateProductData {
   image?: File;
 }
 
+export interface ProductVariation {
+  id: number;
+  product: number;
+  product_title: string;
+  quantity: number;
+  unit: string;
+  price: number;
+  original_price?: number;
+  stock: number;
+  image?: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  available: boolean;
+  has_offer: boolean;
+  discount_percentage: number;
+  display_name: string;
+}
+
+export interface CreateProductVariationData {
+  product: number;
+  quantity: number;
+  unit: string;
+  price: number;
+  original_price?: number;
+  stock: number;
+  image?: File;
+  is_active?: boolean;
+}
+
 // Products API
 export const productsApi = {
   // Get all products with optional filtering
@@ -98,6 +128,12 @@ export const productsApi = {
   delete: async (id: number) => {
     await api.delete(`/products/products/${id}/`);
   },
+
+  // Get product with variations
+  getWithVariations: async (id: number) => {
+    const response = await api.get(`/products/products/${id}/with-variations/`);
+    return response.data;
+  },
 };
 
 // Categories API
@@ -129,5 +165,71 @@ export const categoriesApi = {
   // Delete category
   delete: async (id: number) => {
     await api.delete(`/products/categories/${id}/`);
+  },
+};
+
+// Product Variations API
+export const productVariationsApi = {
+  // Get all variations with optional filtering
+  getAll: async (params?: {
+    product_id?: number;
+    unit?: string;
+    is_active?: boolean;
+  }) => {
+    const response = await api.get('/products/variations/', { params });
+    return response.data;
+  },
+
+  // Get single variation
+  getById: async (id: number) => {
+    const response = await api.get(`/products/variations/${id}/`);
+    return response.data;
+  },
+
+  // Create variation (admin only)
+  create: async (data: CreateProductVariationData) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        if (typeof value === 'number' || typeof value === 'boolean') {
+          formData.append(key, value.toString());
+        } else {
+          formData.append(key, value);
+        }
+      }
+    });
+    
+    const response = await api.post('/products/variations/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  // Update variation (admin only)
+  update: async (id: number, data: Partial<CreateProductVariationData>) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined) {
+        if (typeof value === 'number' || typeof value === 'boolean') {
+          formData.append(key, value.toString());
+        } else {
+          formData.append(key, value);
+        }
+      }
+    });
+    
+    const response = await api.patch(`/products/variations/${id}/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  // Delete variation (admin only)
+  delete: async (id: number) => {
+    await api.delete(`/products/variations/${id}/`);
   },
 }; 
