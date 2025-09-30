@@ -97,21 +97,6 @@ export function ProductVariationsDisplay({ variations, productTitle, onAddToCart
               onClick={() => handleVariationClick(variation)}
             >
               <CardContent sx={{ p: 2 }}>
-                {variation.image && (
-                  <Box sx={{ mb: 2, textAlign: 'center' }}>
-                    <img
-                      src={variation.image}
-                      alt={variation.display_name}
-                      style={{
-                        width: '100%',
-                        height: 120,
-                        objectFit: 'cover',
-                        borderRadius: 8,
-                      }}
-                    />
-                  </Box>
-                )}
-                
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
                   {variation.display_name}
                 </Typography>
@@ -198,20 +183,6 @@ export function ProductVariationsDisplay({ variations, productTitle, onAddToCart
         <DialogContent>
           {selectedVariation && (
             <Box>
-              {selectedVariation.image && (
-                <Box sx={{ mb: 3, textAlign: 'center' }}>
-                  <img
-                    src={selectedVariation.image}
-                    alt={selectedVariation.display_name}
-                    style={{
-                      maxWidth: '100%',
-                      maxHeight: 200,
-                      borderRadius: 8,
-                    }}
-                  />
-                </Box>
-              )}
-              
               <Box sx={{ mb: 2 }}>
                 <Typography variant="h5" color="primary" sx={{ fontWeight: 700, mb: 1 }}>
                   ₹{selectedVariation.price}

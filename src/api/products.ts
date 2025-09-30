@@ -5,15 +5,22 @@ export interface Product {
   title: string;
   description: string;
   price: number;
+  original_price?: number;
+  offer_price?: number;
   stock: number;
   unit: string;
+  product_type: 'solid' | 'liquid' | 'other';
   image?: string;
+  image_url?: string;
   category: {
     id: number;
     name: string;
   };
   created_at: string;
   updated_at: string;
+  has_offer?: boolean;
+  discount_percentage?: number;
+  default_variation?: ProductVariation;
 }
 
 export interface Category {
@@ -24,34 +31,38 @@ export interface Category {
   updated_at: string;
 }
 
-export interface CreateProductData {
-  title: string;
-  description: string;
-  price: number;
-  stock: number;
-  unit: string;
-  category_id: number;
-  image?: File;
-}
-
 export interface ProductVariation {
   id: number;
   product: number;
-  product_title: string;
+  product_title?: string;
   quantity: number;
-  unit: string;
+  unit: 'ml' | 'l' | 'g' | 'kg' | 'nos' | 'pcs';
   price: number;
   original_price?: number;
   stock: number;
   image?: string;
+  image_url?: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;
-  available: boolean;
-  has_offer: boolean;
-  discount_percentage: number;
-  display_name: string;
+  available?: boolean;
+  has_offer?: boolean;
+  discount_percentage?: number;
+  display_name?: string;
 }
+
+export interface CreateProductData {
+  title: string;
+  description: string;
+  price: number;
+  original_price?: number;
+  stock: number;
+  unit: string;
+  product_type: 'solid' | 'liquid' | 'other';
+  category_id: number;
+  image?: File;
+}
+
 
 export interface CreateProductVariationData {
   product: number;

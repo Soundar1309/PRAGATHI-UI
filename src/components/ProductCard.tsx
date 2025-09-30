@@ -22,17 +22,29 @@ export interface Product {
   title: string;
   description?: string;
   image: string;
+  image_url?: string;
   price: number;
   original_price?: number;
   offer_price?: number;
   stock?: number;
   unit?: string;
+  product_type?: 'solid' | 'liquid' | 'other';
   category: string;
   rating?: number;
   reviewCount?: number;
   freeDelivery?: boolean;
   has_offer?: boolean;
   discount_percentage?: number;
+  default_variation?: {
+    id: number;
+    quantity: number;
+    unit: string;
+    price: number;
+    original_price?: number;
+    display_name?: string;
+    has_offer?: boolean;
+    discount_percentage?: number;
+  };
 }
 
 interface ProductCardProps {
@@ -57,19 +69,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
     if (onAddToCart) {
       onAddToCart(product);
     } else {
+      const variation = product.default_variation;
       await handleAddToCart({
         productId: product.id,
+        productVariationId: variation?.id,
         quantity: 1,
         productTitle: product.title,
       });
     }
   };
 
-  // Determine which price to display
-  const displayPrice = Number(product.price); // Always show the price field
-  const originalPrice = product.original_price ? Number(product.original_price) : null; // Get the actual original_price (could be null/undefined)
-  const hasOffer = originalPrice && originalPrice > displayPrice; // Show offer if original price exists and is higher than current price
-  const showOriginalPrice = originalPrice && originalPrice !== displayPrice; // Only show original price if it exists and is different from current price
+  // Determine which price to display - use default_variation if available, otherwise fall back to product price
+  const variation = product.default_variation;
+  const displayPrice = variation ? Number(variation.price) : Number(product.price);
+  const originalPrice = variation ? variation.original_price : product.original_price;
+  const hasOffer = variation ? variation.has_offer : (originalPrice && originalPrice > displayPrice);
+  const showOriginalPrice = variation ? variation.has_offer : (originalPrice && originalPrice !== displayPrice);
 
   return (
     <Card
@@ -155,7 +170,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         {/* Offer Chip */}
         {hasOffer && (
           <Chip
-            label={`${Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% OFF`}
+            label={`${variation?.discount_percentage || (originalPrice ? Math.round(((originalPrice - displayPrice) / originalPrice) * 100) : 0)}% OFF`}
             size="small"
             sx={{
               position: 'absolute',
@@ -256,7 +271,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             textShadow: '0 1px 2px rgba(0,0,0,0.1)',
           }}
         >
-          {product.title}{product.unit && ` - ${product.unit}`}
+          {product.title}{variation?.display_name && ` - ${variation.display_name}`}
         </Typography>
 
 

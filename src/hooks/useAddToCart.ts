@@ -5,6 +5,7 @@ import { useAddItemMutation } from '../features/cart/api';
 
 interface AddToCartParams {
   productId: number;
+  productVariationId?: number;
   quantity?: number;
   productTitle?: string;
 }
@@ -15,14 +16,22 @@ export const useAddToCart = () => {
   const [addItem, { isLoading }] = useAddItemMutation();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleAddToCart = async ({ productId, quantity = 1, productTitle = 'Product' }: AddToCartParams) => {
-    console.log('handleAddToCart called with:', { productId, quantity, productTitle });
+  const handleAddToCart = async ({ productId, productVariationId, quantity = 1, productTitle = 'Product' }: AddToCartParams) => {
+    console.log('handleAddToCart called with:', { productId, productVariationId, quantity, productTitle });
     setIsProcessing(true);
 
     try {
       console.log('Calling addItem mutation...');
       // Add to cart immediately (no authentication required)
-      const result = await addItem({ product_id: productId, quantity }).unwrap();
+      const requestData: any = { quantity };
+      
+      if (productVariationId) {
+        requestData.product_variation_id = productVariationId;
+      } else {
+        requestData.product_id = productId;
+      }
+      
+      const result = await addItem(requestData).unwrap();
       console.log('Add to cart successful:', result);
       
       enqueueSnackbar(`${productTitle} added to cart successfully!`, { 
