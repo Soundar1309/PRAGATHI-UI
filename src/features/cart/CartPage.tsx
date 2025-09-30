@@ -13,15 +13,31 @@ import {
     Grow,
     Alert,
     CircularProgress,
+    Select,
+    MenuItem,
+    FormControl,
+    Switch,
+    FormControlLabel,
 } from '@mui/material';
 import ProductImage from '../../components/ProductImage';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useNavigate } from 'react-router-dom';
 import { useGetCartQuery, useUpdateItemMutation, useRemoveItemMutation } from './api';
 import { useSnackbar } from 'notistack';
+import { useState, useRef } from 'react';
+
+const UNIT_CHOICES = [
+    { value: 'g', label: 'Gram' },
+    { value: 'kg', label: 'Kilogram' },
+    { value: 'ml', label: 'Milliliter' },
+    { value: 'l', label: 'Liter' },
+    { value: 'nos', label: 'Numbers' },
+    { value: 'pcs', label: 'Pieces' },
+];
 
 export function CartPage() {
     const theme = useTheme();
@@ -31,6 +47,13 @@ export function CartPage() {
     const { data: cart, isLoading, isError, refetch } = useGetCartQuery();
     const [updateItem, { isLoading: isUpdating }] = useUpdateItemMutation();
     const [removeItem, { isLoading: isRemoving }] = useRemoveItemMutation();
+    
+    // State for managing custom quantity mode for each item
+    const [customQuantityMode, setCustomQuantityMode] = useState<Record<number, boolean>>({});
+    
+    // State for managing input values locally to prevent API calls on every keystroke
+    const [inputValues, setInputValues] = useState<Record<number, string>>({});
+    const debounceTimeouts = useRef<Record<number, NodeJS.Timeout>>({});
 
     const handleQuantityChange = async (itemId: number, newQuantity: number) => {
         try {
@@ -39,6 +62,58 @@ export function CartPage() {
             refetch();
         } catch (error: any) {
             enqueueSnackbar('Failed to update cart', { variant: 'error' });
+        }
+    };
+
+    const handleCustomQuantityChange = async (itemId: number, customQuantity: number, customUnit: string) => {
+        try {
+            await updateItem({ id: itemId, custom_quantity: customQuantity, custom_unit: customUnit }).unwrap();
+            enqueueSnackbar('Cart updated successfully!', { variant: 'success' });
+            refetch();
+        } catch (error: any) {
+            enqueueSnackbar('Failed to update cart', { variant: 'error' });
+        }
+    };
+
+    const debouncedCustomQuantityChange = (itemId: number, value: string, unit: string) => {
+        // Clear existing timeout
+        if (debounceTimeouts.current[itemId]) {
+            clearTimeout(debounceTimeouts.current[itemId]);
+        }
+
+        // Set new timeout
+        debounceTimeouts.current[itemId] = setTimeout(() => {
+            const numValue = parseFloat(value);
+            if (value === '' || value === '0') {
+                // Don't update if empty or zero
+                return;
+            }
+            if (numValue > 0) {
+                handleCustomQuantityChange(itemId, numValue, unit);
+            }
+        }, 500); // 500ms delay
+    };
+
+    const toggleCustomQuantityMode = (itemId: number) => {
+        const isCurrentlyCustom = customQuantityMode[itemId] || false;
+        setCustomQuantityMode(prev => ({
+            ...prev,
+            [itemId]: !isCurrentlyCustom
+        }));
+        
+        // If switching from custom to regular, clear custom values
+        if (isCurrentlyCustom) {
+            handleQuantityChange(itemId, 1);
+        }
+    };
+
+    const clearCustomQuantity = async (itemId: number) => {
+        try {
+            await updateItem({ id: itemId, quantity: 1 }).unwrap();
+            enqueueSnackbar('Custom quantity cleared!', { variant: 'success' });
+            refetch();
+        } catch (error: any) {
+            enqueueSnackbar('Failed to clear custom quantity', { variant: 'error' });
         }
     };
 
@@ -223,36 +298,127 @@ export function CartPage() {
                                             flexWrap: 'wrap',
                                             gap: 2
                                         }}>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={() => handleQuantityChange(item.id, Math.max(1, item.quantity - 1))}
-                                                    disabled={isUpdating || isRemoving}
-                                                >
-                                                    <RemoveIcon />
-                                                </IconButton>
-                                                <TextField
-                                                    value={item.quantity}
-                                                    onChange={(e) => {
-                                                        const newQuantity = parseInt(e.target.value) || 1;
-                                                        if (newQuantity > 0) {
-                                                            handleQuantityChange(item.id, newQuantity);
-                                                        }
-                                                    }}
-                                                    size="small"
-                                                    sx={{ width: 80 }}
-                                                    inputProps={{
-                                                        min: 1,
-                                                        style: { textAlign: 'center' }
-                                                    }}
+                                            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, flexDirection: 'column' }}>
+                                                {/* Toggle between regular and custom quantity */}
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch
+                                                            checked={customQuantityMode[item.id] || false}
+                                                            onChange={() => toggleCustomQuantityMode(item.id)}
+                                                            size="small"
+                                                        />
+                                                    }
+                                                    label="Custom Quantity"
+                                                    sx={{ mb: 1 }}
                                                 />
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                                                    disabled={isUpdating || isRemoving}
-                                                >
-                                                    <AddIcon />
-                                                </IconButton>
+                                                
+                                                {customQuantityMode[item.id] ? (
+                                                    // Custom quantity input
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <TextField
+                                                            type="number"
+                                                            value={inputValues[item.id] !== undefined ? inputValues[item.id] : (item.custom_quantity || '')}
+                                                            onChange={(e) => {
+                                                                const value = e.target.value;
+                                                                setInputValues(prev => ({
+                                                                    ...prev,
+                                                                    [item.id]: value
+                                                                }));
+                                                                debouncedCustomQuantityChange(item.id, value, item.custom_unit || 'g');
+                                                            }}
+                                                            onBlur={(e) => {
+                                                                const value = e.target.value;
+                                                                if (value === '' || value === '0') {
+                                                                    // Clear custom quantity when field is empty
+                                                                    handleCustomQuantityChange(
+                                                                        item.id, 
+                                                                        1, 
+                                                                        item.custom_unit || 'g'
+                                                                    );
+                                                                    setInputValues(prev => ({
+                                                                        ...prev,
+                                                                        [item.id]: ''
+                                                                    }));
+                                                                }
+                                                            }}
+                                                            size="small"
+                                                            sx={{ width: 100 }}
+                                                            placeholder="250"
+                                                            inputProps={{
+                                                                min: 0.01,
+                                                                step: 0.01,
+                                                                style: { textAlign: 'center' }
+                                                            }}
+                                                        />
+                                                        <FormControl size="small" sx={{ minWidth: 80 }}>
+                                                            <Select
+                                                                value={item.custom_unit || 'g'}
+                                                                onChange={(e) => {
+                                                                    handleCustomQuantityChange(
+                                                                        item.id,
+                                                                        item.custom_quantity || 1,
+                                                                        e.target.value
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {UNIT_CHOICES.map((unit) => (
+                                                                    <MenuItem key={unit.value} value={unit.value}>
+                                                                        {unit.label}
+                                                                    </MenuItem>
+                                                                ))}
+                                                            </Select>
+                                                        </FormControl>
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => clearCustomQuantity(item.id)}
+                                                            disabled={isUpdating || isRemoving}
+                                                            title="Clear custom quantity"
+                                                        >
+                                                            <ClearIcon />
+                                                        </IconButton>
+                                                    </Box>
+                                                ) : (
+                                                    // Regular quantity controls
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => handleQuantityChange(item.id, Math.max(1, item.quantity - 1))}
+                                                            disabled={isUpdating || isRemoving}
+                                                        >
+                                                            <RemoveIcon />
+                                                        </IconButton>
+                                                        <TextField
+                                                            value={item.quantity}
+                                                            onChange={(e) => {
+                                                                const newQuantity = parseInt(e.target.value) || 1;
+                                                                if (newQuantity > 0) {
+                                                                    handleQuantityChange(item.id, newQuantity);
+                                                                }
+                                                            }}
+                                                            size="small"
+                                                            sx={{ width: 80 }}
+                                                            inputProps={{
+                                                                min: 1,
+                                                                style: { textAlign: 'center' }
+                                                            }}
+                                                        />
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                                                            disabled={isUpdating || isRemoving}
+                                                        >
+                                                            <AddIcon />
+                                                        </IconButton>
+                                                    </Box>
+                                                )}
+                                                
+                                                {/* Display effective quantity */}
+                                                <Typography variant="caption" color="text.secondary">
+                                                    {item.custom_quantity && item.custom_unit 
+                                                        ? `${item.custom_quantity} ${item.custom_unit}`
+                                                        : `${item.quantity} ${item.effective_unit}`
+                                                    }
+                                                </Typography>
                                             </Box>
 
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

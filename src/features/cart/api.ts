@@ -39,10 +39,14 @@ export interface CartItem {
     display_name: string;
   };
   quantity: number;
+  custom_quantity?: number;
+  custom_unit?: string;
   subtotal: number;
   item_name: string;
   item_price: number;
   item_image?: string;
+  effective_quantity: number;
+  effective_unit: string;
   created_at: string;
   updated_at: string;
 }
@@ -79,13 +83,25 @@ export const cartApi = createApi({
       },
       invalidatesTags: ['Cart'],
     }),
-    updateItem: builder.mutation<any, { id: number; quantity: number }>({
-      query: ({ id, quantity }) => {
-        console.log('updateItem mutation called with:', { id, quantity });
+    updateItem: builder.mutation<any, { 
+      id: number; 
+      quantity?: number; 
+      custom_quantity?: number; 
+      custom_unit?: string; 
+    }>({
+      query: ({ id, quantity, custom_quantity, custom_unit }) => {
+        console.log('updateItem mutation called with:', { id, quantity, custom_quantity, custom_unit });
+        const body: any = {};
+        if (custom_quantity !== undefined && custom_unit) {
+          body.custom_quantity = custom_quantity;
+          body.custom_unit = custom_unit;
+        } else if (quantity !== undefined) {
+          body.quantity = quantity;
+        }
         return {
           url: `/carts/cart_items/${id}/`,
           method: 'PUT',
-          body: { quantity },
+          body,
         };
       },
       invalidatesTags: ['Cart'],

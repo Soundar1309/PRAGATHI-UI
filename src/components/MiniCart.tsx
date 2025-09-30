@@ -26,7 +26,7 @@ const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <Typography sx={{ mt: 2 }}>Your cart is empty.</Typography>
       ) : (
         <List sx={{ flexGrow: 1 }}>
-          {data.cart_items.map((item: { id: number; item_name: string; item_price: number; item_image?: string; quantity: number }) => (
+          {data.cart_items.map((item: { id: number; item_name: string; item_price: number; item_image?: string; quantity: number, custom_quantity?: number, custom_unit?: string, effective_unit?: string }) => (
             <ListItem key={item.id} secondaryAction={
               <IconButton edge="end" onClick={() => handleRemove(item.id)}>
                 <DeleteIcon />
@@ -44,7 +44,12 @@ const MiniCart: React.FC<{ onClose: () => void }> = ({ onClose }) => {
                 primary={item.item_name}
                 secondary={<>
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography variant="body2">Qty: {item.quantity}</Typography>
+                    <Typography variant="body2">
+                      Qty: {item.custom_quantity && item.custom_unit 
+                        ? `${item.custom_quantity} ${item.custom_unit}`
+                        : `${item.quantity} ${item.effective_unit}`
+                      }
+                    </Typography>
                     <Typography variant="body2">₹{item.item_price.toFixed(2)}</Typography>
                   </Stack>
                 </>}
