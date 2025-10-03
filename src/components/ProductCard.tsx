@@ -16,6 +16,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { useAddToCart } from '../hooks/useAddToCart';
 import WishlistButton from './WishlistButton';
 import ProductImage from './ProductImage';
+import { formatVariationDisplayName } from '../utils/formatters';
 
 export interface Product {
   id: number;
@@ -271,7 +272,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
             textShadow: '0 1px 2px rgba(0,0,0,0.1)',
           }}
         >
-          {product.title}{variation?.display_name && ` - ${variation.display_name}`}
+          {product.title}{variation?.display_name && ` - ${formatVariationDisplayName(variation.display_name)}`}
         </Typography>
 
 

@@ -23,6 +23,7 @@ import { useAddItemMutation } from '../cart/api';
 import { useGetProductWithVariationsQuery } from './api';
 import ProductImage from '../../components/ProductImage';
 import type { ProductVariation } from '../../api/products';
+import { formatVariationDisplayName } from '../../utils/formatters';
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -152,7 +153,7 @@ export function ProductDetail() {
           <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[3], p: 3, height: '100%' }}>
             <CardContent>
               <Typography variant="h4" fontWeight={700} gutterBottom color="primary" sx={{ fontFamily: 'Playfair Display, serif' }}>
-                {product.title}{currentVariation?.display_name && ` - ${currentVariation.display_name}`}
+                {product.title}{currentVariation?.display_name && ` - ${formatVariationDisplayName(currentVariation.display_name)}`}
               </Typography>
               
               {/* Pricing Display */}
@@ -235,7 +236,7 @@ export function ProductDetail() {
                           <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                             <Box>
                               <Typography variant="body1" fontWeight={600}>
-                                {variation.display_name}
+                                {formatVariationDisplayName(variation.display_name || '')}
                               </Typography>
                               {variation.has_offer && (
                                 <Typography variant="caption" color="text.secondary">

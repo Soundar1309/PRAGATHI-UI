@@ -29,6 +29,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetCartQuery, useUpdateItemMutation, useRemoveItemMutation } from './api';
 import { useSnackbar } from 'notistack';
 import { useState, useRef } from 'react';
+import { formatVariationDisplayName } from '../../utils/formatters';
 
 const UNIT_CHOICES = [
     { value: 'g', label: 'Gram' },
@@ -286,7 +287,7 @@ export function CartPage() {
                                                     fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`
                                                 }}
                                             >
-                                                {item.product?.description || item.product_variation?.display_name}
+                                                {item.product?.description || (item.product_variation?.display_name ? formatVariationDisplayName(item.product_variation.display_name) : '')}
                                             </Typography>
                                         </Box>
 

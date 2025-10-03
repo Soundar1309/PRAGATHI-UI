@@ -36,6 +36,13 @@ import Wishlist from './pages/Wishlist';
 import NurseryPage from './pages/NurseryPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccess from './pages/OrderSuccess';
+import EngineeringSolutions from './pages/EngineeringSolutions';
+import JeevamirthomUnit from './pages/engineering/JeevamirthomUnit';
+import BioDigester from './pages/engineering/BioDigester';
+import BioGas from './pages/engineering/BioGas';
+import CowShedDesign from './pages/engineering/CowShedDesign';
+import DripAutomation from './pages/engineering/DripAutomation';
+import BioFertilizerProduction from './pages/engineering/BioFertilizerProduction';
 import { WishlistProvider } from './contexts/WishlistContext';
 import { AuthProvider } from './contexts/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -127,6 +134,15 @@ export default function App() {
                 <Route path="/nursery" element={<NurseryPage />} />
                 <Route path="/checkout" element={<RequireAuth><CheckoutPage /></RequireAuth>} />
                 <Route path="/order-success" element={<OrderSuccess />} />
+
+                {/* Engineering Solutions Routes */}
+                <Route path="/engineering" element={<EngineeringSolutions />} />
+                <Route path="/engineering/jeevamirthom" element={<JeevamirthomUnit />} />
+                <Route path="/engineering/bio-digestric" element={<BioDigester />} />
+                <Route path="/engineering/bio-gas" element={<BioGas />} />
+                <Route path="/engineering/cow-shed" element={<CowShedDesign />} />
+                <Route path="/engineering/drip-automation" element={<DripAutomation />} />
+                <Route path="/engineering/bio-fertilizer" element={<BioFertilizerProduction />} />
 
                 {/* Policy Pages */}
                 <Route path="/privacy" element={<PrivacyPolicy />} />

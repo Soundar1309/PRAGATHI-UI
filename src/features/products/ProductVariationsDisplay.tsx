@@ -18,6 +18,7 @@ import {
   Add as AddIcon,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+import { formatVariationDisplayName } from '../../utils/formatters';
 import { useSnackbar } from 'notistack';
 import { useAddItemMutation } from '../cart/api';
 import type { ProductVariation } from '../../api/products';
@@ -54,7 +55,7 @@ export function ProductVariationsDisplay({ variations, productTitle, onAddToCart
         quantity: 1,
       }).unwrap();
       
-      enqueueSnackbar(`${selectedVariation.display_name} added to cart!`, { variant: 'success' });
+      enqueueSnackbar(`${formatVariationDisplayName(selectedVariation?.display_name || '')} added to cart!`, { variant: 'success' });
       
       // Call the optional callback if provided
       if (onAddToCart) {
@@ -98,7 +99,7 @@ export function ProductVariationsDisplay({ variations, productTitle, onAddToCart
             >
               <CardContent sx={{ p: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                  {variation.display_name}
+                  {formatVariationDisplayName(variation.display_name || '')}
                 </Typography>
                 
                 <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
@@ -173,7 +174,7 @@ export function ProductVariationsDisplay({ variations, productTitle, onAddToCart
       >
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {productTitle} - {selectedVariation?.display_name}
+            {productTitle} - {selectedVariation?.display_name ? formatVariationDisplayName(selectedVariation.display_name) : ''}
           </Typography>
           <IconButton onClick={handleCloseDialog} size="small">
             <CloseIcon />

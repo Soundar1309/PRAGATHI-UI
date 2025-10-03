@@ -1,0 +1,29 @@
+/**
+ * Utility functions for formatting data
+ */
+
+/**
+ * Formats a variation display name by removing unnecessary decimal places
+ * Converts "1.00 kg" to "1kg", "500.00g" to "500g", etc.
+ * @param displayName - The display name from the backend (e.g., "1.00 kg")
+ * @returns Formatted display name (e.g., "1kg")
+ */
+export function formatVariationDisplayName(displayName: string): string {
+  if (!displayName) return displayName;
+  
+  // Handle cases where there's no space between quantity and unit (e.g., "500.00g")
+  const match = displayName.trim().match(/^(\d+(?:\.\d+)?)\s*([a-zA-Z]+)$/);
+  if (match) {
+    const [, quantityStr, unit] = match;
+    const quantity = parseFloat(quantityStr);
+    if (isNaN(quantity)) return displayName;
+    
+    // Format the quantity without unnecessary decimal places
+    const formattedQuantity = quantity % 1 === 0 ? quantity.toString() : quantity.toString();
+    
+    return `${formattedQuantity}${unit}`;
+  }
+  
+  // Fallback for other formats
+  return displayName;
+}
