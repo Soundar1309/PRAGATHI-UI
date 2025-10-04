@@ -23,7 +23,6 @@ import { useAddItemMutation } from '../cart/api';
 import { useGetProductWithVariationsQuery } from './api';
 import ProductImage from '../../components/ProductImage';
 import type { ProductVariation } from '../../api/products';
-import { formatVariationDisplayName } from '../../utils/formatters';
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -33,26 +32,38 @@ export function ProductDetail() {
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [quantity, setQuantity] = React.useState(1);
   const [selectedVariation, setSelectedVariation] = React.useState<ProductVariation | null>(null);
+  const [selectedProductId, setSelectedProductId] = React.useState<number | null>(null);
 
-  // Initialize selected variation with default variation or first available variation
+  // Helper function to format quantity without unnecessary decimal places
+  const formatQuantity = (qty: number | string): string => {
+    const num = Number(qty);
+    return num % 1 === 0 ? Math.floor(num).toString() : num.toString();
+  };
+
+  // Initialize selection with default variation or base product
   React.useEffect(() => {
-    if (product?.variations && product.variations.length > 0 && !selectedVariation) {
-      // Find default variation (250g for solid, 250ml for liquid)
-      let defaultVar = null;
-      if (product.product_type === 'solid') {
-        defaultVar = product.variations.find((v: ProductVariation) => v.quantity === 250 && v.unit === 'g');
-      } else if (product.product_type === 'liquid') {
-        defaultVar = product.variations.find((v: ProductVariation) => v.quantity === 250 && v.unit === 'ml');
+    if (product && !selectedVariation && selectedProductId === null) {
+      if (product.variations && product.variations.length > 0) {
+        // Find default variation (250g for solid, 250ml for liquid)
+        let defaultVar = null;
+        if (product.product_type === 'solid') {
+          defaultVar = product.variations.find((v: ProductVariation) => v.quantity === 250 && v.unit === 'g');
+        } else if (product.product_type === 'liquid') {
+          defaultVar = product.variations.find((v: ProductVariation) => v.quantity === 250 && v.unit === 'ml');
+        }
+        
+        // If no default variation found, use the first available one
+        if (!defaultVar) {
+          defaultVar = product.variations.find((v: ProductVariation) => v.is_active && v.available) || product.variations[0];
+        }
+        
+        setSelectedVariation(defaultVar);
+      } else {
+        // If no variations, select base product
+        setSelectedProductId(product.id);
       }
-      
-      // If no default variation found, use the first available one
-      if (!defaultVar) {
-        defaultVar = product.variations.find((v: ProductVariation) => v.is_active && v.available) || product.variations[0];
-      }
-      
-      setSelectedVariation(defaultVar);
     }
-  }, [product, selectedVariation]);
+  }, [product, selectedVariation, selectedProductId]);
 
   if (isLoading) return <Typography textAlign="center">Loading...</Typography>;
   if (!product) return <Typography textAlign="center">Product not found</Typography>;
@@ -64,6 +75,8 @@ export function ProductDetail() {
           product_variation_id: selectedVariation.id,
           quantity 
         }).unwrap();
+      } else if (selectedProductId) {
+        await addItem({ product_id: selectedProductId, quantity }).unwrap();
       } else {
         await addItem({ product_id: product.id, quantity }).unwrap();
       }
@@ -73,12 +86,14 @@ export function ProductDetail() {
     }
   };
 
-  // Determine pricing display - use selected variation if available
-  const currentVariation = selectedVariation;
-  const displayPrice = currentVariation ? Number(currentVariation.price) : Number(product.price);
-  const originalPrice = currentVariation ? currentVariation.original_price : product.original_price;
-  const hasOffer = currentVariation ? currentVariation.has_offer : (originalPrice && originalPrice > displayPrice);
-  const showOriginalPrice = currentVariation ? currentVariation.has_offer : (originalPrice && originalPrice !== displayPrice);
+  // Determine pricing display - use selected variation or base product
+  const currentSelection = selectedVariation ? selectedVariation : (selectedProductId ? product : null);
+  const displayPrice = currentSelection ? Number(currentSelection.price) : Number(product.price);
+  const originalPrice = currentSelection ? currentSelection.original_price : product.original_price;
+  const hasOffer = currentSelection ? (currentSelection as ProductVariation).has_offer || (originalPrice && originalPrice > displayPrice) : (originalPrice && originalPrice > displayPrice);
+  const showOriginalPrice = currentSelection ? 
+    ((currentSelection as ProductVariation).has_offer || (originalPrice && originalPrice !== displayPrice)) : 
+    (originalPrice && originalPrice !== displayPrice);
 
   return (
     <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 1, sm: 2, md: 4 }, py: 4 }}>
@@ -109,7 +124,7 @@ export function ProductDetail() {
               />
               {hasOffer && (
                 <Chip
-                  label={`${currentVariation?.discount_percentage || Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% OFF`}
+                  label={`${selectedVariation?.discount_percentage || (product.has_offer ? product.discount_percentage : Math.round(((originalPrice - displayPrice) / originalPrice) * 100))}% OFF`}
                   size="small"
                   sx={{
                     position: 'absolute',
@@ -153,7 +168,7 @@ export function ProductDetail() {
           <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[3], p: 3, height: '100%' }}>
             <CardContent>
               <Typography variant="h4" fontWeight={700} gutterBottom color="primary" sx={{ fontFamily: 'Playfair Display, serif' }}>
-                {product.title}{currentVariation?.display_name && ` - ${formatVariationDisplayName(currentVariation.display_name)}`}
+                {product.title}{selectedVariation && ` - ${formatQuantity(selectedVariation.quantity)} ${selectedVariation.unit}`}{selectedProductId && !selectedVariation && ` - ${product.stock} ${product.unit}`}
               </Typography>
               
               {/* Pricing Display */}
@@ -180,7 +195,7 @@ export function ProductDetail() {
                       ₹{Number(originalPrice).toFixed(2)}
                     </Typography>
                     <Chip
-                      label={`${currentVariation?.discount_percentage || Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}% OFF`}
+                      label={`${selectedVariation?.discount_percentage || (product.has_offer ? product.discount_percentage : Math.round(((originalPrice - displayPrice) / originalPrice) * 100))}% OFF`}
                       size="small"
                       color="error"
                       sx={{
@@ -206,63 +221,109 @@ export function ProductDetail() {
               </Typography>
               
               {/* Quantity/Price Selector */}
-              {product.variations && product.variations.length > 0 && (
-                <Box sx={{ mb: 3 }}>
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: theme.palette.primary.main }}>
-                    Select Size & Quantity
-                  </Typography>
-                  
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <Select
-                      value={selectedVariation?.id || ''}
-                      onChange={(e) => {
-                        const variationId = e.target.value;
-                        const variation = product.variations.find((v: ProductVariation) => v.id === variationId);
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: theme.palette.primary.main }}>
+                  Select Size & Quantity
+                </Typography>
+                
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                  <Select
+                    value={selectedVariation?.id || (selectedProductId ? `product-${selectedProductId}` : '')}
+                    onChange={(e) => {
+                      const value = String(e.target.value);
+                      if (value.startsWith('product-')) {
+                        // Base product selected
+                        setSelectedProductId(parseInt(value.replace('product-', '')));
+                        setSelectedVariation(null);
+                      } else {
+                        // Variation selected
+                        const variationId = parseInt(value);
+                        const variation = product.variations?.find((v: ProductVariation) => v.id === variationId);
                         setSelectedVariation(variation || null);
-                      }}
-                      displayEmpty
-                      sx={{
-                        borderRadius: 2,
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: theme.palette.primary.main,
-                        },
-                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                          borderColor: theme.palette.primary.dark,
-                        },
-                      }}
-                    >
-                      {product.variations.map((variation: ProductVariation) => (
-                        <MenuItem key={variation.id} value={variation.id}>
-                          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                            <Box>
-                              <Typography variant="body1" fontWeight={600}>
-                                {formatVariationDisplayName(variation.display_name || '')}
+                        setSelectedProductId(null);
+                      }
+                    }}
+                    displayEmpty
+                    sx={{
+                      borderRadius: 2,
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: theme.palette.primary.main,
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: theme.palette.primary.dark,
+                      },
+                    }}
+                  >
+                    {/* Base Product Option */}
+                    <MenuItem key={product.id} value={`product-${product.id}`}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                        <Box>
+                          <Typography variant="body1" fontWeight={600}>
+                            {product.unit}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            Product Stock: {product.stock}
+                          </Typography>
+                          {product.has_offer && (
+                            <Typography variant="caption" color="error.main" sx={{ display: 'block', fontWeight: 600 }}>
+                              {product.discount_percentage}% OFF
+                            </Typography>
+                          )}
+                        </Box>
+                        <Box sx={{ textAlign: 'right' }}>
+                          <Typography variant="body1" color="primary" fontWeight={700}>
+                            ₹{product.price}
+                          </Typography>
+                          {product.has_offer && (
+                            <Typography variant="caption" sx={{ textDecoration: 'line-through', color: 'text.secondary', display: 'block' }}>
+                              ₹{product.original_price}
+                            </Typography>
+                          )}
+                          <Typography variant="caption" color={product.stock > 0 ? 'success.main' : 'error.main'} sx={{ fontWeight: 600 }}>
+                            {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </MenuItem>
+                    
+                    {/* Variation Options */}
+                    {product.variations && product.variations.map((variation: ProductVariation) => (
+                      <MenuItem key={variation.id} value={variation.id}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                          <Box>
+                            <Typography variant="body1" fontWeight={600}>
+                              {formatQuantity(variation.quantity)} {variation.unit}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              Stock: {variation.stock}
+                            </Typography>
+                            {variation.has_offer && (
+                              <Typography variant="caption" color="error.main" sx={{ display: 'block', fontWeight: 600 }}>
+                                {variation.discount_percentage}% OFF
                               </Typography>
-                              {variation.has_offer && (
-                                <Typography variant="caption" color="text.secondary">
-                                  {variation.discount_percentage}% OFF
-                                </Typography>
-                              )}
-                            </Box>
-                            <Box sx={{ textAlign: 'right' }}>
-                              <Typography variant="body1" color="primary" fontWeight={700}>
-                                ₹{variation.price}
-                              </Typography>
-                              {variation.has_offer && (
-                                <Typography variant="caption" sx={{ textDecoration: 'line-through', color: 'text.secondary' }}>
-                                  ₹{variation.original_price}
-                                </Typography>
-                              )}
-                            </Box>
+                            )}
                           </Box>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  
-                  <Divider sx={{ my: 2 }} />
-                </Box>
-              )}
+                          <Box sx={{ textAlign: 'right' }}>
+                            <Typography variant="body1" color="primary" fontWeight={700}>
+                              ₹{variation.price}
+                            </Typography>
+                            {variation.has_offer && (
+                              <Typography variant="caption" sx={{ textDecoration: 'line-through', color: 'text.secondary', display: 'block' }}>
+                                ₹{variation.original_price}
+                              </Typography>
+                            )}
+                            <Typography variant="caption" color={variation.available ? 'success.main' : 'error.main'} sx={{ fontWeight: 600 }}>
+                              {variation.available ? 'In Stock' : 'Out of Stock'}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                
+                <Divider sx={{ my: 2 }} />
+              </Box>
               
               <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
                 <TextField
@@ -278,9 +339,11 @@ export function ProductDetail() {
                   color="secondary"
                   sx={{ fontWeight: 700, borderRadius: 1, boxShadow: 'none', fontFamily: 'Inter, sans-serif' }}
                   onClick={handleAddToCart}
-                  disabled={isAdding || (currentVariation ? !currentVariation.available : false)}
+                  disabled={isAdding || (selectedVariation ? !selectedVariation.available : selectedProductId ? product.stock <= 0 : false)}
                 >
-                  {isAdding ? 'Adding...' : currentVariation && !currentVariation.available ? 'Out of Stock' : 'Add to Cart'}
+                  {isAdding ? 'Adding...' : 
+                   (selectedVariation && !selectedVariation.available) || 
+                   (selectedProductId && product.stock <= 0) ? 'Out of Stock' : 'Add to Cart'}
                 </Button>
               </Stack>
               <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'Inter, sans-serif' }}>
