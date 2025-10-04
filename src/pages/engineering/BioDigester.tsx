@@ -3,12 +3,10 @@ import {
   ArrowBack,
   Biotech,
   CheckCircle,
-  Download,
   Engineering,
   Nature,
   Science,
   Star,
-  Visibility,
   WaterDrop
 } from '@mui/icons-material';
 import {

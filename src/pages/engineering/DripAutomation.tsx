@@ -1,9 +1,7 @@
 import {
   ArrowBack,
   CheckCircle,
-  Download,
-  Star,
-  Visibility
+  Star
 } from '@mui/icons-material';
 import {
   Box,
