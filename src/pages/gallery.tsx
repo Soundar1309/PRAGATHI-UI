@@ -102,7 +102,7 @@ export default function GalleryPage() {
                     borderRadius: 1,
                   }}
                 >
-                  {cat.label} ({cat.range[1] - cat.range[0] + 1} images)
+                  {cat.label}
                 </Typography>
                 <Box
                   sx={{

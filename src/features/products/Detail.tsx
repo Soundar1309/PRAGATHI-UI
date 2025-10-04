@@ -173,7 +173,7 @@ export function ProductDetail() {
           <Card sx={{ borderRadius: 2, boxShadow: theme.shadows[3], p: 3, height: '100%' }}>
             <CardContent>
               <Typography variant="h4" fontWeight={700} gutterBottom color="primary" sx={{ fontFamily: 'Playfair Display, serif' }}>
-                {product.title}{selectedVariation && ` - ${formatQuantity(selectedVariation.quantity)} ${selectedVariation.unit}`}{selectedProductId && !selectedVariation && ` - ${product.stock} ${product.unit}`}
+                {product.title}{selectedVariation && ` - ${formatQuantity(selectedVariation.quantity)} ${selectedVariation.unit}`}{selectedProductId && !selectedVariation && ` - ${product.unit}`}
               </Typography>
               
               {/* Pricing Display */}
@@ -228,7 +228,7 @@ export function ProductDetail() {
               {/* Quantity/Price Selector */}
               <Box sx={{ mb: 3 }}>
                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: theme.palette.primary.main }}>
-                  Select Size & Quantity
+                  Select Quantity
                 </Typography>
                 
                 <FormControl fullWidth sx={{ mb: 2 }}>
@@ -337,6 +337,10 @@ export function ProductDetail() {
                   size="small"
                   value={quantity}
                   onChange={e => setQuantity(Math.max(1, Number(e.target.value)))}
+                  onFocus={(e) => {
+                    // Clear the field when focused to make it easier to type new value
+                    e.target.select();
+                  }}
                   inputProps={{ min: 1, style: { width: 60 } }}
                 />
                 <Button
