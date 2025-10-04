@@ -40,6 +40,11 @@ export function ProductDetail() {
     return num % 1 === 0 ? Math.floor(num).toString() : num.toString();
   };
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
   // Initialize selection with default variation or base product
   React.useEffect(() => {
     if (product && !selectedVariation && selectedProductId === null) {

@@ -1,9 +1,7 @@
 import {
   ArrowBack,
   CheckCircle,
-  Download,
-  Star,
-  Visibility
+  Star
 } from '@mui/icons-material';
 import {
   Box,
@@ -364,24 +362,6 @@ const BioFertilizerProduction: React.FC = () => {
           </Grid>
         </Paper>
 
-        {/* Call to Action */}
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<Download />}
-            sx={{ mr: 2 }}
-          >
-            Download Production Specifications
-          </Button>
-          <Button
-            variant="outlined"
-            size="large"
-            startIcon={<Visibility />}
-          >
-            View Production Gallery
-          </Button>
-        </Box>
       </Container>
     </motion.div>
   );

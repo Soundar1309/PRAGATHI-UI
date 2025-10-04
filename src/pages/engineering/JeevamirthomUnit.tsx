@@ -469,24 +469,6 @@ const JeevamirthomUnit: React.FC = () => {
           </Grid>
         </Paper>
 
-        {/* Call to Action */}
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<Download />}
-            sx={{ mr: 2 }}
-          >
-            Download Brochure
-          </Button>
-          <Button
-            variant="outlined"
-            size="large"
-            startIcon={<Visibility />}
-          >
-            View Gallery
-          </Button>
-        </Box>
       </Container>
     </motion.div>
   );

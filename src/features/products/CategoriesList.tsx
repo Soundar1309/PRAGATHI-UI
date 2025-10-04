@@ -20,6 +20,11 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Card,
+  CardContent,
+  CardActions,
+  Grid,
+  useMediaQuery,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -33,6 +38,7 @@ export function CategoriesList() {
   const theme = useTheme();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   const { data: categories, isLoading, isError, refetch } = useGetCategoriesQuery();
   const [deleteCategory] = useDeleteCategoryMutation();
@@ -122,8 +128,15 @@ export function CategoriesList() {
           }}
         >
           {/* Header */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-            <Box>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: { xs: 'flex-start', sm: 'space-between' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: { xs: 2, sm: 0 },
+            mb: 4 
+          }}>
+            <Box sx={{ flex: 1 }}>
               <Typography
                 variant="h4"
                 component="h1"
@@ -132,6 +145,7 @@ export function CategoriesList() {
                   color: theme.palette.primary.main,
                   mb: 1,
                   fontFamily: `'Playfair Display', 'Merriweather', serif`,
+                  fontSize: { xs: '1.75rem', sm: '2rem', md: '2.125rem' }
                 }}
               >
                 Manage Categories
@@ -139,7 +153,10 @@ export function CategoriesList() {
               <Typography
                 variant="body1"
                 color="text.secondary"
-                sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}
+                sx={{ 
+                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                }}
               >
                 Create, edit, and delete product categories
               </Typography>
@@ -154,77 +171,207 @@ export function CategoriesList() {
                 fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
                 borderRadius: 2,
                 textTransform: 'none',
-                fontSize: '1rem',
-                minHeight: 48,
-                px: 3,
+                fontSize: { xs: '0.875rem', sm: '1rem' },
+                minHeight: { xs: 44, sm: 48 },
+                px: { xs: 2, sm: 3 },
+                width: { xs: '100%', sm: 'auto' },
+                mt: { xs: 1, sm: 0 }
               }}
             >
               Add Category
             </Button>
           </Box>
 
-          {/* Categories Table */}
-          <TableContainer component={Paper} sx={{ borderRadius: 2, overflow: 'hidden' }}>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>ID</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Name</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Description</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {categories && categories.length > 0 ? (
-                  categories.map((category) => (
-                    <TableRow key={category.id} hover>
-                      <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
-                        {category.id}
-                      </TableCell>
-                      <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, fontWeight: 600 }}>
-                        {category.name}
-                      </TableCell>
-                      <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
-                        {category.description ? (
-                          <Typography variant="body2" color="text.secondary">
-                            {category.description}
-                          </Typography>
-                        ) : (
-                          <Chip label="No description" size="small" variant="outlined" />
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                          <IconButton
+          {/* Categories Display - Responsive */}
+          {isMobile ? (
+            // Mobile Card Layout
+            <Box>
+              {categories && categories.length > 0 ? (
+                <Grid container spacing={2}>
+                  {categories.map((category) => (
+                    <Grid size={{ xs: 12 }} key={category.id}>
+                      <Card 
+                        sx={{ 
+                          borderRadius: 2, 
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                          '&:hover': {
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                            transform: 'translateY(-2px)',
+                            transition: 'all 0.3s ease-in-out'
+                          }
+                        }}
+                      >
+                        <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                          <Box sx={{ mb: 2 }}>
+                            <Typography 
+                              variant="h6" 
+                              sx={{ 
+                                fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, 
+                                fontWeight: 600,
+                                mb: 0.5,
+                                fontSize: { xs: '1rem', sm: '1.25rem' },
+                                color: theme.palette.primary.main
+                              }}
+                            >
+                              {category.name}
+                            </Typography>
+                            <Typography 
+                              variant="caption" 
+                              color="text.secondary"
+                              sx={{ 
+                                fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                                fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                              }}
+                            >
+                              ID: {category.id}
+                            </Typography>
+                          </Box>
+                          
+                          <Box sx={{ mb: 2 }}>
+                            <Typography 
+                              variant="caption" 
+                              color="text.secondary"
+                              sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                            >
+                              Description
+                            </Typography>
+                            <Box sx={{ mt: 0.5 }}>
+                              {category.description ? (
+                                <Typography 
+                                  variant="body2" 
+                                  color="text.secondary"
+                                  sx={{ 
+                                    fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                                    fontSize: { xs: '0.875rem', sm: '1rem' }
+                                  }}
+                                >
+                                  {category.description}
+                                </Typography>
+                              ) : (
+                                <Chip 
+                                  label="No description" 
+                                  size="small" 
+                                  variant="outlined"
+                                  sx={{ 
+                                    fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                                    height: { xs: 20, sm: 24 }
+                                  }}
+                                />
+                              )}
+                            </Box>
+                          </Box>
+                        </CardContent>
+                        
+                        <CardActions sx={{ p: 2, pt: 0 }}>
+                          <Button
                             size="small"
+                            startIcon={<EditIcon />}
                             onClick={() => handleEditCategory(category.id)}
-                            sx={{ color: theme.palette.primary.main }}
+                            sx={{ 
+                              color: theme.palette.primary.main,
+                              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                              fontWeight: 600,
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                              minHeight: { xs: 36, sm: 32 },
+                              width: { xs: '100%', sm: 'auto' },
+                              flex: { xs: 1, sm: 'none' }
+                            }}
                           >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
+                            Edit
+                          </Button>
+                          <Button
                             size="small"
+                            startIcon={<DeleteIcon />}
                             onClick={() => handleDeleteClick(category)}
-                            sx={{ color: theme.palette.error.main }}
+                            sx={{ 
+                              color: theme.palette.error.main,
+                              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                              fontWeight: 600,
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                              minHeight: { xs: 36, sm: 32 },
+                              width: { xs: '100%', sm: 'auto' },
+                              flex: { xs: 1, sm: 'none' }
+                            }}
                           >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Box>
+                            Delete
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              ) : (
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Typography variant="body1" color="text.secondary">
+                    No categories found. Create your first category!
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          ) : (
+            // Desktop Table Layout
+            <TableContainer component={Paper} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>ID</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Name</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Description</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {categories && categories.length > 0 ? (
+                    categories.map((category) => (
+                      <TableRow key={category.id} hover>
+                        <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+                          {category.id}
+                        </TableCell>
+                        <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, fontWeight: 600 }}>
+                          {category.name}
+                        </TableCell>
+                        <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+                          {category.description ? (
+                            <Typography variant="body2" color="text.secondary">
+                              {category.description}
+                            </Typography>
+                          ) : (
+                            <Chip label="No description" size="small" variant="outlined" />
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleEditCategory(category.id)}
+                              sx={{ color: theme.palette.primary.main }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleDeleteClick(category)}
+                              sx={{ color: theme.palette.error.main }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography variant="body1" color="text.secondary">
+                          No categories found. Create your first category!
+                        </Typography>
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography variant="body1" color="text.secondary">
-                        No categories found. Create your first category!
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </Paper>
       </Container>
 

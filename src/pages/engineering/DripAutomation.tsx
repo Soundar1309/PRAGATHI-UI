@@ -310,24 +310,6 @@ const DripAutomation: React.FC = () => {
           </Grid>
         </Paper>
 
-        {/* Call to Action */}
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<Download />}
-            sx={{ mr: 2 }}
-          >
-            Download Technical Specifications
-          </Button>
-          <Button
-            variant="outlined"
-            size="large"
-            startIcon={<Visibility />}
-          >
-            View System Gallery
-          </Button>
-        </Box>
       </Container>
     </motion.div>
   );

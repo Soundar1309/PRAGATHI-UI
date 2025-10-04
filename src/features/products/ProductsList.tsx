@@ -20,6 +20,12 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Card,
+  CardContent,
+  CardActions,
+  Grid,
+  useMediaQuery,
+  Stack,
 } from '@mui/material';
 import ProductImage from '../../components/ProductImage';
 import {
@@ -35,6 +41,7 @@ export function ProductsList() {
   const theme = useTheme();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
   const { data: products, isLoading, isError, refetch } = useGetProductsQuery();
   const [deleteProduct] = useDeleteProductMutation();
@@ -128,8 +135,15 @@ export function ProductsList() {
           }}
         >
           {/* Header */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-            <Box>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: { xs: 'flex-start', sm: 'space-between' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: { xs: 2, sm: 0 },
+            mb: 4 
+          }}>
+            <Box sx={{ flex: 1 }}>
               <Typography
                 variant="h4"
                 component="h1"
@@ -138,6 +152,7 @@ export function ProductsList() {
                   color: theme.palette.primary.main,
                   mb: 1,
                   fontFamily: `'Playfair Display', 'Merriweather', serif`,
+                  fontSize: { xs: '1.75rem', sm: '2rem', md: '2.125rem' }
                 }}
               >
                 Manage Products
@@ -145,7 +160,10 @@ export function ProductsList() {
               <Typography
                 variant="body1"
                 color="text.secondary"
-                sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}
+                sx={{ 
+                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                }}
               >
                 Create, edit, and delete products in your store
               </Typography>
@@ -160,100 +178,280 @@ export function ProductsList() {
                 fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
                 borderRadius: 2,
                 textTransform: 'none',
-                fontSize: '1rem',
-                minHeight: 48,
-                px: 3,
+                fontSize: { xs: '0.875rem', sm: '1rem' },
+                minHeight: { xs: 44, sm: 48 },
+                px: { xs: 2, sm: 3 },
+                width: { xs: '100%', sm: 'auto' },
+                mt: { xs: 1, sm: 0 }
               }}
             >
               Add Product
             </Button>
           </Box>
 
-          {/* Products Table */}
-          <TableContainer component={Paper} sx={{ borderRadius: 2, overflow: 'hidden' }}>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Image</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Title</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Category</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Price</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Stock</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Status</TableCell>
-                  <TableCell sx={{ color: 'white', fontWeight: 600 }}>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {products && products.length > 0 ? (
-                  products.map((product) => (
-                    <TableRow key={product.id} hover>
-                      <TableCell>
-                        <ProductImage
-                          src={product.image}
-                          alt={product.title}
-                          variant="avatar"
-                          sx={{ width: 50, height: 50 }}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, fontWeight: 600 }}>
-                        {product.title}
-                      </TableCell>
-                      <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
-                        {product.category?.name || 'No Category'}
-                      </TableCell>
-                      <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, fontWeight: 600 }}>
-                        ₹{product.price}
-                      </TableCell>
-                      <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
-                        {product.stock}
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                          color={product.stock > 0 ? 'success' : 'error'}
-                          size="small"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                          <IconButton
+          {/* Products Display - Responsive */}
+          {isMobile ? (
+            // Mobile Card Layout
+            <Box>
+              {products && products.length > 0 ? (
+                <Grid container spacing={2}>
+                  {products.map((product) => (
+                    <Grid size={{ xs: 12 }} key={product.id}>
+                      <Card 
+                        sx={{ 
+                          borderRadius: 2, 
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                          '&:hover': {
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                            transform: 'translateY(-2px)',
+                            transition: 'all 0.3s ease-in-out'
+                          }
+                        }}
+                      >
+                        <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                            <ProductImage
+                              src={product.image}
+                              alt={product.title}
+                              variant="avatar"
+                              sx={{ width: { xs: 50, sm: 60 }, height: { xs: 50, sm: 60 }, mr: 2 }}
+                            />
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, 
+                                  fontWeight: 600,
+                                  mb: 0.5,
+                                  fontSize: { xs: '1rem', sm: '1.25rem' },
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap'
+                                }}
+                              >
+                                {product.title}
+                              </Typography>
+                              <Typography 
+                                variant="body2" 
+                                color="text.secondary"
+                                sx={{ 
+                                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                                  fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                                }}
+                              >
+                                {product.category?.name || 'No Category'}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          
+                          <Stack 
+                            direction="row" 
+                            spacing={{ xs: 1.5, sm: 2 }} 
+                            sx={{ 
+                              mb: 2,
+                              flexWrap: 'wrap',
+                              gap: { xs: 1, sm: 0 }
+                            }}
+                          >
+                            <Box sx={{ minWidth: { xs: '30%', sm: 'auto' } }}>
+                              <Typography 
+                                variant="caption" 
+                                color="text.secondary"
+                                sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                              >
+                                Price
+                              </Typography>
+                              <Typography 
+                                variant="body1" 
+                                sx={{ 
+                                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, 
+                                  fontWeight: 600,
+                                  color: theme.palette.primary.main,
+                                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                                }}
+                              >
+                                ₹{product.price}
+                              </Typography>
+                            </Box>
+                            <Box sx={{ minWidth: { xs: '30%', sm: 'auto' } }}>
+                              <Typography 
+                                variant="caption" 
+                                color="text.secondary"
+                                sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                              >
+                                Stock
+                              </Typography>
+                              <Typography 
+                                variant="body1" 
+                                sx={{ 
+                                  fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                                }}
+                              >
+                                {product.stock}
+                              </Typography>
+                            </Box>
+                             <Box sx={{ minWidth: { xs: '30%', sm: 'auto' } }}>
+                               <Typography 
+                                 variant="caption" 
+                                 color="text.secondary"
+                                 sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+                               >
+                                 Status
+                               </Typography>
+                               <Box sx={{ mt: 0.5 }}>
+                                 <Chip
+                                   label={product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                                   color={product.stock > 0 ? 'success' : 'error'}
+                                   size="small"
+                                   variant="outlined"
+                                   sx={{ 
+                                     fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                                     height: { xs: 20, sm: 24 }
+                                   }}
+                                 />
+                               </Box>
+                             </Box>
+                          </Stack>
+                        </CardContent>
+                        
+                        <CardActions sx={{ p: 2, pt: 0 }}>
+                          <Button
                             size="small"
+                            startIcon={<ViewIcon />}
                             onClick={() => handleViewProduct(product.id)}
-                            sx={{ color: theme.palette.info.main }}
+                            sx={{ 
+                              color: theme.palette.info.main,
+                              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                              fontWeight: 600
+                            }}
                           >
-                            <ViewIcon />
-                          </IconButton>
-                          <IconButton
+                            View
+                          </Button>
+                          <Button
                             size="small"
+                            startIcon={<EditIcon />}
                             onClick={() => handleEditProduct(product.id)}
-                            sx={{ color: theme.palette.primary.main }}
+                            sx={{ 
+                              color: theme.palette.primary.main,
+                              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                              fontWeight: 600
+                            }}
                           >
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
+                            Edit
+                          </Button>
+                          <Button
                             size="small"
+                            startIcon={<DeleteIcon />}
                             onClick={() => handleDeleteClick(product)}
-                            sx={{ color: theme.palette.error.main }}
+                            sx={{ 
+                              color: theme.palette.error.main,
+                              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+                              fontWeight: 600
+                            }}
                           >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Box>
+                            Delete
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              ) : (
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Typography variant="body1" color="text.secondary">
+                    No products found. Create your first product!
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          ) : (
+            // Desktop Table Layout
+            <TableContainer component={Paper} sx={{ borderRadius: 2, overflow: 'hidden' }}>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Image</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Title</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Category</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Price</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Stock</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Status</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {products && products.length > 0 ? (
+                    products.map((product) => (
+                      <TableRow key={product.id} hover>
+                        <TableCell>
+                          <ProductImage
+                            src={product.image}
+                            alt={product.title}
+                            variant="avatar"
+                            sx={{ width: 50, height: 50 }}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, fontWeight: 600 }}>
+                          {product.title}
+                        </TableCell>
+                        <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+                          {product.category?.name || 'No Category'}
+                        </TableCell>
+                        <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, fontWeight: 600 }}>
+                          ₹{product.price}
+                        </TableCell>
+                        <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
+                          {product.stock}
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                            color={product.stock > 0 ? 'success' : 'error'}
+                            size="small"
+                            variant="outlined"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleViewProduct(product.id)}
+                              sx={{ color: theme.palette.info.main }}
+                            >
+                              <ViewIcon />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleEditProduct(product.id)}
+                              sx={{ color: theme.palette.primary.main }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleDeleteClick(product)}
+                              sx={{ color: theme.palette.error.main }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
+                        <Typography variant="body1" color="text.secondary">
+                          No products found. Create your first product!
+                        </Typography>
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={7} sx={{ textAlign: 'center', py: 4 }}>
-                      <Typography variant="body1" color="text.secondary">
-                        No products found. Create your first product!
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </Paper>
       </Container>
 
