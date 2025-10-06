@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -23,9 +23,9 @@ import {
   Card,
   CardContent,
   CardActions,
-  Grid,
   useMediaQuery,
   Stack,
+  Container,
 } from '@mui/material';
 import ProductImage from '../../components/ProductImage';
 import {
@@ -194,9 +194,9 @@ export function ProductsList() {
             // Mobile Card Layout
             <Box>
               {products && products.length > 0 ? (
-                <Grid container spacing={2}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   {products.map((product) => (
-                    <Grid size={{ xs: 12 }} key={product.id}>
+                    <Box key={product.id}>
                       <Card 
                         sx={{ 
                           borderRadius: 2, 
@@ -354,9 +354,9 @@ export function ProductsList() {
                           </Button>
                         </CardActions>
                       </Card>
-                    </Grid>
+                    </Box>
                   ))}
-                </Grid>
+                </Box>
               ) : (
                 <Box sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="body1" color="text.secondary">
@@ -494,21 +494,3 @@ export function ProductsList() {
     </Box>
   );
 }
-
-// Container component for consistent layout
-const Container: React.FC<{ children: React.ReactNode; maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' }> = ({ 
-  children, 
-  maxWidth = 'xl' 
-}) => (
-  <Box
-    sx={{
-      maxWidth: {
-        xs: '100%',
-        sm: maxWidth === 'xs' ? 600 : maxWidth === 'sm' ? 960 : maxWidth === 'md' ? 1280 : maxWidth === 'lg' ? 1920 : '100%',
-      },
-      mx: 'auto',
-    }}
-  >
-    {children}
-  </Box>
-); 

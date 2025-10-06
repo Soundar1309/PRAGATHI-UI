@@ -446,7 +446,7 @@ const Header: React.FC = () => {
                 fontFamily: 'Playfair Display, serif',
                 display: 'flex',
                 alignItems: 'center',
-                gap: { xs: 0.5, sm: 2, md: 2 },
+                gap: { xs: 1, sm: 2, md: 2 },
                 whiteSpace: 'nowrap',
                 width: '100%',
                 maxWidth: '100%',
@@ -627,7 +627,7 @@ const Header: React.FC = () => {
           <Box sx={{ 
             display: 'flex', 
             alignItems: 'center', 
-            gap: { xs: 0.5, sm: 1 }, 
+            gap: { xs: 1, sm: 1 }, 
             flexShrink: 0,
             minWidth: 0,
           }}>
@@ -1009,7 +1009,7 @@ const Header: React.FC = () => {
 
                     <Button
                       component={NavLink}
-                      to="/admin/products/list"
+                      to="/admin/products"
                       onClick={() => setDrawerOpen(false)}
                       sx={{
                         color: theme.palette.text.secondary,
@@ -1204,42 +1204,40 @@ const Header: React.FC = () => {
           <ListItemText>Order History</ListItemText>
         </MenuItem>
 
-        {isAdmin && (
-          <>
-            <Divider />
-            <MenuItem onClick={() => { handleAccountMenuClose(); navigate('/admin'); }}>
-              <ListItemIcon>
-                <ListAltIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Admin Dashboard</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleCreateProduct}>
-              <ListItemIcon>
-                <AddIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Create Product</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleCreateCategory}>
-              <ListItemIcon>
-                <CategoryIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Create Category</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleManageProducts}>
-              <ListItemIcon>
-                <ListAltIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Manage Products</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleManageCategories}>
-              <ListItemIcon>
-                <ListAltIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Manage Categories</ListItemText>
-            </MenuItem>
-            <Divider />
-          </>
-        )}
+        {isAdmin && [
+          <Divider key="admin-divider-1" />,
+          <MenuItem key="admin-dashboard" onClick={() => { handleAccountMenuClose(); navigate('/admin'); }}>
+            <ListItemIcon>
+              <ListAltIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Admin Dashboard</ListItemText>
+          </MenuItem>,
+          <MenuItem key="create-product" onClick={handleCreateProduct}>
+            <ListItemIcon>
+              <AddIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Create Product</ListItemText>
+          </MenuItem>,
+          <MenuItem key="create-category" onClick={handleCreateCategory}>
+            <ListItemIcon>
+              <CategoryIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Create Category</ListItemText>
+          </MenuItem>,
+          <MenuItem key="manage-products" onClick={handleManageProducts}>
+            <ListItemIcon>
+              <ListAltIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Manage Products</ListItemText>
+          </MenuItem>,
+          <MenuItem key="manage-categories" onClick={handleManageCategories}>
+            <ListItemIcon>
+              <ListAltIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>Manage Categories</ListItemText>
+          </MenuItem>,
+          <Divider key="admin-divider-2" />
+        ]}
 
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
