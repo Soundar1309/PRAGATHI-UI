@@ -31,6 +31,7 @@ export function ProductDetail() {
   const [addItem, { isLoading: isAdding }] = useAddItemMutation();
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [quantity, setQuantity] = React.useState(1);
+  const [quantityInput, setQuantityInput] = React.useState('1');
   const [selectedVariation, setSelectedVariation] = React.useState<ProductVariation | null>(null);
   const [selectedProductId, setSelectedProductId] = React.useState<number | null>(null);
 
@@ -38,6 +39,29 @@ export function ProductDetail() {
   const formatQuantity = (qty: number | string): string => {
     const num = Number(qty);
     return num % 1 === 0 ? Math.floor(num).toString() : num.toString();
+  };
+
+  // Handle quantity input changes
+  const handleQuantityChange = (value: string) => {
+    setQuantityInput(value);
+    
+    // Only update the actual quantity if it's a valid number >= 1
+    const numValue = Number(value);
+    if (!isNaN(numValue) && numValue >= 1) {
+      setQuantity(numValue);
+    }
+  };
+
+  // Handle quantity input blur - ensure minimum value
+  const handleQuantityBlur = () => {
+    const numValue = Number(quantityInput);
+    if (isNaN(numValue) || numValue < 1) {
+      setQuantityInput('1');
+      setQuantity(1);
+    } else {
+      setQuantityInput(numValue.toString());
+      setQuantity(numValue);
+    }
   };
 
   // Scroll to top when component mounts
@@ -335,10 +359,11 @@ export function ProductDetail() {
                   label="Quantity"
                   type="number"
                   size="small"
-                  value={quantity}
-                  onChange={e => setQuantity(Math.max(1, Number(e.target.value)))}
+                  value={quantityInput}
+                  onChange={e => handleQuantityChange(e.target.value)}
+                  onBlur={handleQuantityBlur}
                   onFocus={(e) => {
-                    // Clear the field when focused to make it easier to type new value
+                    // Select all text when focused to make it easier to type new value
                     e.target.select();
                   }}
                   inputProps={{ min: 1, style: { width: 60 } }}
