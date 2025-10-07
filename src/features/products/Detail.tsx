@@ -12,9 +12,6 @@ import {
   Tooltip,
   Typography,
   useTheme,
-  FormControl,
-  Select,
-  MenuItem,
   Divider,
 } from '@mui/material';
 import React from 'react';
@@ -200,156 +197,93 @@ export function ProductDetail() {
                 {product.title}{selectedVariation && ` - ${formatQuantity(selectedVariation.quantity)} ${selectedVariation.unit}`}{selectedProductId && !selectedVariation && ` - ${product.unit}`}
               </Typography>
               
-              {/* Pricing Display */}
-              <Box sx={{ mb: 2 }}>
-                {showOriginalPrice ? (
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Typography 
-                      variant="h4" 
-                      color="primary" 
-                      fontWeight={700} 
-                      sx={{ fontFamily: 'Inter, sans-serif' }}
-                    >
-                      ₹{Number(displayPrice).toFixed(2)}
-                    </Typography>
-                    <Typography 
-                      variant="h5" 
-                      color="text.secondary" 
-                      sx={{ 
-                        textDecoration: 'line-through',
-                        opacity: 0.7,
-                        fontFamily: 'Inter, sans-serif' 
-                      }}
-                    >
-                      ₹{Number(originalPrice).toFixed(2)}
-                    </Typography>
-                    <Chip
-                      label={`${selectedVariation?.discount_percentage || (product.has_offer ? product.discount_percentage : Math.round(((originalPrice - displayPrice) / originalPrice) * 100))}% OFF`}
-                      size="small"
-                      color="error"
-                      sx={{
-                        fontWeight: 600,
-                        fontFamily: 'Inter, sans-serif',
-                      }}
-                    />
-                  </Stack>
-                ) : (
-                  <Typography 
-                    variant="h4" 
-                    color="primary" 
-                    fontWeight={700} 
-                    sx={{ fontFamily: 'Inter, sans-serif' }}
-                  >
-                    ₹{Number(displayPrice).toFixed(2)}
-                  </Typography>
-                )}
-              </Box>
-              
               <Typography variant="body1" color="text.secondary" sx={{ mb: 2, fontFamily: 'Inter, sans-serif' }}>
                 {product.description}
               </Typography>
               
-              {/* Quantity/Price Selector */}
+              {/* Quantity/Price Selector - Buttons */}
               <Box sx={{ mb: 3 }}>
                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600, color: theme.palette.primary.main }}>
                   Select Quantity
                 </Typography>
                 
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                  <Select
-                    value={selectedVariation?.id || (selectedProductId ? `product-${selectedProductId}` : '')}
-                    onChange={(e) => {
-                      const value = String(e.target.value);
-                      if (value.startsWith('product-')) {
-                        // Base product selected
-                        setSelectedProductId(parseInt(value.replace('product-', '')));
-                        setSelectedVariation(null);
-                      } else {
-                        // Variation selected
-                        const variationId = parseInt(value);
-                        const variation = product.variations?.find((v: ProductVariation) => v.id === variationId);
-                        setSelectedVariation(variation || null);
-                        setSelectedProductId(null);
-                      }
-                    }}
-                    displayEmpty
-                    sx={{
-                      borderRadius: 2,
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: theme.palette.primary.main,
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: theme.palette.primary.dark,
-                      },
-                    }}
+                <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                  {/* Base product button */}
+                  <Button
+                    size="small"
+                    variant={!selectedVariation && selectedProductId ? 'contained' : 'outlined'}
+                    onClick={() => { setSelectedProductId(product.id); setSelectedVariation(null); }}
+                    disabled={product.stock <= 0}
                   >
-                    {/* Base Product Option */}
-                    <MenuItem key={product.id} value={`product-${product.id}`}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                        <Box>
-                          <Typography variant="body1" fontWeight={600}>
-                            {product.unit}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            Product Stock: {product.stock}
-                          </Typography>
-                          {product.has_offer && (
-                            <Typography variant="caption" color="error.main" sx={{ display: 'block', fontWeight: 600 }}>
-                              {product.discount_percentage}% OFF
-                            </Typography>
-                          )}
-                        </Box>
-                        <Box sx={{ textAlign: 'right' }}>
-                          <Typography variant="body1" color="primary" fontWeight={700}>
-                            ₹{product.price}
-                          </Typography>
-                          {product.has_offer && (
-                            <Typography variant="caption" sx={{ textDecoration: 'line-through', color: 'text.secondary', display: 'block' }}>
-                              ₹{product.original_price}
-                            </Typography>
-                          )}
-                          <Typography variant="caption" color={product.stock > 0 ? 'success.main' : 'error.main'} sx={{ fontWeight: 600 }}>
-                            {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </MenuItem>
-                    
-                    {/* Variation Options */}
-                    {product.variations && product.variations.map((variation: ProductVariation) => (
-                      <MenuItem key={variation.id} value={variation.id}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                          <Box>
-                            <Typography variant="body1" fontWeight={600}>
-                              {formatQuantity(variation.quantity)} {variation.unit}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              Stock: {variation.stock}
-                            </Typography>
-                            {variation.has_offer && (
-                              <Typography variant="caption" color="error.main" sx={{ display: 'block', fontWeight: 600 }}>
-                                {variation.discount_percentage}% OFF
-                              </Typography>
-                            )}
-                          </Box>
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Typography variant="body1" color="primary" fontWeight={700}>
-                              ₹{variation.price}
-                            </Typography>
-                            {variation.has_offer && (
-                              <Typography variant="caption" sx={{ textDecoration: 'line-through', color: 'text.secondary', display: 'block' }}>
-                                ₹{variation.original_price}
-                              </Typography>
-                            )}
-                            <Typography variant="caption" color={variation.available ? 'success.main' : 'error.main'} sx={{ fontWeight: 600 }}>
-                              {variation.available ? 'In Stock' : 'Out of Stock'}
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                    {product.unit}
+                  </Button>
+                  {/* Variation buttons */}
+                  {product.variations && product.variations.map((variation: ProductVariation) => (
+                    <Button
+                      key={variation.id}
+                      size="small"
+                      variant={selectedVariation?.id === variation.id ? 'contained' : 'outlined'}
+                      onClick={() => { setSelectedVariation(variation); setSelectedProductId(null); }}
+                      disabled={!variation.available}
+                    >
+                      {formatQuantity(variation.quantity)} {variation.unit}
+                    </Button>
+                  ))}
+                </Stack>
+
+                {/* Details panel below buttons */}
+                <Box
+                  sx={{
+                    p: 3,
+                    borderRadius: 1,
+                    border: `1px solid ${theme.palette.divider}`,
+                    backgroundColor: theme.palette.background.paper,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 1.5,
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  {/* Left: Offer price above original price */}
+                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Typography
+                      variant="h5"
+                      color="primary"
+                      fontWeight={700}
+                      sx={{ fontFamily: 'Inter, sans-serif', lineHeight: 1.2 }}
+                    >
+                      ₹{Number(displayPrice).toFixed(2)}
+                    </Typography>
+                    {showOriginalPrice && (
+                      <Typography
+                        variant="h6"
+                        sx={{ textDecoration: 'line-through', color: theme.palette.error.main, fontFamily: 'Inter, sans-serif' }}
+                      >
+                        ₹{Number(originalPrice).toFixed(2)}
+                      </Typography>
+                    )}
+                  </Box>
+
+                  {/* Right: Discount and stock chips */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 'auto', flexWrap: 'wrap' }}>
+                    {showOriginalPrice && (
+                      <Chip
+                        label={`${selectedVariation?.discount_percentage || (product.has_offer ? product.discount_percentage : Math.round(((originalPrice - displayPrice) / originalPrice) * 100))}% OFF`}
+                        size="small"
+                        color="error"
+                        sx={{ fontWeight: 600, fontFamily: 'Inter, sans-serif' }}
+                      />
+                    )}
+                    <Chip
+                      label={(selectedVariation ? selectedVariation.available : product.stock > 0) ? 'In Stock' : 'Out of Stock'}
+                      size="small"
+                      color={(selectedVariation ? selectedVariation.available : product.stock > 0) ? 'success' : 'error'}
+                      variant="outlined"
+                      sx={{ fontWeight: 600, fontFamily: 'Inter, sans-serif' }}
+                    />
+                  </Box>
+                </Box>
                 
                 <Divider sx={{ my: 2 }} />
               </Box>
