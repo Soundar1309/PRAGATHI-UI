@@ -34,7 +34,7 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon,
 } from '@mui/icons-material';
-import { useGetProductsQuery, useDeleteProductMutation } from './api';
+import { useGetProductsQuery, useDeleteProductMutation, useUpdateProductPartialMutation } from './api';
 import { useSnackbar } from 'notistack';
 
 export function ProductsList() {
@@ -45,6 +45,7 @@ export function ProductsList() {
   
   const { data: products, isLoading, isError, refetch } = useGetProductsQuery();
   const [deleteProduct] = useDeleteProductMutation();
+  const [updateProductPartial] = useUpdateProductPartialMutation();
   
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<{ id: number; title: string } | null>(null);
@@ -301,8 +302,8 @@ export function ProductsList() {
                                </Typography>
                                <Box sx={{ mt: 0.5 }}>
                                  <Chip
-                                   label={product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                                   color={product.stock > 0 ? 'success' : 'error'}
+                                   label={(product.is_in_stock && product.stock > 0) ? 'In Stock' : 'Out of Stock'}
+                                   color={(product.is_in_stock && product.stock > 0) ? 'success' : 'error'}
                                    size="small"
                                    variant="outlined"
                                    sx={{ 
@@ -377,6 +378,7 @@ export function ProductsList() {
                     <TableCell sx={{ color: 'white', fontWeight: 600 }}>Price</TableCell>
                     <TableCell sx={{ color: 'white', fontWeight: 600 }}>Stock</TableCell>
                     <TableCell sx={{ color: 'white', fontWeight: 600 }}>Status</TableCell>
+                    <TableCell sx={{ color: 'white', fontWeight: 600 }}>In Stock</TableCell>
                     <TableCell sx={{ color: 'white', fontWeight: 600 }}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -406,11 +408,29 @@ export function ProductsList() {
                         </TableCell>
                         <TableCell>
                           <Chip
-                            label={product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                            color={product.stock > 0 ? 'success' : 'error'}
+                            label={(product.is_in_stock && product.stock > 0) ? 'In Stock' : 'Out of Stock'}
+                            color={(product.is_in_stock && product.stock > 0) ? 'success' : 'error'}
                             size="small"
                             variant="outlined"
                           />
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="small"
+                            variant={product.is_in_stock ? 'contained' : 'outlined'}
+                            color={product.is_in_stock ? 'success' : 'error'}
+                            onClick={async () => {
+                              try {
+                                await updateProductPartial({ id: product.id, data: { is_in_stock: !product.is_in_stock } }).unwrap();
+                                enqueueSnackbar(`Marked ${!product.is_in_stock ? 'In Stock' : 'Out of Stock'}`, { variant: 'success' });
+                                refetch();
+                              } catch (e: any) {
+                                enqueueSnackbar(e?.data?.detail || 'Failed to update stock status', { variant: 'error' });
+                              }
+                            }}
+                          >
+                            {product.is_in_stock ? 'In Stock' : 'Out of Stock'}
+                          </Button>
                         </TableCell>
                         <TableCell>
                           <Box sx={{ display: 'flex', gap: 1 }}>

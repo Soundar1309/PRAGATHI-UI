@@ -80,10 +80,18 @@ export function ProductDetail() {
         
         // If no default variation found, use the first available one
         if (!defaultVar) {
-          defaultVar = product.variations.find((v: ProductVariation) => v.is_active && v.available) || product.variations[0];
+          defaultVar = product.variations.find((v: ProductVariation) => v.available) || product.variations[0];
         }
         
-        setSelectedVariation(defaultVar);
+        // Only set as selected if the product is in stock and variation is available
+        if (defaultVar && product.is_in_stock && defaultVar.available) {
+          setSelectedVariation(defaultVar);
+        } else {
+          // If no available variations or product is out of stock, fall back to base product if available
+          if (product.is_in_stock && product.stock > 0) {
+            setSelectedProductId(product.id);
+          }
+        }
       } else {
         // If no variations, select base product
         setSelectedProductId(product.id);
@@ -208,27 +216,44 @@ export function ProductDetail() {
                 </Typography>
                 
                 <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                  {/* Base product button */}
-                  <Button
-                    size="small"
-                    variant={!selectedVariation && selectedProductId ? 'contained' : 'outlined'}
-                    onClick={() => { setSelectedProductId(product.id); setSelectedVariation(null); }}
-                    disabled={product.stock <= 0}
+                  {/* Base product button with disabled tooltip */}
+                  <Tooltip
+                    title={!(product.is_in_stock && product.stock > 0) ? 'Out of Stock' : ''}
+                    disableHoverListener={product.is_in_stock && product.stock > 0}
                   >
-                    {product.unit}
-                  </Button>
+                    <span>
+                      <Button
+                        size="small"
+                        variant={!selectedVariation && selectedProductId ? 'contained' : 'outlined'}
+                        onClick={() => { setSelectedProductId(product.id); setSelectedVariation(null); }}
+                        disabled={!(product.is_in_stock && product.stock > 0)}
+                      >
+                        {product.unit}
+                      </Button>
+                    </span>
+                  </Tooltip>
                   {/* Variation buttons */}
-                  {product.variations && product.variations.map((variation: ProductVariation) => (
-                    <Button
-                      key={variation.id}
-                      size="small"
-                      variant={selectedVariation?.id === variation.id ? 'contained' : 'outlined'}
-                      onClick={() => { setSelectedVariation(variation); setSelectedProductId(null); }}
-                      disabled={!variation.available}
-                    >
-                      {formatQuantity(variation.quantity)} {variation.unit}
-                    </Button>
-                  ))}
+                  {product.variations && product.variations.map((variation: ProductVariation) => {
+                    const isVariationDisabled = !product.is_in_stock || !variation.available;
+                    return (
+                      <Tooltip
+                        key={variation.id}
+                        title={isVariationDisabled ? 'Out of Stock' : ''}
+                        disableHoverListener={!isVariationDisabled}
+                      >
+                        <span>
+                          <Button
+                            size="small"
+                            variant={selectedVariation?.id === variation.id ? 'contained' : 'outlined'}
+                            onClick={() => { setSelectedVariation(variation); setSelectedProductId(null); }}
+                            disabled={isVariationDisabled}
+                          >
+                            {formatQuantity(variation.quantity)} {variation.unit}
+                          </Button>
+                        </span>
+                      </Tooltip>
+                    );
+                  })}
                 </Stack>
 
                 {/* Details panel below buttons */}
@@ -276,9 +301,9 @@ export function ProductDetail() {
                       />
                     )}
                     <Chip
-                      label={(selectedVariation ? selectedVariation.available : product.stock > 0) ? 'In Stock' : 'Out of Stock'}
+                      label={(selectedVariation ? (product.is_in_stock && selectedVariation.available) : (product.is_in_stock && product.stock > 0)) ? 'In Stock' : 'Out of Stock'}
                       size="small"
-                      color={(selectedVariation ? selectedVariation.available : product.stock > 0) ? 'success' : 'error'}
+                      color={(selectedVariation ? (product.is_in_stock && selectedVariation.available) : (product.is_in_stock && product.stock > 0)) ? 'success' : 'error'}
                       variant="outlined"
                       sx={{ fontWeight: 600, fontFamily: 'Inter, sans-serif' }}
                     />
@@ -307,11 +332,11 @@ export function ProductDetail() {
                   color="secondary"
                   sx={{ fontWeight: 700, borderRadius: 1, boxShadow: 'none', fontFamily: 'Inter, sans-serif' }}
                   onClick={handleAddToCart}
-                  disabled={isAdding || (selectedVariation ? !selectedVariation.available : selectedProductId ? product.stock <= 0 : false)}
+                  disabled={isAdding || (selectedVariation ? !(product.is_in_stock && selectedVariation.available) : selectedProductId ? !(product.is_in_stock && product.stock > 0) : false)}
                 >
                   {isAdding ? 'Adding...' : 
-                   (selectedVariation && !selectedVariation.available) || 
-                   (selectedProductId && product.stock <= 0) ? 'Out of Stock' : 'Add to Cart'}
+                   (selectedVariation && !(product.is_in_stock && selectedVariation.available)) || 
+                   (selectedProductId && !(product.is_in_stock && product.stock > 0)) ? 'Out of Stock' : 'Add to Cart'}
                 </Button>
               </Stack>
               <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'Inter, sans-serif' }}>

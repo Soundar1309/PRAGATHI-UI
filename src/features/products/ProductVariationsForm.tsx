@@ -1,31 +1,30 @@
-import React, { useState, useEffect } from 'react';
 import {
+  Add as AddIcon,
+  Delete as DeleteIcon
+} from '@mui/icons-material';
+import {
+  Alert,
   Box,
-  Typography,
-  TextField,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Card,
   CardContent,
+  Chip,
+  CircularProgress,
+  FormControl,
   Grid,
   IconButton,
   InputAdornment,
-  Alert,
-  CircularProgress,
-  Chip,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
+  TextField,
+  Typography,
 } from '@mui/material';
-import {
-  Add as AddIcon,
-  Delete as DeleteIcon,
-  CloudUpload as CloudUploadIcon,
-} from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
-import type { ProductVariation, CreateProductVariationData } from '../../api/products';
+import { useEffect, useState } from 'react';
+import type { CreateProductVariationData, ProductVariation } from '../../api/products';
 import { productVariationsApi } from '../../api/products';
 
 interface ProductVariationsFormProps {
@@ -60,6 +59,7 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
   const [isLoading, setIsLoading] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [editingVariationId, setEditingVariationId] = useState<number | null>(null);
 
   const [formData, setFormData] = useState<VariationFormData>({
     quantity: '',
@@ -92,32 +92,6 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
 
   const handleFormChange = (field: keyof VariationFormData, value: string | File | null) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        enqueueSnackbar('Please select a valid image file', { variant: 'error' });
-        return;
-      }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        enqueueSnackbar('Image size should be less than 5MB', { variant: 'error' });
-        return;
-      }
-
-      setFormData(prev => ({ ...prev, image: file }));
-
-      // Create preview URL
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setFormData(prev => ({ ...prev, imagePreview: e.target?.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const validateForm = () => {
@@ -159,7 +133,6 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
 
     try {
       setIsCreating(true);
-
       const variationData: CreateProductVariationData = {
         product: productId,
         quantity: parseFloat(formData.quantity),
@@ -171,8 +144,13 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
         is_active: true,
       };
 
-      await productVariationsApi.create(variationData);
-      enqueueSnackbar('Product variation created successfully!', { variant: 'success' });
+      if (editingVariationId) {
+        await productVariationsApi.update(editingVariationId, variationData);
+        enqueueSnackbar('Product variation updated successfully!', { variant: 'success' });
+      } else {
+        await productVariationsApi.create(variationData);
+        enqueueSnackbar('Product variation created successfully!', { variant: 'success' });
+      }
 
       // Reset form
       setFormData({
@@ -185,6 +163,7 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
         imagePreview: null,
       });
       setShowForm(false);
+      setEditingVariationId(null);
 
       // Reload variations
       await loadVariations();
@@ -225,7 +204,23 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
       imagePreview: null,
     });
     setShowForm(false);
+    setEditingVariationId(null);
   };
+
+  const startEditVariation = (variation: ProductVariation) => {
+    setFormData({
+      quantity: String(variation.quantity),
+      unit: variation.unit,
+      price: String(variation.price),
+      original_price: variation.original_price ? String(variation.original_price) : '',
+      stock: String(variation.stock),
+      image: null,
+      imagePreview: variation.image || variation.image_url || null,
+    });
+    setEditingVariationId(variation.id);
+    setShowForm(true);
+  };
+
 
   return (
     <Box sx={{ mt: 4 }}>
@@ -279,13 +274,23 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
                       <Typography variant="h6" sx={{ fontWeight: 600 }}>
                         {variation.display_name}
                       </Typography>
-                      <IconButton
-                        size="small"
-                        color="error"
-                        onClick={() => handleDeleteVariation(variation.id)}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
+                      <Box>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => startEditVariation(variation)}
+                          sx={{ mr: 1, textTransform: 'none' }}
+                        >
+                          Edit
+                        </Button>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => handleDeleteVariation(variation.id)}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
                     </Box>
 
                     {variation.image && (
@@ -354,7 +359,7 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
             }}
           >
             <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-              Add New Variation
+              {editingVariationId ? 'Edit Variation' : 'Add New Variation'}
             </Typography>
 
             <Grid container spacing={2}>
@@ -434,63 +439,6 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
                 />
               </Grid>
 
-              <Grid size={12}>
-                <Box sx={{ mt: 2 }}>
-                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Variation Image (Optional)
-                  </Typography>
-                  <Box
-                    sx={{
-                      border: `2px dashed ${theme.palette.primary.main}`,
-                      borderRadius: 2,
-                      p: 2,
-                      textAlign: 'center',
-                      backgroundColor: theme.palette.primary.light + '10',
-                      cursor: 'pointer',
-                      '&:hover': {
-                        backgroundColor: theme.palette.primary.light + '20',
-                      },
-                    }}
-                    onClick={() => document.getElementById('variation-image-upload')?.click()}
-                  >
-                    <input
-                      id="variation-image-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      style={{ display: 'none' }}
-                    />
-
-                    {formData.imagePreview ? (
-                      <Box>
-                        <img
-                          src={formData.imagePreview}
-                          alt="Variation preview"
-                          style={{
-                            maxWidth: '100%',
-                            maxHeight: 120,
-                            borderRadius: 8,
-                            marginBottom: 8,
-                          }}
-                        />
-                        <Typography variant="body2" color="text.secondary">
-                          Click to change image
-                        </Typography>
-                      </Box>
-                    ) : (
-                      <Box>
-                        <CloudUploadIcon sx={{ fontSize: 32, color: theme.palette.primary.main, mb: 1 }} />
-                        <Typography variant="body2" sx={{ mb: 0.5 }}>
-                          Click to upload image
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          PNG, JPG, JPEG up to 5MB
-                        </Typography>
-                      </Box>
-                    )}
-                  </Box>
-                </Box>
-              </Grid>
             </Grid>
 
             <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
@@ -505,7 +453,7 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
                   fontWeight: 600,
                 }}
               >
-                {isCreating ? 'Creating...' : 'Create Variation'}
+                {isCreating ? (editingVariationId ? 'Updating...' : 'Creating...') : (editingVariationId ? 'Update Variation' : 'Create Variation')}
               </Button>
 
               <Button

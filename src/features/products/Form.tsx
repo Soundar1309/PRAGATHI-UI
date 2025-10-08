@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  TextField, 
-  Button, 
-  Box, 
-  Typography, 
-  Paper,
-  useTheme,
+import { Add as AddIcon, CloudUpload as CloudUploadIcon, Edit as EditIcon } from '@mui/icons-material';
+import {
+  Alert,
+  Box,
+  Button,
+  Checkbox,
   CircularProgress,
   FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  FormControlLabel,
   InputAdornment,
-  Alert,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography,
+  useTheme,
 } from '@mui/material';
-import { Add as AddIcon, Edit as EditIcon, CloudUpload as CloudUploadIcon } from '@mui/icons-material';
-import { useCreateProductMutation, useUpdateProductMutation, useGetProductQuery, useGetCategoriesQuery } from './api';
 import { useSnackbar } from 'notistack';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCreateProductMutation, useGetCategoriesQuery, useGetProductQuery, useUpdateProductMutation } from './api';
 import { ProductVariationsForm } from './ProductVariationsForm';
 
 interface ProductFormProps {
@@ -37,6 +39,7 @@ export function ProductForm({ productId }: ProductFormProps) {
     stock: '',
     unit: '1 kg',
     category_id: '',
+    is_in_stock: true,
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -62,6 +65,7 @@ export function ProductForm({ productId }: ProductFormProps) {
         stock: product.stock?.toString() || '',
         unit: product.unit || '1 kg',
         category_id: product.category_id?.toString() || '',
+        is_in_stock: product.is_in_stock ?? true,
       });
       // Set image preview if product has an image
       if (product.image) {
@@ -139,6 +143,7 @@ export function ProductForm({ productId }: ProductFormProps) {
       formData.append('stock', form.stock);
       formData.append('unit', form.unit);
       formData.append('category_id', form.category_id);
+      formData.append('is_in_stock', String(form.is_in_stock));
       
       // Add original_price if provided
       if (form.original_price) {
@@ -261,7 +266,15 @@ export function ProductForm({ productId }: ProductFormProps) {
               }}
             />
 
-            <Box sx={{ display: 'flex', gap: 2, mt: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: 2,
+                alignItems: 'flex-start',
+                mt: 2,
+                flexWrap: 'nowrap',
+              }}
+            >
               <TextField
                 label="Price"
                 name="price"
@@ -299,7 +312,7 @@ export function ProductForm({ productId }: ProductFormProps) {
                 margin="normal"
                 required
                 variant="outlined"
-                disabled={isLoading}
+                disabled={isLoading || !form.is_in_stock}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: 2,
@@ -310,6 +323,18 @@ export function ProductForm({ productId }: ProductFormProps) {
                   min: 0,
                 }}
               />
+              <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 'fit-content', mt: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!form.is_in_stock}
+                      onChange={(e) => setForm({ ...form, is_in_stock: !e.target.checked })}
+                    />
+                  }
+                  label="Out of Stock"
+                  sx={{ m: 0 }}
+                />
+              </Box>
             </Box>
 
             <TextField
@@ -470,7 +495,7 @@ export function ProductForm({ productId }: ProductFormProps) {
               <Button
                 type="submit"
                 variant="contained"
-                disabled={isLoading || !form.title.trim() || !form.category_id}
+                disabled={isLoading || (!productId && (!form.title.trim() || !form.category_id))}
                 startIcon={isLoading ? <CircularProgress size={20} /> : (productId ? <EditIcon /> : <AddIcon />)}
                 sx={{
                   flex: { xs: 1, sm: 'none' },

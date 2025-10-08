@@ -56,6 +56,14 @@ export const productsApi = createApi({
         body: data,
       }),
     }),
+    // Partial update (PATCH) for small field changes like is_in_stock
+    updateProductPartial: builder.mutation<any, { id: number; data: Partial<any> }>({
+      query: ({ id, data }) => ({
+        url: `/products/products/${id}/`,
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
     deleteProduct: builder.mutation<any, number>({
       query: (id) => ({
         url: `/products/products/${id}/`,
@@ -128,6 +136,7 @@ export const {
   useGetRecentlyAddedProductsQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
+  useUpdateProductPartialMutation,
   useDeleteProductMutation,
   useGetCategoriesQuery,
   useGetCategoryQuery,
