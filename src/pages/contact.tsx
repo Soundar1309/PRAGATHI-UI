@@ -558,7 +558,8 @@ export default function ContactPage() {
                             Phone
                           </Typography>
                           <Typography variant="body1" color="text.primary" sx={{ fontWeight: 500 }}>
-                            +91 98765 43210
+                            Farm Store: +91 63838 47989<br />
+                            Enquire: +91 94434 43561
                           </Typography>
                         </Box>
                       </Box>
@@ -605,7 +606,7 @@ export default function ContactPage() {
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                           <IconButton 
-                            href="https://wa.me/919876543210" 
+                            href="https://wa.me/916383847989" 
                             target="_blank" 
                             rel="noopener" 
                             aria-label="WhatsApp" 

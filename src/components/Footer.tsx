@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Link, Stack, IconButton, Button, useTheme, Container, Grid } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -135,6 +136,58 @@ const Footer: React.FC = () => {
                                 </Typography>
                             </Stack>
 
+                            <Stack
+                                direction="row"
+                                alignItems="center"
+                                spacing={2}
+                                sx={{
+                                    mb: 2,
+                                    justifyContent: { xs: 'center', md: 'flex-start' },
+                                }}
+                            >
+                                <PhoneIcon
+                                    sx={{
+                                        color: theme.palette.primary.main,
+                                        fontSize: { xs: '1.2rem', sm: '1.5rem' },
+                                        flexShrink: 0,
+                                    }}
+                                />
+                                <Box>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                            lineHeight: 1.6,
+                                            wordBreak: 'break-word',
+                                            color: theme.palette.text.primary,
+                                            fontWeight: 400,
+                                            letterSpacing: '0.01em',
+                                            textAlign: { xs: 'center', md: 'left' },
+                                            maxWidth: '100%',
+                                            transition: 'color 0.3s ease-in-out',
+                                        }}
+                                    >
+                                        Farm Store: +91 63838 47989
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                                            lineHeight: 1.6,
+                                            wordBreak: 'break-word',
+                                            color: theme.palette.text.primary,
+                                            fontWeight: 400,
+                                            letterSpacing: '0.01em',
+                                            textAlign: { xs: 'center', md: 'left' },
+                                            maxWidth: '100%',
+                                            transition: 'color 0.3s ease-in-out',
+                                        }}
+                                    >
+                                        Enquire: +91 94434 43561
+                                    </Typography>
+                                </Box>
+                            </Stack>
+
                             <Button
                                 variant="contained"
                                 startIcon={<WhatsAppIcon sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }} />}
@@ -160,7 +213,7 @@ const Footer: React.FC = () => {
                                         transform: 'scale(0.98)',
                                     },
                                 }}
-                                href="https://wa.me/919876543210"
+                                href="https://wa.me/916383847989"
                                 target="_blank"
                             >
                                 Click here to chat on WhatsApp
