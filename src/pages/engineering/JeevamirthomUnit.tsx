@@ -308,19 +308,6 @@ const JeevamirthomUnit: React.FC = () => {
                 <Card sx={{ height: '100%', p: 2 }}>
                   <CardContent>
                     <Box sx={{ textAlign: 'center', mb: 2 }}>
-                      <Box sx={{ 
-                        display: 'inline-flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center',
-                        width: 60, 
-                        height: 60, 
-                        borderRadius: '50%',
-                        backgroundColor: 'primary.main',
-                        color: 'white',
-                        mb: 2
-                      }}>
-                        {step.icon}
-                      </Box>
                       <Typography variant="h6" color="primary" gutterBottom>
                         Step {step.step}: {step.title}
                       </Typography>
