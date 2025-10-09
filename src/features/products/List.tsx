@@ -515,15 +515,13 @@ export function ProductList() {
                   flexShrink: 0, // Prevent shrinking
                   boxShadow: selectedCategory.id === cat.id ? 4 : 2,
                   bgcolor: selectedCategory.id === cat.id 
-                    ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`
+                    ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
                     : `linear-gradient(135deg, ${theme.palette.grey[50]} 0%, ${theme.palette.grey[100]} 100%)`,
-                  color: selectedCategory.id === cat.id ? 'common.white' : 'primary.dark',
+                  color: selectedCategory.id === cat.id ? 'primary.dark' : 'primary.dark',
                   border: selectedCategory.id === cat.id ? '2px solid' : '1px solid',
                   borderColor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.300',
                   transition: 'all 0.3s cubic-bezier(.4,2,.6,1)',
-                  textShadow: selectedCategory.id === cat.id
-                    ? '0 2px 8px rgba(0,0,0,0.18), 0 1px 1px rgba(0,0,0,0.10)'
-                    : 'none',
+                  textShadow: 'none',
                   '&:hover': {
                     bgcolor: selectedCategory.id === cat.id 
                       ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`

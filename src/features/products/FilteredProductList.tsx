@@ -207,14 +207,12 @@ export function FilteredProductList() {
                                 minWidth: { xs: 100, sm: 120 },
                                 whiteSpace: 'nowrap',
                                 boxShadow: selectedCategory.id === cat.id ? 3 : 0,
-                                bgcolor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.100',
-                                color: selectedCategory.id === cat.id ? 'common.white' : 'primary.dark',
+                                bgcolor: selectedCategory.id === cat.id ? 'primary.main' : 'grey.100',
+                                color: selectedCategory.id === cat.id ? 'primary.dark' : 'primary.dark',
                                 border: selectedCategory.id === cat.id ? '2px solid' : '1px solid',
                                 borderColor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.300',
                                 transition: 'all 0.2s cubic-bezier(.4,2,.6,1)',
-                                textShadow: selectedCategory.id === cat.id
-                                    ? '0 2px 8px rgba(0,0,0,0.18), 0 1px 1px rgba(0,0,0,0.10)'
-                                    : 'none',
+                                textShadow: 'none',
                                 '&:hover': {
                                     bgcolor: selectedCategory.id === cat.id ? 'primary.dark' : 'grey.200',
                                     color: selectedCategory.id === cat.id ? 'common.white' : 'primary.main',
