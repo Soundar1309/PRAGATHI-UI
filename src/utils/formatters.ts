@@ -17,6 +17,32 @@ export function formatPrice(price: number | string): string {
 }
 
 /**
+ * Formats a product name by removing unnecessary decimal places from quantities
+ * Converts "Saamai - 500.00 g" to "Saamai - 500g", "Rice - 1.00 kg" to "Rice - 1kg"
+ * @param productName - The full product name (e.g., "Saamai - 500.00 g")
+ * @returns Formatted product name (e.g., "Saamai - 500g")
+ */
+export function formatProductName(productName: string): string {
+  if (!productName) return productName;
+  
+  // Handle patterns like "Product Name - 500.00 g" or "Product Name - 1.00 kg"
+  const match = productName.match(/^(.+?)\s*-\s*(\d+(?:\.\d+)?)\s*([a-zA-Z]+)$/);
+  if (match) {
+    const [, productBase, quantityStr, unit] = match;
+    const quantity = parseFloat(quantityStr);
+    if (isNaN(quantity)) return productName;
+    
+    // Format the quantity without unnecessary decimal places
+    const formattedQuantity = quantity % 1 === 0 ? Math.floor(quantity).toString() : quantity.toString();
+    
+    return `${productBase} - ${formattedQuantity}${unit}`;
+  }
+  
+  // Fallback to the original formatVariationDisplayName for simple cases
+  return formatVariationDisplayName(productName);
+}
+
+/**
  * Formats a variation display name by removing unnecessary decimal places
  * Converts "1.00 kg" to "1kg", "500.00g" to "500g", etc.
  * @param displayName - The display name from the backend (e.g., "1.00 kg")

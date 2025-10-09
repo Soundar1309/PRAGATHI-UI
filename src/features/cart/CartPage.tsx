@@ -22,7 +22,7 @@ import { useSnackbar } from 'notistack';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductImage from '../../components/ProductImage';
-import { formatVariationDisplayName } from '../../utils/formatters';
+import { formatVariationDisplayName, formatProductName } from '../../utils/formatters';
 import { useGetCartQuery, useRemoveItemMutation, useUpdateItemMutation } from './api';
 
 export function CartPage() {
@@ -207,7 +207,7 @@ export function CartPage() {
                                                 }}
                                                 onClick={() => navigate(`/products/${item.product?.id || item.product_variation?.product}`)}
                                             >
-                                                {item.item_name}
+                                                {formatProductName(item.item_name)}
                                             </Typography>
                                             <Typography
                                                 variant="body2"

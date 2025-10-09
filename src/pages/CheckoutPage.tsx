@@ -32,6 +32,7 @@ import { useNavigate } from 'react-router-dom';
 import { useGetProfileQuery } from '../features/auth/userApi';
 import { useGetCartQuery } from '../features/cart/api';
 import { useRazorpay } from '../hooks/useRazorpay';
+import { formatProductName } from '../utils/formatters';
 
 // Indian states list
 const INDIAN_STATES = [
@@ -157,7 +158,7 @@ const CheckoutPage: React.FC = () => {
 
   const calculateSubtotal = () => {
     if (!cart?.cart_items) return 0;
-    return cart.cart_items.reduce((total, item) => total + (Number(item.product?.price) || 0) * item.quantity, 0);
+    return cart.cart_items.reduce((total, item) => total + item.subtotal, 0);
   };
 
   // const calculateTax = () => {
@@ -232,9 +233,6 @@ const CheckoutPage: React.FC = () => {
                     <Typography variant="h6" fontWeight={600}>
                       Contact
                     </Typography>
-                    <Button variant="text" size="small">
-                      Sign in
-                    </Button>
                   </Box>
                   <TextField
                     fullWidth
@@ -581,10 +579,10 @@ const CheckoutPage: React.FC = () => {
                           position: 'relative',
                         }}
                       >
-                        {item.product?.image && (
+                        {(item.item_image || item.product?.image) && (
                           <img
-                            src={item.product.image}
-                            alt={item.product.title}
+                            src={item.item_image || item.product?.image}
+                            alt={item.item_name || item.product?.title}
                             style={{
                               width: '100%',
                               height: '100%',
@@ -608,13 +606,13 @@ const CheckoutPage: React.FC = () => {
                       </Box>
                       <Box flex={1}>
                         <Typography variant="body2" fontWeight={500} noWrap>
-                          {item.product?.title}
+                          {formatProductName(item.item_name || item.product?.title || '')}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {item.product?.stock || '350g'}
+                          {item.effective_quantity} {item.effective_unit}
                         </Typography>
                         <Typography variant="body2" fontWeight={600}>
-                          ₹{((Number(item.product?.price) || 0) * item.quantity).toFixed(2)}
+                          ₹{item.subtotal.toFixed(2)}
                         </Typography>
                       </Box>
                     </Box>
