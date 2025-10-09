@@ -234,7 +234,32 @@ export function ProductDetail() {
                     </span>
                   </Tooltip>
                   {/* Variation buttons */}
-                  {product.variations && product.variations.map((variation: ProductVariation) => {
+                  {product.variations && [...product.variations]
+                    .sort((a: ProductVariation, b: ProductVariation) => {
+                      // Convert quantities to base units for consistent comparison
+                      const getQuantityInBaseUnit = (variation: ProductVariation) => {
+                        const qty = Number(variation.quantity);
+                        const unit = variation.unit.toLowerCase().trim();
+                        
+                        // Convert everything to smallest unit for comparison
+                        if (unit === 'kg') return qty * 1000; // kg to g
+                        if (unit === 'g') return qty; // g stays g
+                        if (unit === 'l') return qty * 1000; // l to ml
+                        if (unit === 'ml') return qty; // ml stays ml
+                        if (unit === 'nos' || unit === 'pcs') return qty; // pieces stay as is
+                        
+                        return qty; // Default fallback
+                      };
+                      
+                      const aValue = getQuantityInBaseUnit(a);
+                      const bValue = getQuantityInBaseUnit(b);
+                      
+                      // Debug logging
+                      console.log(`Sorting: ${a.quantity}${a.unit} (${aValue}) vs ${b.quantity}${b.unit} (${bValue})`);
+                      
+                      return aValue - bValue;
+                    })
+                    .map((variation: ProductVariation) => {
                     const isVariationDisabled = !product.is_in_stock || !variation.available;
                     return (
                       <Tooltip
