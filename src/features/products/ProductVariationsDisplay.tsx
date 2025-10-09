@@ -18,7 +18,7 @@ import {
   Add as AddIcon,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import { formatVariationDisplayName } from '../../utils/formatters';
+import { formatVariationDisplayName, formatPrice } from '../../utils/formatters';
 import { useSnackbar } from 'notistack';
 import { useAddItemMutation } from '../cart/api';
 import type { ProductVariation } from '../../api/products';
@@ -104,7 +104,7 @@ export function ProductVariationsDisplay({ variations, productTitle, onAddToCart
                 
                 <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
                   <Typography variant="h6" color="primary" sx={{ fontWeight: 700 }}>
-                    ₹{variation.price}
+                    ₹{formatPrice(variation.price)}
                   </Typography>
                   {variation.has_offer && (
                     <Typography 
@@ -115,7 +115,7 @@ export function ProductVariationsDisplay({ variations, productTitle, onAddToCart
                         ml: 1 
                       }}
                     >
-                      ₹{variation.original_price}
+                      ₹{formatPrice(Number(variation.original_price))}
                     </Typography>
                   )}
                 </Stack>

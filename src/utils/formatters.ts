@@ -3,6 +3,20 @@
  */
 
 /**
+ * Formats a price by removing unnecessary decimal places
+ * Converts "23.00" to "23", "23.50" to "23.5", "23.25" to "23.25"
+ * @param price - The price value (number or string)
+ * @returns Formatted price string
+ */
+export function formatPrice(price: number | string): string {
+  const num = Number(price);
+  if (isNaN(num)) return '0';
+  
+  // Remove unnecessary decimal places
+  return num % 1 === 0 ? Math.floor(num).toString() : num.toString();
+}
+
+/**
  * Formats a variation display name by removing unnecessary decimal places
  * Converts "1.00 kg" to "1kg", "500.00g" to "500g", etc.
  * @param displayName - The display name from the backend (e.g., "1.00 kg")

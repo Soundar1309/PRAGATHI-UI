@@ -16,7 +16,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import { useAddToCart } from '../hooks/useAddToCart';
 import WishlistButton from './WishlistButton';
 import ProductImage from './ProductImage';
-import { formatVariationDisplayName } from '../utils/formatters';
+import { formatVariationDisplayName, formatPrice } from '../utils/formatters';
 
 export interface Product {
   id: number;
@@ -373,7 +373,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                   py: 0.5,
                 }}
               >
-                ₹{Number(displayPrice).toFixed(2)}
+                ₹{formatPrice(displayPrice)}
               </Typography>
               <Typography
                 variant="body2"
@@ -386,7 +386,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                   fontWeight: 500,
                 }}
               >
-                ₹{Number(originalPrice).toFixed(2)}
+                ₹{formatPrice(Number(originalPrice))}
               </Typography>
             </>
           ) : (
@@ -411,7 +411,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
                 py: 0.5,
               }}
             >
-              ₹{Number(displayPrice).toFixed(2)}
+              ₹{formatPrice(displayPrice)}
             </Typography>
           )}
         </Box>

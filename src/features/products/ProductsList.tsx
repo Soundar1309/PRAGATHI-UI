@@ -35,6 +35,7 @@ import {
   Visibility as ViewIcon,
 } from '@mui/icons-material';
 import { useGetProductsQuery, useDeleteProductMutation, useUpdateProductPartialMutation } from './api';
+import { formatPrice } from '../../utils/formatters';
 import { useSnackbar } from 'notistack';
 
 export function ProductsList() {
@@ -271,7 +272,7 @@ export function ProductsList() {
                                   fontSize: { xs: '0.875rem', sm: '1rem' }
                                 }}
                               >
-                                ₹{product.price}
+                                ₹{formatPrice(product.price)}
                               </Typography>
                             </Box>
                             <Box sx={{ minWidth: { xs: '30%', sm: 'auto' } }}>
@@ -401,7 +402,7 @@ export function ProductsList() {
                           {product.category?.name || 'No Category'}
                         </TableCell>
                         <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`, fontWeight: 600 }}>
-                          ₹{product.price}
+                          ₹{formatPrice(product.price)}
                         </TableCell>
                         <TableCell sx={{ fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>
                           {product.stock}

@@ -20,6 +20,7 @@ import { useAddItemMutation } from '../cart/api';
 import { useGetProductWithVariationsQuery } from './api';
 import ProductImage from '../../components/ProductImage';
 import type { ProductVariation } from '../../api/products';
+import { formatPrice } from '../../utils/formatters';
 
 export function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -278,14 +279,14 @@ export function ProductDetail() {
                       fontWeight={700}
                       sx={{ fontFamily: 'Inter, sans-serif', lineHeight: 1.2 }}
                     >
-                      ₹{Number(displayPrice).toFixed(2)}
+                      ₹{formatPrice(displayPrice)}
                     </Typography>
                     {showOriginalPrice && (
                       <Typography
                         variant="h6"
                         sx={{ textDecoration: 'line-through', color: theme.palette.error.main, fontFamily: 'Inter, sans-serif' }}
                       >
-                        ₹{Number(originalPrice).toFixed(2)}
+                        ₹{formatPrice(originalPrice)}
                       </Typography>
                     )}
                   </Box>
