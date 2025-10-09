@@ -56,7 +56,12 @@ export function ProductForm({ productId }: ProductFormProps) {
   const isLoading = isLoadingProduct || isLoadingCategories || isCreating || isUpdating;
 
   React.useEffect(() => {
-    if (product) {
+    if (product && categories) {
+      console.log('Product data:', product);
+      console.log('Categories data:', categories);
+      console.log('Product category_id:', product.category_id);
+      console.log('Product category:', product.category);
+      
       setForm({
         title: product.title || '',
         description: product.description || '',
@@ -64,7 +69,7 @@ export function ProductForm({ productId }: ProductFormProps) {
         original_price: product.original_price?.toString() || '',
         stock: product.stock?.toString() || '',
         unit: product.unit || '1 kg',
-        category_id: product.category_id?.toString() || '',
+        category_id: product.category_id?.toString() || product.category?.id?.toString() || '',
         is_in_stock: product.is_in_stock ?? true,
       });
       // Set image preview if product has an image
@@ -72,7 +77,7 @@ export function ProductForm({ productId }: ProductFormProps) {
         setImagePreview(product.image);
       }
     }
-  }, [product]);
+  }, [product, categories]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -300,6 +305,11 @@ export function ProductForm({ productId }: ProductFormProps) {
                   step: 0.01,
                 }}
                 helperText="This will be displayed as the offer price"
+                FormHelperTextProps={{
+                  sx: {
+                    display: { xs: 'none', sm: 'block' },
+                  }
+                }}
               />
               
               <TextField
@@ -410,11 +420,14 @@ export function ProductForm({ productId }: ProductFormProps) {
                   fontFamily: 'Inter, sans-serif',
                 }}
               >
-                {categories?.map((category) => (
-                  <MenuItem key={category.id} value={category.id.toString()}>
-                    {category.name}
-                  </MenuItem>
-                ))}
+                {categories?.map((category) => {
+                  console.log('Category option:', category.id, category.name, 'Current value:', form.category_id);
+                  return (
+                    <MenuItem key={category.id} value={category.id.toString()}>
+                      {category.name}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
 
