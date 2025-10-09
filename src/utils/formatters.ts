@@ -19,7 +19,7 @@ export function formatVariationDisplayName(displayName: string): string {
     if (isNaN(quantity)) return displayName;
     
     // Format the quantity without unnecessary decimal places
-    const formattedQuantity = quantity % 1 === 0 ? quantity.toString() : quantity.toString();
+    const formattedQuantity = quantity % 1 === 0 ? Math.floor(quantity).toString() : quantity.toString();
     
     return `${formattedQuantity}${unit}`;
   }

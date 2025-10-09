@@ -26,6 +26,7 @@ import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import type { CreateProductVariationData, ProductVariation } from '../../api/products';
 import { productVariationsApi } from '../../api/products';
+import { formatVariationDisplayName } from '../../utils/formatters';
 
 interface ProductVariationsFormProps {
   productId: number;
@@ -272,7 +273,7 @@ export function ProductVariationsForm({ productId, onVariationsChange }: Product
                   <CardContent sx={{ p: 2 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                       <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {variation.display_name}
+                        {formatVariationDisplayName(variation.display_name || '')}
                       </Typography>
                       <Box>
                         <Button
