@@ -35,7 +35,10 @@ export function formatProductName(productName: string): string {
     // Format the quantity without unnecessary decimal places
     const formattedQuantity = quantity % 1 === 0 ? Math.floor(quantity).toString() : quantity.toString();
     
-    return `${productBase} - ${formattedQuantity}${unit}`;
+    // Convert 'l' to 'L' for liters
+    const formattedUnit = unit.toLowerCase() === 'l' ? 'L' : unit;
+    
+    return `${productBase} - ${formattedQuantity}${formattedUnit}`;
   }
   
   // Fallback to the original formatVariationDisplayName for simple cases
@@ -61,7 +64,10 @@ export function formatVariationDisplayName(displayName: string): string {
     // Format the quantity without unnecessary decimal places
     const formattedQuantity = quantity % 1 === 0 ? Math.floor(quantity).toString() : quantity.toString();
     
-    return `${formattedQuantity}${unit}`;
+    // Convert 'l' to 'L' for liters
+    const formattedUnit = unit.toLowerCase() === 'l' ? 'L' : unit;
+    
+    return `${formattedQuantity}${formattedUnit}`;
   }
   
   // Fallback for other formats

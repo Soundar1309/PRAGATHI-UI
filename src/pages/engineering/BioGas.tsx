@@ -201,7 +201,7 @@ const BioGas: React.FC = () => {
         </Box>
 
         {/* Overview Section */}
-        <Paper sx={{ p: 4, mb: 4, background: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)' }}>
+        <Paper sx={{ p: 4, mb: 4, background: 'linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%)' }}>
           <Typography variant="h4" gutterBottom color="primary">
             What is Bio Gas?
           </Typography>

@@ -306,7 +306,7 @@ const BioDigester: React.FC = () => {
         </Box>
 
         {/* Overview Section */}
-        <Paper sx={{ p: 4, mb: 4, background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)' }}>
+        <Paper sx={{ p: 4, mb: 4, background: 'linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%)' }}>
           <Typography variant="h4" gutterBottom color="primary">
             What is a Bio Digester System?
           </Typography>

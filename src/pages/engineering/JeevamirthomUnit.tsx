@@ -428,7 +428,7 @@ const JeevamirthomUnit: React.FC = () => {
         </Grid>
 
         {/* Innovation Highlights */}
-        <Paper sx={{ p: 4, background: 'linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)' }}>
+        <Paper sx={{ p: 4, background: 'linear-gradient(135deg, #e8f5e8 0%, #f0fff0 100%)' }}>
           <Typography variant="h4" gutterBottom color="primary">
             Innovation Highlights
           </Typography>
