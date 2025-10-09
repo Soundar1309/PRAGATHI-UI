@@ -291,7 +291,7 @@ const RefundPolicy: React.FC = () => (
               mb: 4
             }}
           >
-            For prepaid orders, the refund will be made to your bank account or card. For COD orders, we will contact you for your bank details. If you have not received your refund within the expected time, please contact us at <strong>hello@pragathifarms.com</strong>.
+            For prepaid orders, the refund will be made to your bank account or card. For COD orders, we will contact you for your bank details. If you have not received your refund within the expected time, please contact us at <strong>pragathinaturalfarm@gmail.com</strong>.
           </Typography>
 
           <Box sx={{ 
@@ -304,7 +304,7 @@ const RefundPolicy: React.FC = () => (
               📧 Contact Information
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Email: hello@pragathifarms.com
+              Email: pragathinaturalfarm@gmail.com
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Last updated: {new Date().toLocaleDateString()}

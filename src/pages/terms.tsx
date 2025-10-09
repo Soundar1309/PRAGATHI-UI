@@ -292,7 +292,7 @@ export default function TermsPage() {
                 📧 Contact Information
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                For questions about these terms: hello@pragathifarms.com
+                For questions about these terms: pragathinaturalfarm@gmail.com
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Last updated: {new Date().toLocaleDateString()}

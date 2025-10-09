@@ -278,7 +278,7 @@ const ReturnPolicy: React.FC = () => (
               mb: 3
             }}
           >
-            We want you to be completely satisfied with your purchase. If you receive a damaged, defective, or incorrect product, please contact us within 48 hours of delivery at <strong>hello@pragathifarms.com</strong> with your order details and a photo of the issue.
+            We want you to be completely satisfied with your purchase. If you receive a damaged, defective, or incorrect product, please contact us within 48 hours of delivery at <strong>pragathinaturalfarm@gmail.com</strong> with your order details and a photo of the issue.
           </Typography>
 
           <Typography 
@@ -304,7 +304,7 @@ const ReturnPolicy: React.FC = () => (
               📧 Contact Information
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Email: hello@pragathifarms.com
+              Email: pragathinaturalfarm@gmail.com
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Last updated: {new Date().toLocaleDateString()}
