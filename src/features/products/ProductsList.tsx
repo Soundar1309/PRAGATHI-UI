@@ -34,9 +34,11 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon,
 } from '@mui/icons-material';
-import { useGetProductsQuery, useDeleteProductMutation, useUpdateProductPartialMutation } from './api';
+import { useGetProductsQuery, useDeleteProductMutation, useUpdateProductPartialMutation, useGetCategoriesQuery } from './api';
 import { formatPrice } from '../../utils/formatters';
 import { useSnackbar } from 'notistack';
+import { ProductFiltersComponent } from './ProductFilters';
+import type { ProductFilters } from './ProductFilters';
 
 export function ProductsList() {
   const theme = useTheme();
@@ -44,7 +46,9 @@ export function ProductsList() {
   const { enqueueSnackbar } = useSnackbar();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
-  const { data: products, isLoading, isError, refetch } = useGetProductsQuery();
+  const [filters, setFilters] = useState<ProductFilters>({});
+  const { data: products, isLoading, isError, refetch } = useGetProductsQuery(filters);
+  const { data: categories = [] } = useGetCategoriesQuery();
   const [deleteProduct] = useDeleteProductMutation();
   const [updateProductPartial] = useUpdateProductPartialMutation();
   
@@ -90,6 +94,14 @@ export function ProductsList() {
   const handleDeleteCancel = () => {
     setDeleteDialogOpen(false);
     setProductToDelete(null);
+  };
+
+  const handleFiltersChange = (newFilters: ProductFilters) => {
+    setFilters(newFilters);
+  };
+
+  const handleClearFilters = () => {
+    setFilters({});
   };
 
   if (isLoading) {
@@ -143,7 +155,7 @@ export function ProductsList() {
             justifyContent: { xs: 'flex-start', sm: 'space-between' },
             alignItems: { xs: 'flex-start', sm: 'center' },
             gap: { xs: 2, sm: 0 },
-            mb: 4 
+            mb: 3 
           }}>
             <Box sx={{ flex: 1 }}>
               <Typography
@@ -190,6 +202,14 @@ export function ProductsList() {
               Add Product
             </Button>
           </Box>
+
+          {/* Filters Component */}
+          <ProductFiltersComponent
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            categories={categories}
+            onClearFilters={handleClearFilters}
+          />
 
           {/* Products Display - Responsive */}
           {isMobile ? (

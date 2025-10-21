@@ -80,7 +80,15 @@ export const productsApi = {
   // Get all products with optional filtering
   getAll: async (params?: {
     category_id?: number;
+    product_type?: string;
+    is_in_stock?: boolean;
+    has_offer?: boolean;
+    min_price?: number;
+    max_price?: number;
+    min_stock?: number;
+    max_stock?: number;
     search?: string;
+    ordering?: string;
     page?: number;
   }) => {
     const response = await api.get('/products/products/', { params });

@@ -138,6 +138,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
           src={product.image}
           alt={product.title}
           variant="card"
+          productType={product.product_type}
           sx={{
             width: '100%',
             height: '100%',

@@ -14,8 +14,22 @@ export const productsApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     // Public endpoints (no authentication required)
-    getProducts: builder.query<any[], void>({
-      query: () => '/products/products/',
+    getProducts: builder.query<any[], {
+      category_id?: number;
+      product_type?: string;
+      is_in_stock?: boolean;
+      has_offer?: boolean;
+      min_price?: number;
+      max_price?: number;
+      min_stock?: number;
+      max_stock?: number;
+      search?: string;
+      ordering?: string;
+    }>({
+      query: (params = {}) => ({
+        url: '/products/products/',
+        params,
+      }),
       transformResponse: (response: { results: any[] }) => response.results || [],
     }),
     getProductsByCategory: builder.query<any[], number>({

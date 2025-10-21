@@ -11,6 +11,7 @@ export interface ProductImageProps {
   loading?: boolean;
   onClick?: () => void;
   lazy?: boolean;
+  productType?: 'solid' | 'liquid' | 'other';
 }
 
 // Fallback placeholder image component
@@ -45,6 +46,7 @@ const ProductImage: React.FC<ProductImageProps> = ({
   loading = false,
   onClick,
   lazy = true,
+  productType = 'solid',
 }) => {
   const theme = useTheme();
 
