@@ -90,6 +90,26 @@ interface DashboardStats {
     revenue: number;
   }>;
   last_updated: string;
+  trends: {
+    orders_trend: number;
+    products_sold_trend: number;
+    users_trend: number;
+    revenue_trend: number;
+  };
+  monthly_comparison: {
+    current_month: {
+      orders: number;
+      products_sold: number;
+      users: number;
+      revenue: number;
+    };
+    previous_month: {
+      orders: number;
+      products_sold: number;
+      users: number;
+      revenue: number;
+    };
+  };
 }
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
@@ -388,8 +408,8 @@ export const AdminDashboard: React.FC = () => {
               icon={<ShoppingCart sx={{ fontSize: 28 }} />}
               color="#667eea"
               isLoading={isRefreshing}
-              trend={12}
-              subtitle="This month"
+              trend={stats.trends.orders_trend}
+              subtitle={`${stats.monthly_comparison.current_month.orders} this month`}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -399,8 +419,8 @@ export const AdminDashboard: React.FC = () => {
               icon={<TrendingUp sx={{ fontSize: 28 }} />}
               color="#00C49F"
               isLoading={isRefreshing}
-              trend={8}
-              subtitle="Units sold"
+              trend={stats.trends.products_sold_trend}
+              subtitle={`${stats.monthly_comparison.current_month.products_sold} this month`}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -410,8 +430,8 @@ export const AdminDashboard: React.FC = () => {
               icon={<People sx={{ fontSize: 28 }} />}
               color="#FFBB28"
               isLoading={isRefreshing}
-              trend={-2}
-              subtitle="Registered users"
+              trend={stats.trends.users_trend}
+              subtitle={`${stats.monthly_comparison.current_month.users} new this month`}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -421,8 +441,8 @@ export const AdminDashboard: React.FC = () => {
               icon={<AttachMoney sx={{ fontSize: 28 }} />}
               color="#FF8042"
               isLoading={isRefreshing}
-              trend={15}
-              subtitle="All time"
+              trend={stats.trends.revenue_trend}
+              subtitle={`₹${stats.monthly_comparison.current_month.revenue.toLocaleString()} this month`}
             />
           </Grid>
         </Grid>
