@@ -33,6 +33,7 @@ import { useGetProfileQuery } from '../features/auth/userApi';
 import { useGetCartQuery } from '../features/cart/api';
 import { useRazorpay } from '../hooks/useRazorpay';
 import { formatProductName } from '../utils/formatters';
+import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE, PAYMENT_DISABLED_ACTIONS } from '../config/payment';
 
 // Indian states list
 const INDIAN_STATES = [
@@ -208,6 +209,63 @@ const CheckoutPage: React.FC = () => {
           Your cart is empty. Please add some items before checkout.
         </Alert>
       </Container>
+    );
+  }
+
+  // If payment is disabled, show a simple message instead of the form
+  if (!PAYMENT_ENABLED) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Typography variant="h4" gutterBottom textAlign="center" color="primary">
+            Checkout
+          </Typography>
+          
+          <Alert 
+            severity="warning" 
+            sx={{ 
+              mb: 4,
+              borderRadius: 2,
+              textAlign: 'center',
+              '& .MuiAlert-message': {
+                fontSize: '1rem',
+                width: '100%'
+              }
+            }}
+          >
+            <Typography variant="h6" fontWeight={600} gutterBottom>
+              Payment Temporarily Disabled
+            </Typography>
+            <Typography variant="body1" sx={{ mb: 2 }}>
+              {PAYMENT_DISABLED_ACTIONS.showMessage}
+            </Typography>
+            {PAYMENT_DISABLED_ACTIONS.showContactInfo && (
+              <Box sx={{ mt: 2 }}>
+                <Typography variant="h6" fontWeight={600} gutterBottom>
+                  Contact Us for Orders:
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  📧 {PAYMENT_DISABLED_ACTIONS.showEmail}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                  📞 {PAYMENT_DISABLED_ACTIONS.showPhone}
+                </Typography>
+                <Button 
+                  variant="contained" 
+                  onClick={() => navigate('/products')}
+                  sx={{ mt: 2 }}
+                >
+                  Continue Shopping
+                </Button>
+              </Box>
+            )}
+          </Alert>
+        </Container>
+      </motion.div>
     );
   }
 

@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import ProductImage from '../../components/ProductImage';
 import { formatVariationDisplayName, formatProductName } from '../../utils/formatters';
 import { useGetCartQuery, useRemoveItemMutation, useUpdateItemMutation } from './api';
+import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE, PAYMENT_DISABLED_ACTIONS } from '../../config/payment';
 
 export function CartPage() {
     const theme = useTheme();
@@ -60,6 +61,10 @@ export function CartPage() {
     };
 
     const handleCheckout = () => {
+        if (!PAYMENT_ENABLED) {
+            enqueueSnackbar(PAYMENT_DISABLED_MESSAGE, { variant: 'warning' });
+            return;
+        }
         navigate('/checkout');
     };
 
@@ -320,20 +325,53 @@ export function CartPage() {
                                 </Box>
                             </Box>
 
+                            {/* Payment Disabled Notice */}
+                            {!PAYMENT_ENABLED && (
+                                <Alert 
+                                    severity="warning" 
+                                    sx={{ 
+                                        mb: 2,
+                                        borderRadius: 2,
+                                        '& .MuiAlert-message': {
+                                            fontSize: '0.875rem'
+                                        }
+                                    }}
+                                >
+                                    <Typography variant="body2" fontWeight={600} gutterBottom>
+                                        Payment Temporarily Disabled
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {PAYMENT_DISABLED_ACTIONS.showMessage}
+                                    </Typography>
+                                    {PAYMENT_DISABLED_ACTIONS.showContactInfo && (
+                                        <Box sx={{ mt: 1 }}>
+                                            <Typography variant="body2">
+                                                📧 {PAYMENT_DISABLED_ACTIONS.showEmail}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                📞 {PAYMENT_DISABLED_ACTIONS.showPhone}
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Alert>
+                            )}
+
                             <Button
                                 variant="contained"
                                 fullWidth
                                 size="large"
                                 onClick={handleCheckout}
+                                disabled={!PAYMENT_ENABLED}
                                 sx={{
                                     mb: 2,
                                     py: 2,
                                     borderRadius: 2,
                                     fontWeight: 600,
                                     fontSize: 16,
+                                    opacity: !PAYMENT_ENABLED ? 0.6 : 1,
                                 }}
                             >
-                                Proceed to Checkout
+                                {PAYMENT_ENABLED ? 'Proceed to Checkout' : 'Payment Temporarily Disabled'}
                             </Button>
 
                             <Button

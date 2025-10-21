@@ -1,11 +1,22 @@
 import { useGetCartQuery, useUpdateItemMutation, useRemoveItemMutation } from './api';
 import { List, ListItem, ListItemText, IconButton, TextField, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { PAYMENT_ENABLED, PAYMENT_DISABLED_MESSAGE } from '../../config/payment';
+import { useSnackbar } from 'notistack';
 
 export function Cart() {
   const { data, isLoading } = useGetCartQuery();
   const [updateItem] = useUpdateItemMutation();
   const [removeItem] = useRemoveItemMutation();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleCheckout = () => {
+    if (!PAYMENT_ENABLED) {
+      enqueueSnackbar(PAYMENT_DISABLED_MESSAGE, { variant: 'warning' });
+      return;
+    }
+    window.location.href = '/orders/new';
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (!data) return <div>Your cart is empty.</div>;
@@ -33,7 +44,18 @@ export function Cart() {
           </ListItem>
         ))}
         <ListItem>
-          <Button variant="contained" href="/orders/new" sx={{ fontWeight: 600, fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif` }}>Checkout</Button>
+          <Button 
+            variant="contained" 
+            onClick={handleCheckout}
+            disabled={!PAYMENT_ENABLED}
+            sx={{ 
+              fontWeight: 600, 
+              fontFamily: `'Inter', 'Lato', 'Manrope', sans-serif`,
+              opacity: !PAYMENT_ENABLED ? 0.6 : 1,
+            }}
+          >
+            {PAYMENT_ENABLED ? 'Checkout' : 'Payment Disabled'}
+          </Button>
         </ListItem>
       </List>
     </>
