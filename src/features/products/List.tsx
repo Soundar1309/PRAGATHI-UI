@@ -84,15 +84,8 @@ export function ProductList() {
   useEffect(() => {
     console.log('ProductList component mounted, triggering API calls...');
     // Refetch products and categories when component mounts
-    const timer = setTimeout(() => {
-      console.log('Executing API calls...');
-      refetchAllProducts();
-      refetchCategories();
-    }, 100); // Small delay to ensure component is fully mounted
-    
-    return () => {
-      clearTimeout(timer);
-    };
+    refetchAllProducts();
+    refetchCategories();
   }, [refetchAllProducts, refetchCategories]);
 
   // Debug logging to see loading states
@@ -116,24 +109,7 @@ export function ProductList() {
   }, [isLoadingAll, isLoadingCategories, isLoadingCategory, allProducts, categoriesData, networkStatus]);
 
   // Add a loading state for initial mount when no data is available
-  const isInitialLoading = !allProducts && !categoriesData && !isErrorAll && !isErrorCategory;
-  
-  // Add a more aggressive loading state that shows immediately on mount
-  const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
-  const [showInitialLoading, setShowInitialLoading] = useState(true);
-  
-  useEffect(() => {
-    // Show initial loading immediately
-    setShowInitialLoading(true);
-    
-    // Set initial loading state to true after a short delay
-    const timer = setTimeout(() => {
-      setHasInitiallyLoaded(true);
-      setShowInitialLoading(false);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, []);
+  const isInitialLoading = isLoadingAll && !allProducts;
   
   // Check if we're in a network error state
   const hasNetworkError = isErrorAll || isErrorCategory;
@@ -599,7 +575,7 @@ export function ProductList() {
       )}
       
       {/* Responsive Product Grid */}
-      {showInitialLoading || isInitialLoading || isLoading || (!products && !isError) || !hasInitiallyLoaded ? (
+      {isInitialLoading || isLoading ? (
         <Box>
           {/* Loading Progress Bar */}
           <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', mb: 4 }}>
@@ -634,7 +610,7 @@ export function ProductList() {
             }}
           >
             {isInitialLoading 
-              ? 'Initializing products...' 
+              ? 'Loading products...' 
               : `Loading ${selectedCategory.name !== 'All' ? `${selectedCategory.name} products` : 'products'}...`
             }
           </Typography>

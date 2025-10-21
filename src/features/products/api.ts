@@ -31,10 +31,14 @@ export const productsApi = createApi({
         params,
       }),
       transformResponse: (response: { results: any[] }) => response.results || [],
+      // Ensure the query runs automatically
+      keepUnusedDataFor: 60, // Keep data for 60 seconds
     }),
     getProductsByCategory: builder.query<any[], number>({
       query: (categoryId) => `/products/products/?category_id=${categoryId}`,
       transformResponse: (response: { results: any[] }) => response.results || [],
+      // Ensure the query runs automatically
+      keepUnusedDataFor: 60, // Keep data for 60 seconds
     }),
     searchProducts: builder.query<any[], string>({
       query: (searchQuery) => `/products/products/?q=${encodeURIComponent(searchQuery)}`,
@@ -46,6 +50,8 @@ export const productsApi = createApi({
     getCategories: builder.query<Category[], void>({
       query: () => '/products/categories/',
       transformResponse: (response: { results: Category[] }) => response.results || [],
+      // Ensure the query runs automatically
+      keepUnusedDataFor: 60, // Keep data for 60 seconds
     }),
     getCategory: builder.query<Category, number>({
       query: (id) => `/products/categories/${id}/`,
